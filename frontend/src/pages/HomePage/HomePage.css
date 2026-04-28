@@ -657,26 +657,67 @@
   justify-content: center;
 }
 
-.hp-discordButton {
-  background: linear-gradient(135deg, #5865f2, #4752c4);
+/* Boutons row (Discord + GitHub) */
+.hp-buttonsRow {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 500px;
+  justify-content: center;
+}
+
+.hp-discordButton, .hp-githubButton {
+  flex: 1;
   border: none;
-  padding: 12px 24px;
+  padding: 12px 16px;
   border-radius: 40px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   font-weight: bold;
   transition: all 0.3s ease;
   color: white;
-  width: 100%;  /* Prend toute la largeur comme le bouton Play */
-  max-width: 320px;  /* Même largeur max que le bouton Play */
+  font-size: 0.9rem;
+}
+
+.hp-discordButton {
+  background: linear-gradient(135deg, #5865f2, #4752c4);
+}
+
+.hp-githubButton {
+  background: linear-gradient(135deg, #24292e, #1a1e22);
+}
+
+.hp-discordButton:hover, .hp-githubButton:hover {
+  transform: translateY(-2px);
 }
 
 .hp-discordButton:hover {
-  transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(88, 101, 242, 0.4);
+}
+
+.hp-githubButton:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hp-githubIcon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .hp-buttonsRow {
+    flex-direction: column;
+    gap: 12px;
+    max-width: 280px;
+  }
+  
+  .hp-discordButton, .hp-githubButton {
+    width: 100%;
+  }
 }
 
 .hp-discordHint {
