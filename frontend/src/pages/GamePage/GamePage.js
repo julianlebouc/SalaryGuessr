@@ -15,6 +15,7 @@ const BUFFER_TARGET = 3;
 const REFILL_THRESHOLD = 1;
 const MAX_FETCH_ATTEMPTS = 20;
 const PARALLEL_REQUESTS = 4;
+const API_URL = process.env.REACT_APP_API_URL 
 
 // Fonction pour masquer les salaires dans la description
 function hideSalaryInText(text) {
@@ -133,7 +134,7 @@ export default function GamePage() {
   const lastJobIdRef = useRef(null);
 
   const fetchRawJob = async () => {
-    const res = await fetch("http://localhost:8000/job", { cache: "no-store" });
+    const res = await fetch(`${API_URL}/job`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
   };

@@ -7,22 +7,43 @@ from bs4 import BeautifulSoup
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import time
+import threading
 from dotenv import load_dotenv
 
 # Charger les variables d'environnement
 load_dotenv()
 
 # ==========================================================
-# FASTAPI APP
+# FASTAPI APP - CONFIGURATION DYNAMIQUE
 # ==========================================================
 app = FastAPI(title="SalaryGuessr API")
+
+# Lire les origines CORS depuis .env
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+cors_origins = [origin.strip() for origin in cors_origins]  # Nettoyer les espaces
+
+print(f"[CORS] Origines autorisées: {cors_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ==========================================================
+# CONFIGURATION DYNAMIQUE
+# ==========================================================
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+BACKEND_PORT = int(os.getenv("BACKEND_PORT", 8000))
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+BACKEND_URL = os.getenv("BACKEND_URL", f"http://localhost:{BACKEND_PORT}")
+
+print(f"[CONFIG] Environnement: {ENVIRONMENT}")
+print(f"[CONFIG] Backend: {BACKEND_URL}")
+print(f"[CONFIG] Frontend: {FRONTEND_URL}")
 
 # ==========================================================
 # FRANCE TRAVAIL API CONFIG
@@ -30,44 +51,86 @@ app.add_middleware(
 CLIENT_ID = os.getenv("FRANCE_TRAVAIL_CLIENT_ID")
 CLIENT_SECRET = os.getenv("FRANCE_TRAVAIL_CLIENT_SECRET")
 
+if not CLIENT_ID or not CLIENT_SECRET:
+    raise ValueError("Variables FRANCE_TRAVAIL_CLIENT_ID et FRANCE_TRAVAIL_CLIENT_SECRET requises")
+
 TOKEN_URL = "https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=/partenaire"
 SEARCH_URL = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search"
 
 # ==========================================================
-# MEMORY SYSTEM - Garde trace des offres jouées
+# RATE LIMITER
+# ==========================================================
+class RateLimiter:
+    def __init__(self, max_requests=9, time_window=1.0):
+        self.max_requests = max_requests
+        self.time_window = time_window
+        self.requests = deque()
+        self.lock = threading.Lock()
+    
+    def wait_if_needed(self):
+        with self.lock:
+            now = time.time()
+            while self.requests and self.requests[0] < now - self.time_window:
+                self.requests.popleft()
+            if len(self.requests) >= self.max_requests:
+                sleep_time = self.time_window - (now - self.requests[0])
+                if sleep_time > 0:
+                    print(f"[RATE LIMIT] Attente de {sleep_time:.2f}s...")
+                    time.sleep(sleep_time)
+                return self.wait_if_needed()
+            self.requests.append(now)
+
+rate_limiter = RateLimiter(max_requests=9, time_window=1.0)
+
+# ==========================================================
+# MEMORY SYSTEM
 # ==========================================================
 PLAYED_IDS = deque(maxlen=2000)
 PLAYED_SET = set()
-OFFER_POOL = []
-POOL_SIZE = 100  # Pool plus grand pour plus de variété
+OFFER_POOL = deque(maxlen=200)
+POOL_MIN_SIZE = 50
+POOL_TARGET_SIZE = 100
+
+pool_lock = threading.Lock()
+refill_in_progress = False
 
 # ==========================================================
-# TOKEN MANAGEMENT
+# TOKEN MANAGEMENT AVEC AUTO-RENOUVELLEMENT
 # ==========================================================
 token_cache = None
 token_expiry = 0
+token_lock = threading.Lock()
 
-def get_access_token():
+def get_access_token(force_refresh=False):
     global token_cache, token_expiry
     
-    if token_cache and time.time() < token_expiry:
-        return token_cache
-    
-    payload = {
-        "grant_type": "client_credentials",
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
-        "scope": "api_offresdemploiv2 o2dsoffre"
-    }
+    with token_lock:
+        if not force_refresh and token_cache and time.time() < token_expiry:
+            return token_cache
+        
+        print("[TOKEN] Génération d'un nouveau token...")
+        
+        payload = {
+            "grant_type": "client_credentials",
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
+            "scope": "api_offresdemploiv2 o2dsoffre"
+        }
 
-    r = requests.post(TOKEN_URL, data=payload, timeout=20)
-    r.raise_for_status()
-    
-    token_data = r.json()
-    token_cache = token_data["access_token"]
-    token_expiry = time.time() + 3500
-    
-    return token_cache
+        try:
+            r = requests.post(TOKEN_URL, data=payload, timeout=30)
+            r.raise_for_status()
+            
+            token_data = r.json()
+            token_cache = token_data["access_token"]
+            token_expiry = time.time() + 3500
+            
+            print(f"[TOKEN] Token généré, expire dans 58 minutes")
+            return token_cache
+            
+        except Exception as e:
+            print(f"[TOKEN] Erreur: {e}")
+            raise
 
 # ==========================================================
 # SALARY PARSER
@@ -109,45 +172,78 @@ def clean_html(text):
     return BeautifulSoup(text, "html.parser").get_text(" ", strip=True)
 
 # ==========================================================
-# FETCH OFFETS SANS MOT-CLÉ (TOUTES LES OFFRES)
+# FETCH OFFERS AVEC GESTION 401
 # ==========================================================
-def fetch_offers_from_page(page_number):
-    """Récupère des offres d'une page spécifique SANS mot-clé"""
-    token = get_access_token()
+def fetch_offers_from_page(page_number, retry=0):
+    """Récupère des offres avec gestion des erreurs 401"""
+    if retry > 2:
+        return []
     
-    headers = {"Authorization": f"Bearer {token}"}
-    
-    # PAS de motsCles pour avoir TOUTES les offres
-    params = {
-        "range": f"{page_number * 150}-{(page_number * 150) + 149}",
-        "tri": random.choice(["DATE", "SCORE"])
-    }
-    
-    r = requests.get(SEARCH_URL, headers=headers, params=params, timeout=20)
-    r.raise_for_status()
-    
-    data = r.json()
-    return data.get("resultats", [])
+    try:
+        rate_limiter.wait_if_needed()
+        
+        token = get_access_token()
+        headers = {"Authorization": f"Bearer {token}"}
+        
+        params = {
+            "range": f"{page_number * 150}-{(page_number * 150) + 149}",
+            "tri": random.choice(["DATE", "SCORE"])
+        }
+        
+        r = requests.get(SEARCH_URL, headers=headers, params=params, timeout=15)
+        
+        # Si token expiré, renouveler et réessayer
+        if r.status_code == 401:
+            print(f"[401] Token expiré, renouvellement...")
+            get_access_token(force_refresh=True)
+            return fetch_offers_from_page(page_number, retry + 1)
+        
+        r.raise_for_status()
+        data = r.json()
+        return data.get("resultats", [])
+        
+    except requests.exceptions.Timeout:
+        print(f"[TIMEOUT] Page {page_number} - timeout après 15s")
+        return []
+    except Exception as e:
+        print(f"[ERROR] Page {page_number}: {str(e)[:100]}")
+        return []
 
 def build_offer_pool(target_size=100):
-    """Construit un pool d'offres de PAGES TOTALEMENT ALÉATOIRES"""
-    global OFFER_POOL
+    global OFFER_POOL, refill_in_progress
     
-    print(f"[POOL] Construction du pool avec des pages aléatoires...")
+    with pool_lock:
+        if refill_in_progress:
+            print("[POOL] Reconstruction déjà en cours...")
+            return 0
+        refill_in_progress = True
     
-    new_offers = []
-    seen_ids = set()
-    
-    # Parcourir beaucoup de pages différentes pour plus de variété
-    pages_to_fetch = random.sample(range(0, 500), min(50, 500))  # 50 pages aléatoires
-    
-    for page in pages_to_fetch:
-        if len(new_offers) >= target_size:
-            break
-            
-        try:
+    try:
+        print(f"[POOL] Construction (target: {target_size})...")
+        
+        new_offers = []
+        seen_ids = set()
+        
+        with pool_lock:
+            for existing_job in OFFER_POOL:
+                if existing_job.get("id"):
+                    seen_ids.add(existing_job.get("id"))
+        
+        # Moins de pages pour démarrer plus vite
+        pages_to_fetch = random.sample(range(0, 300), min(30, 300))
+        success_count = 0
+        
+        for page in pages_to_fetch:
+            if len(new_offers) >= target_size:
+                break
+                
             offers = fetch_offers_from_page(page)
-            print(f"[POOL] Page {page}: {len(offers)} offres trouvées")
+            
+            if not offers:
+                continue
+                
+            success_count += 1
+            print(f"[POOL] Page {page}: {len(offers)} offres (total: {len(new_offers)})")
             
             for offer in offers:
                 if len(new_offers) >= target_size:
@@ -155,7 +251,6 @@ def build_offer_pool(target_size=100):
                     
                 offer_id = offer.get("id")
                 
-                # Vérifier salaire
                 salaire = offer.get("salaire", {})
                 salary_text = salaire.get("libelle", "") or salaire.get("commentaire", "")
                 salary_value = parse_salary(salary_text)
@@ -163,31 +258,43 @@ def build_offer_pool(target_size=100):
                 if not salary_value or salary_value <= 0:
                     continue
                 
-                # Vérifier si déjà jouée ou déjà dans le pool
                 if offer_id in PLAYED_SET or offer_id in seen_ids:
                     continue
                 
                 seen_ids.add(offer_id)
                 offer["description"] = clean_html(offer.get("description", ""))
                 new_offers.append(offer)
-                
-        except Exception as e:
-            print(f"[POOL] Erreur page {page}: {e}")
-            continue
+        
+        if success_count == 0:
+            print("[POOL] ⚠️ Aucune offre trouvée, vérifiez votre connexion")
+            return 0
+        
+        random.shuffle(new_offers)
+        
+        with pool_lock:
+            OFFER_POOL.clear()
+            OFFER_POOL.extend(new_offers)
+        
+        print(f"[POOL] ✅ Pool construit avec {len(OFFER_POOL)} offres uniques")
+        return len(OFFER_POOL)
+        
+    except Exception as e:
+        print(f"[POOL] ERREUR: {e}")
+        return 0
+    finally:
+        with pool_lock:
+            refill_in_progress = False
+
+def refill_pool_if_needed():
+    with pool_lock:
+        pool_size = len(OFFER_POOL)
+        already_refilling = refill_in_progress
     
-    # Mélanger le pool
-    random.shuffle(new_offers)
-    OFFER_POOL = new_offers
-    
-    print(f"[POOL] Pool construit avec {len(OFFER_POOL)} offres uniques")
-    
-    # Afficher les premiers titres pour debug
-    if OFFER_POOL:
-        print("[POOL] Exemples d'offres dans le pool:")
-        for i, job in enumerate(OFFER_POOL[:10]):
-            print(f"  {i+1}. {job.get('intitule', 'N/A')} - {job.get('entreprise', {}).get('nom', 'N/A')}")
-    
-    return len(OFFER_POOL)
+    if pool_size < POOL_MIN_SIZE and not already_refilling:
+        print(f"[MAINTENANCE] Pool trop petit ({pool_size}), reconstruction...")
+        thread = threading.Thread(target=build_offer_pool, args=(POOL_TARGET_SIZE,))
+        thread.daemon = True
+        thread.start()
 
 # ==========================================================
 # GET RANDOM JOB FROM POOL
@@ -195,20 +302,26 @@ def build_offer_pool(target_size=100):
 def get_random_job():
     global OFFER_POOL
     
-    # Reconstruire le pool si vide ou trop petit
-    if len(OFFER_POOL) < 20:
-        print("[JOB] Pool trop petit, reconstruction...")
-        build_offer_pool(POOL_SIZE)
+    refill_pool_if_needed()
     
-    if not OFFER_POOL:
-        raise Exception("Impossible de construire le pool d'offres")
+    retries = 0
+    while retries < 15:
+        with pool_lock:
+            if OFFER_POOL:
+                job = OFFER_POOL.popleft()
+                offer_id = job.get("id")
+                break
+            else:
+                pool_empty = True
+        
+        if pool_empty:
+            print(f"[JOB] Pool vide, attente... ({retries + 1}/15)")
+            time.sleep(1)
+            retries += 1
+            refill_pool_if_needed()
+    else:
+        raise Exception("Pool d'offres vide après 15 secondes")
     
-    # Prendre une offre aléatoire du pool
-    job = random.choice(OFFER_POOL)
-    OFFER_POOL.remove(job)
-    offer_id = job.get("id")
-    
-    # Marquer comme jouée
     if len(PLAYED_IDS) >= 2000:
         removed = PLAYED_IDS.popleft()
         PLAYED_SET.discard(removed)
@@ -216,37 +329,31 @@ def get_random_job():
     PLAYED_IDS.append(offer_id)
     PLAYED_SET.add(offer_id)
     
-    print(f"[JOB] Offre sélectionnée: {job.get('intitule')}")
-    print(f"[JOB] Entreprise: {job.get('entreprise', {}).get('nom', 'N/A')}")
-    print(f"[JOB] Reste {len(OFFER_POOL)} offres dans le pool")
+    with pool_lock:
+        remaining = len(OFFER_POOL)
+    
+    print(f"[JOB] {job.get('intitule', 'N/A')[:50]} | Reste: {remaining}")
     
     return job
 
-# ==========================================================
-# FETCH RANDOM JOB
-# ==========================================================
 def fetch_random_job():
     return get_random_job()
 
-# ==========================================================
-# RETURN FULL OFFER DATA
-# ==========================================================
 def get_game_round():
     job = fetch_random_job()
 
     salaire = job.get("salaire", {})
     salary_text = salaire.get("libelle", "") or salaire.get("commentaire", "")
     salary_value = parse_salary(salary_text)
-    
-    if salary_value:
-        print(f"[INFO] Salaire: {salary_value:.2f}€/mois")
 
     result = dict(job)
     result["description"] = job.get("description", "")
     result["salary_text"] = salary_text
     result["salary_real"] = salary_value
     result["already_played_pool_size"] = len(PLAYED_IDS)
-    result["pool_remaining"] = len(OFFER_POOL)
+    
+    with pool_lock:
+        result["pool_remaining"] = len(OFFER_POOL)
 
     return result
 
@@ -255,10 +362,12 @@ def get_game_round():
 # ==========================================================
 @app.get("/")
 def root():
+    with pool_lock:
+        pool_size = len(OFFER_POOL)
     return {
         "message": "SalaryGuessr API running",
         "played_memory": len(PLAYED_IDS),
-        "pool_size": len(OFFER_POOL)
+        "pool_size": pool_size
     }
 
 @app.get("/job")
@@ -267,40 +376,36 @@ def job():
         return get_game_round()
     except Exception as e:
         print(f"[ERROR] {str(e)}")
-        build_offer_pool(POOL_SIZE)
-        try:
-            return get_game_round()
-        except:
-            raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/stats")
 def stats():
+    with pool_lock:
+        pool_size = len(OFFER_POOL)
     return {
         "played_count": len(PLAYED_IDS),
-        "memory_limit": 2000,
-        "pool_size": len(OFFER_POOL)
+        "pool_size": pool_size
     }
 
 @app.post("/reset")
 def reset():
-    global PLAYED_IDS, PLAYED_SET, OFFER_POOL
-    PLAYED_IDS.clear()
-    PLAYED_SET.clear()
-    OFFER_POOL = []
-    build_offer_pool(POOL_SIZE)
-    return {"message": "history cleared, new pool built"}
+    global PLAYED_IDS, PLAYED_SET, OFFER_POOL, refill_in_progress
+    with pool_lock:
+        PLAYED_IDS.clear()
+        PLAYED_SET.clear()
+        OFFER_POOL.clear()
+        refill_in_progress = False
+    build_offer_pool(POOL_TARGET_SIZE)
+    return {"message": "Reset complet"}
 
 # ==========================================================
 # INITIAL POOL BUILD
 # ==========================================================
-print("🚀 Démarrage du serveur SalaryGuessr API")
-print("📊 Récupération d'offres de PAGE ALEATOIRES sans filtre...")
-build_offer_pool(POOL_SIZE)
-print("✅ Serveur prêt !")
+print("🚀 SalaryGuessr API")
+print("📊 Rate limiting: 9 req/sec")
+build_offer_pool(POOL_TARGET_SIZE)
+print("✅ Serveur prêt")
 
-# ==========================================================
-# LOCAL TEST
-# ==========================================================
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

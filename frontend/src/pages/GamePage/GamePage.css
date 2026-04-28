@@ -20,7 +20,7 @@
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  font-family: 'Comic Neue', 'Segoe UI', 'Poppins', cursive, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   padding: 20px;
   color: var(--gp-text);
   overflow: hidden;

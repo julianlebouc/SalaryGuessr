@@ -31,7 +31,7 @@ export default function HomePage() {
     setTimeout(() => {
       btn.style.transform = '';
     }, 200);
-    window.open(`https://discord.com/users/${discordId}`, "_blank", "noopener,noreferrer");
+    window.open(`https://discordapp.com/users/${discordId}`, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -122,7 +122,7 @@ export default function HomePage() {
                 Contacter sur Discord
                 <span className="hp-discordCopy">📋</span>
               </button>
-              <p className="hp-discordHint">ID: {discordId} (clique pour copier)</p>
+              <p className="hp-discordHint">ID: {discordId}</p>
             </div>
           </div>
 
