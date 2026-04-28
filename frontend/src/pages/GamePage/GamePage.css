@@ -596,8 +596,8 @@
   position: fixed;
   top: 20px;
   left: 20px;
-  padding: 12px 20px;
-  border-radius: 40px;
+  padding: 10px 20px;
+  border-radius: 50px; /* Bouton rond */
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   color: white;
@@ -606,9 +606,16 @@
   transition: all 0.22s ease;
   z-index: 10;
   font-weight: bold;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.gp-homeLogo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 .gp-homeBtn:hover {

@@ -226,8 +226,9 @@
   margin: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  align-items: baseline;
+  gap: 12px;
+  align-items: center;  /* Changé de 'baseline' à 'center' pour un meilleur alignement */
+  justify-content: center;  /* Centrer l'ensemble */
 }
 
 .hp-title-word {
@@ -237,6 +238,7 @@
   color: transparent;
   text-shadow: 4px 4px 0 rgba(0,0,0,0.1);
   animation: hp-titlePop 0.5s ease-out;
+  line-height: 1;  /* Ajouté pour contrôler la hauteur */
 }
 
 .hp-title-guessr {
@@ -246,8 +248,11 @@
 }
 
 .hp-title-emoji {
-  font-size: 0.8em;
-  animation: hp-emojiBounce 1s ease-in-out infinite;
+  width: 1.2em;  /* Relative à la taille de la police */
+  height: 1.2em; /* Relative à la taille de la police */
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;  /* Alignement vertical */
 }
 
 @keyframes hp-titlePop {

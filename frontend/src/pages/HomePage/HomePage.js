@@ -71,7 +71,7 @@ export default function HomePage() {
               <h1 className="hp-title">
                 <span className="hp-title-word">Salary</span>
                 <span className="hp-title-word hp-title-guessr">Guessr</span>
-                <span className="hp-title-emoji">💰</span>
+                <img src="/logo512.svg" alt="SalaryGuessr" className="hp-title-emoji" />
               </h1>
             </div>
             

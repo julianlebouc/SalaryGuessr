@@ -348,7 +348,8 @@ export default function GamePage() {
         <div className="gp-float gp-float--three" />
 
         <button className="gp-homeBtn" onClick={goHome}>
-          <span className="gp-homeIcon">🏠</span> SalaryGuessr
+          <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
+          <span>SalaryGuessr</span>
         </button>
 
         <div className="gp-character gp-character-settings">
@@ -437,7 +438,10 @@ export default function GamePage() {
         <div className="gp-float gp-float--two" />
         <div className="gp-float gp-float--three" />
 
-        <button className="gp-homeBtn" onClick={goHome}>🏠 Accueil</button>
+        <button className="gp-homeBtn" onClick={goHome}>
+          <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
+          <span>SalaryGuessr</span>
+        </button>
 
         <div className="gp-card gp-resultFinal">
           <div className="gp-cardGlow" />
@@ -533,7 +537,10 @@ export default function GamePage() {
         <div className="gp-float gp-float--two" />
         <div className="gp-float gp-float--three" />
 
-        <button className="gp-homeBtn" onClick={goHome}>🏠 Accueil</button>
+        <button className="gp-homeBtn" onClick={goHome}>
+          <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
+          <span>SalaryGuessr</span>
+        </button>
 
         <div className="gp-card gp-loadingCard">
           <div className="gp-cardGlow" />
@@ -566,7 +573,10 @@ return (
     <div className="gp-float gp-float--two" />
     <div className="gp-float gp-float--three" />
 
-    <button className="gp-homeBtn" onClick={goHome}>🏠 Accueil</button>
+    <button className="gp-homeBtn" onClick={goHome}>
+      <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
+      <span>SalaryGuessr</span>
+    </button>
 
     <div className="gp-card gp-gameCard">
       <div className="gp-cardGlow" />
