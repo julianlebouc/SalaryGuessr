@@ -16,10 +16,10 @@ export default function HomePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const startGame = () => {
+  const goToModeSelect = () => {
     setLoading(true);
     setTimeout(() => {
-      navigate("/game");
+      navigate("/mode-select");
     }, 1);
   };
 
@@ -79,7 +79,7 @@ export default function HomePage() {
               Teste ton instinct ! Deviens un pro de l'estimation salariale 🔥
             </p>
 
-            <p className="hp-description">
+            <p className="hp-subtitle">
               À chaque manche, découvre une offre d'emploi réelle. À toi de deviner 
               le salaire le plus précisément possible. Chaque point compte !
             </p>
@@ -107,11 +107,11 @@ export default function HomePage() {
 
             <button
               className={`hp-playButton ${loading ? "loading" : ""}`}
-              onClick={startGame}
+              onClick={goToModeSelect}
               disabled={loading}
             >
               <span className="hp-playButton-text">
-                {loading ? "⏳ CHARGEMENT..." : "🚀 LANCER LA PARTIE"}
+                {loading ? "⏳ CHARGEMENT..." : "🚀 JOUER"}
               </span>
               {!loading && <span className="hp-playButton-arrow">→</span>}
             </button>
@@ -191,7 +191,7 @@ export default function HomePage() {
               <div className="hp-previewReveal">
                 <div className="hp-revealScore">
                   <span className="hp-scoreIcon">🏆</span>
-                  <span>SCORE: 86 pts</span>
+                  <span className="hp-subtitle">SCORE: 86 pts</span>
                 </div>
                 <div className="hp-revealBadge">+13% de précision</div>
               </div>

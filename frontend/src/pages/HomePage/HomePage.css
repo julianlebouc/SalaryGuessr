@@ -231,6 +231,10 @@
   justify-content: center;  /* Centrer l'ensemble */
 }
 
+.hp-subtitle {
+  color: white;
+}
+
 .hp-title-word {
   background: linear-gradient(135deg, #fff, #ffeaa7);
   -webkit-background-clip: text;
@@ -360,7 +364,7 @@
   background: linear-gradient(135deg, #ffd93d, #ff6b6b);
   border: none;
   padding: 18px 32px;
-  font-size: 1.2rem;
+  font-size: 1.8rem;
   font-weight: bold;
   border-radius: 60px;
   cursor: pointer;
@@ -443,6 +447,7 @@
   background: rgba(255,255,255,0.2);
   padding: 4px 12px;
   border-radius: 20px;
+  color: white;
 }
 
 .hp-previewBody {
@@ -459,6 +464,7 @@
   font-size: 0.7rem;
   font-weight: bold;
   margin-bottom: 16px;
+  color: white;
 }
 
 .hp-tagPulse {
@@ -478,6 +484,7 @@
   font-size: 1.8rem;
   margin: 0 0 16px;
   font-weight: bold;
+  color: white;
 }
 
 .hp-previewMeta {
@@ -495,6 +502,7 @@
   background: rgba(255,255,255,0.1);
   padding: 6px 12px;
   border-radius: 20px;
+  color: white;
 }
 
 .hp-salarySection {
@@ -507,6 +515,7 @@
   font-size: 0.7rem;
   margin-bottom: 8px;
   opacity: 0.8;
+  color: white;
 }
 
 .hp-salaryBar {
@@ -565,11 +574,13 @@
   font-size: 0.7rem;
   opacity: 0.7;
   margin-bottom: 4px;
+  color: white;
 }
 
 .hp-estimateValue, .hp-realValue {
   font-size: 1.2rem;
   font-weight: bold;
+  color: white;
 }
 
 .hp-realValue {
@@ -616,6 +627,7 @@
   border-radius: 20px;
   font-size: 0.7rem;
   font-weight: bold;
+  color: white;
 }
 
 .hp-previewFooter {
@@ -625,6 +637,7 @@
   align-items: center;
   gap: 12px;
   font-size: 0.75rem;
+  color: white;
 }
 
 .hp-loadingDots {
