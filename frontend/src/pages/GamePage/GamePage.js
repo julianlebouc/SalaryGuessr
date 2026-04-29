@@ -272,10 +272,20 @@ export default function GamePage() {
       return;
     }
 
-    const error = (Math.abs(user - real) / real) * 100;
-    const roundScore = Math.max(0, 100 - error);
+    const errorRatio = Math.abs(user - real) / real;
+    let roundScore = 0;
+
+    if (errorRatio <= 0.5) {
+      const x = errorRatio / 0.5;
+      roundScore = 100 * Math.pow(1 - x, 2);
+    } else {
+      roundScore = 0;
+    }
+
+    const error = errorRatio * 100;
 
     setScore((prev) => prev + roundScore);
+
     setHistory((prev) => [
       ...prev,
       {
@@ -285,7 +295,14 @@ export default function GamePage() {
         real,
       },
     ]);
-    setResult({ user, real, error: error.toFixed(1), roundScore: roundScore.toFixed(1) });
+
+    setResult({
+      user,
+      real,
+      error: error.toFixed(1),
+      roundScore: roundScore.toFixed(1),
+    });
+
     setShowResult(true);
 
     void refillBuffer(BUFFER_TARGET);
