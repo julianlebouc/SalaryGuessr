@@ -275,7 +275,6 @@
 
 .hp-statIcon {
   font-size: 2rem;
-  margin-bottom: 8px;
   animation: hp-iconBounce 2s ease-in-out infinite;
 }
 
@@ -566,11 +565,6 @@
   font-weight: bold;
 }
 
-.hp-scoreIcon {
-  font-size: 1.2rem;
-  animation: hp-spin 2s linear infinite;
-}
-
 .hp-revealBadge {
   background: rgba(0,210,255,0.2);
   padding: 4px 12px;
@@ -690,10 +684,6 @@
     padding: 24px;
   }
 
-  .hp-statsRow {
-    grid-template-columns: 1fr;
-  }
-
   .hp-previewTitle {
     font-size: 1.3rem;
   }
@@ -709,4 +699,26 @@
   .hp-discordButton, .hp-githubButton {
     width: 100%;
   }
+
+  .hp-statsRow {
+    gap: 10px;
+  }
+
+  .hp-statCard {
+    padding: 10px 10px;
+  }
+
+  .hp-statIcon {
+    font-size: 1rem;
+    animation: hp-iconBounce 2s ease-in-out infinite;
+  }
+
+  .hp-statValue {
+    font-size: 1rem;
+  }
+
+  .hp-statLabel {
+    font-size: 0.75rem;
+  }
+
 }

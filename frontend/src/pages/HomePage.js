@@ -86,8 +86,8 @@ export default function HomePage() {
 
             <div className="hp-statsRow">
               {[
-                { value: "∞", label: "Offres uniques", icon: "📊", color: "#4f46e5" },
-                { value: "5-50", label: "Manches", icon: "🎯", color: "#ec4899" },
+                { value: "∞", label: "Offres Réelles", icon: "📊", color: "#4f46e5" },
+                { value: "2", label: "Modes de jeu", icon: "🎮", color: "#ec4899" },
                 { value: "100%", label: "GRATUIT", icon: "🎁", color: "#10b981" }
               ].map((stat, idx) => (
                 <div 
@@ -190,7 +190,7 @@ export default function HomePage() {
 
               <div className="hp-previewReveal">
                 <div className="hp-revealScore">
-                  <span className="hp-scoreIcon">🏆</span>
+                  <span>🏆</span>
                   <span className="hp-subtitle">SCORE: 86 pts</span>
                 </div>
                 <div className="hp-revealBadge">+13% de précision</div>

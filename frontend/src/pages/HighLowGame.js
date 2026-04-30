@@ -161,96 +161,131 @@ export default function HighLowGame() {
       </button>
 
       <div className="hl-header">
-        <div className="hl-score">
+        <div className="roundBadge">
           <span>🏆 Score</span>
           <strong>{score}</strong>
         </div>
       </div>
 
       <div className={`hl-carousel ${animationState === "fadingOut" ? "hl-fade-out" : ""} ${animationState === "fadingIn" ? "hl-fade-in" : ""}`}>
-        {/* Carte 1 - Salaire affiché */}
-        <div className="hl-card">
-          <div className="gp-cardGlow" />
-          <div className="gp-cardShine"></div>
-          <div className="hl-card-header">
-            <span className="gp-badge">OFFRE 1</span>
-            <span className="hl-salary-badge">💰 Salaire connu</span>
+  
+      {/* Carte 1 - Salaire affiché */}
+      <div className="hl-card">
+        <div className="gp-cardGlow" />
+        <div className="gp-cardShine"></div>
+        <div className="hl-card-header">
+          <span className="gp-badge">OFFRE 1</span>
+          <span className="hl-salary-badge">💰 Salaire connu</span>
+        </div>
+        <h2 className="hl-title">{leftJob.title}</h2>
+        
+        <div className="badgesContainer">
+          <div className="hl-badgeGroup hl-badgePrimary">
+            {leftJob.company && <span className="gp-badge gp-badgeCompany">🏢 {leftJob.company}</span>}
+            <span className="gp-badge gp-badgeLocation">📍 {leftJob.location}</span>
           </div>
-          <h2 className="hl-title">{leftJob.title}</h2>
-          <div className="hl-meta">
-            {leftJob.company && <span>🏢 {leftJob.company}</span>}
-            <span>📍 {leftJob.location}</span>
-            {leftJob.contractType && <span>📄 {leftJob.contractType}</span>}
+          
+          <div className="hl-badgeGroup">
+            {leftJob.contractType && <span className="gp-badge">📄 {leftJob.contractType}</span>}
+            {leftJob.contractHours && <span className="gp-badge">⏱️ {leftJob.contractHours}</span>}
+            {leftJob.travailType && <span className="gp-badge">💼 {leftJob.travailType}</span>}
+            {leftJob.experience && <span className="gp-badge">🎓 {leftJob.experience}</span>}
+            {leftJob.qualification && <span className="gp-badge">📊 {leftJob.qualification}</span>}
+            {leftJob.nombrePostes > 1 && <span className="gp-badge">👥 {leftJob.nombrePostes} postes</span>}
           </div>
-          <div className="hl-description">
-            <div className="hl-description-header">📋 Description</div>
-            <p className="hl-description-text">{leftJob.description || "Aucune description disponible"}</p>
+          
+          <div className="hl-badgeGroup">
+            {leftJob.deplacement && leftJob.deplacement !== "Jamais" && <span className="gp-badge">🚗 {leftJob.deplacement}</span>}
+            {leftJob.permis && <span className="gp-badge">🚗 Permis: {leftJob.permis}</span>}
+            {leftJob.alternance && <span className="gp-badge gp-badgeSpecial">🔄 Alternance</span>}
+            {leftJob.accessibleTH && <span className="gp-badge gp-badgeSpecial">♿ Accessible TH</span>}
+            {leftJob.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">🤝 Handi-Engagé</span>}
           </div>
-          <div className="hl-salary-display">
-            <span className="hl-salary-label">Salaire mensuel</span>
-            <strong className="hl-salary-value">{leftJob.salary.toLocaleString("fr-FR")} €</strong>
+          
+          <div className="hl-badgeGroup">
+            {leftJob.sector && !leftJob.romeLabel && <span className="gp-badge">🏭 {leftJob.sector}</span>}
           </div>
         </div>
+        
+        <div className="hl-salary">
+          <strong className="hl-salary-value">{leftJob.salary.toLocaleString("fr-FR")} €</strong>
+        </div>
+      </div>
 
-        {/* Flèches */}
-        <div className="hl-arrows">
-          <button
-            className={`hl-arrow-up ${guessResult === "correct" ? "hl-correct" : ""} ${guessResult === "wrong" ? "hl-wrong" : ""}`}
-            onClick={() => handleGuess("higher")}
-            disabled={showSalary}
-          >
-            <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
-              <path d="M12 4l-8 8h6v8h4v-8h6z"/>
-            </svg>
-            <span>PLUS ÉLEVÉ</span>
-          </button>
-          <button
-            className={`hl-arrow-down ${guessResult === "correct" ? "hl-correct" : ""} ${guessResult === "wrong" ? "hl-wrong" : ""}`}
-            onClick={() => handleGuess("lower")}
-            disabled={showSalary}
-          >
-            <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
-              <path d="M12 20l8-8h-6v-8h-4v8h-6z"/>
-            </svg>
-            <span>PLUS BAS</span>
-          </button>
+      {/* Carte 2 - À deviner */}
+      <div className="hl-card">
+        <div className="gp-cardGlow" />
+        <div className="gp-cardShine"></div>
+        <div className="hl-card-header">
+          <span className="gp-badge">OFFRE 2</span>
+          <span className="hl-question-badge">❓ À deviner</span>
         </div>
+        <h2 className="hl-title">{rightJob.title}</h2>
 
-        {/* Carte 2 - À deviner */}
-        <div className="hl-card">
-          <div className="gp-cardGlow" />
-          <div className="gp-cardShine"></div>
-          <div className="hl-card-header">
-            <span className="gp-badge">OFFRE 2</span>
-            <span className="hl-question-badge">❓ À deviner</span>
+        <div className="badgesContainer">
+          <div className="hl-badgeGroup hl-badgePrimary">
+            {rightJob.company && <span className="gp-badge gp-badgeCompany">🏢 {rightJob.company}</span>}
+            <span className="gp-badge gp-badgeLocation">📍 {rightJob.location}</span>
           </div>
-          <h2 className="hl-title">{rightJob.title}</h2>
-          <div className="hl-meta">
-            {rightJob.company && <span>🏢 {rightJob.company}</span>}
-            <span>📍 {rightJob.location}</span>
-            {rightJob.contractType && <span>📄 {rightJob.contractType}</span>}
+          
+          <div className="hl-badgeGroup">
+            {rightJob.contractType && <span className="gp-badge">📄 {rightJob.contractType}</span>}
+            {rightJob.contractHours && <span className="gp-badge">⏱️ {rightJob.contractHours}</span>}
+            {rightJob.travailType && <span className="gp-badge">💼 {rightJob.travailType}</span>}
+            {rightJob.experience && <span className="gp-badge">🎓 {rightJob.experience}</span>}
+            {rightJob.qualification && <span className="gp-badge">📊 {rightJob.qualification}</span>}
+            {rightJob.nombrePostes > 1 && <span className="gp-badge">👥 {rightJob.nombrePostes} postes</span>}
           </div>
-          <div className="hl-description">
-            <div className="hl-description-header">📋 Description</div>
-            <p className="hl-description-text">{rightJob.description || "Aucune description disponible"}</p>
+          
+          <div className="hl-badgeGroup">
+            {rightJob.deplacement && rightJob.deplacement !== "Jamais" && <span className="gp-badge">🚗 {rightJob.deplacement}</span>}
+            {rightJob.permis && <span className="gp-badge">🚗 Permis: {rightJob.permis}</span>}
+            {rightJob.alternance && <span className="gp-badge gp-badgeSpecial">🔄 Alternance</span>}
+            {rightJob.accessibleTH && <span className="gp-badge gp-badgeSpecial">♿ Accessible TH</span>}
+            {rightJob.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">🤝 Handi-Engagé</span>}
           </div>
-          <div className="hl-salary-hidden">
-            {showSalary ? (
-              <div className={`hl-salary-reveal ${guessResult === "correct" ? "hl-reveal-correct" : "hl-reveal-wrong"}`}>
-                <span className="hl-salary-label">Salaire réel</span>
-                <strong>{rightJob.salary.toLocaleString("fr-FR")} €</strong>
-                <div className="hl-feedback">
-                  {guessResult === "correct" ? "✅ Bonne réponse !" : "❌ Mauvaise réponse"}
-                </div>
-              </div>
-            ) : (
-              <div className="hl-salary-placeholder">
-                <span>???</span>
-                <span>Clique sur une flèche</span>
-              </div>
-            )}
+          
+          <div className="hl-badgeGroup">
+            {rightJob.sector && !rightJob.romeLabel && <span className="gp-badge">🏭 {rightJob.sector}</span>}
           </div>
         </div>
+        
+        <div className="hl-salary">
+          {showSalary ? (
+            <div className={`hl-salary-reveal ${guessResult === "correct" ? "hl-reveal-correct" : "hl-reveal-wrong"}`}>
+              <strong>{guessResult === "correct" ? "✅ " : "❌ "}{rightJob.salary.toLocaleString("fr-FR")} €</strong>
+            </div>
+          ) : (
+            <div className="hl-salary-placeholder">
+              <span>???</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Flèches */}
+      <div className="hl-arrows">
+        <button
+          className={`hl-arrow-up ${guessResult === "correct" ? "hl-correct" : ""} ${guessResult === "wrong" ? "hl-wrong" : ""}`}
+          onClick={() => handleGuess("higher")}
+          disabled={showSalary}
+        >
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+            <path d="M12 4l-8 8h6v8h4v-8h6z"/>
+          </svg>
+          <span>PLUS ÉLEVÉ</span>
+        </button>
+        <button
+          className={`hl-arrow-down ${guessResult === "correct" ? "hl-correct" : ""} ${guessResult === "wrong" ? "hl-wrong" : ""}`}
+          onClick={() => handleGuess("lower")}
+          disabled={showSalary}
+        >
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+            <path d="M12 20l8-8h-6v-8h-4v8h-6z"/>
+          </svg>
+          <span>PLUS BAS</span>
+        </button>
+      </div>
 
         {/* Carte 3 - Prochaine offre */}
         <div className="hl-card hl-card-next">

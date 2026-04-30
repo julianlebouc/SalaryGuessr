@@ -62,8 +62,11 @@ export function normalizeJob(raw) {
     },
     postalCode: raw.lieuTravail?.codePostal ?? null,
     contractType: raw.typeContratLibelle ?? raw.typeContrat ?? null,
+    contractHours: raw.dureeTravailLibelle ?? null,
     natureContrat: raw.natureContrat ?? null,
     experience: raw.experienceLibelle ?? null,
+    experienceYears: raw.experienceExige ?? null,
+    qualification: raw.qualificationLibelle ?? null,  
     romeCode: raw.romeCode ?? null,
     romeLabel: raw.romeLibelle ?? null,
     appellation: raw.appellationlibelle ?? null,
@@ -78,6 +81,9 @@ export function normalizeJob(raw) {
     offerUrl: raw.origineOffre?.urlOrigine ?? null,
     salary,
     salary_text: raw.salary_text ?? null,
+    travailType: raw.dureeTravailLibelleConverti ?? null,
+    deplacement: raw.deplacementLibelle ?? null,
+    permis: raw.permis ? raw.permis.map(p => p.libelle).join(", ") : null,
   };
 }
 
@@ -140,7 +146,7 @@ export function formatDate(dateStr) {
 // HIGH/LOW GAME SPECIFIC (Comparaison de salaires)
 // ==========================================================
 export function compareSalaries(leftSalary, rightSalary) {
-  const isEqual = Math.abs(rightSalary - leftSalary) < 10;
+  const isEqual = Math.abs(rightSalary - leftSalary) < 1;
   const isHigher = rightSalary > leftSalary;
   
   return { isEqual, isHigher, isLower: !isHigher };

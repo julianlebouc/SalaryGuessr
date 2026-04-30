@@ -28,19 +28,6 @@
   margin-bottom: 12px;
 }
 
-.gp-roundBadge, .gp-scoreBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
-  padding: 8px 16px;
-  border-radius: 40px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-
 .gp-progressTrack {
   height: 12px;
   background: rgba(0, 0, 0, 0.3);
@@ -115,10 +102,6 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.gp-badgesContainer {
-  margin-bottom: 16px;
 }
 
 .gp-badgeGroup {
@@ -646,15 +629,6 @@
 .gp-scoreMax {
   font-size: 1rem;
   opacity: 0.6;
-}
-
-.gp-scoreBadge {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 6px 16px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 40px;
-  font-size: 0.8rem;
 }
 
 .gp-progressBar {

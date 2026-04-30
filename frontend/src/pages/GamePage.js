@@ -357,7 +357,7 @@ export default function GamePage() {
           <div className="gp-scoreCard">
             <div className="gp-scoreValue">{score.toFixed(0)}</div>
             <div className="gp-scoreMax">/ {maxRounds * 100}</div>
-            <div className="gp-scoreBadge">{performanceLevel}</div>
+            <div className="roundBadge">{performanceLevel}</div>
           </div>
 
           <div className="gp-progressBar">
@@ -485,12 +485,12 @@ export default function GamePage() {
 
         <div className="gp-progressSection">
           <div className="gp-roundInfo">
-            <div className="gp-roundBadge">
+            <div className="roundBadge">
               <span className="gp-roundIcon">🎮</span>
               <span>MANCHE {round + 1}</span>
             </div>
-            <div className="gp-scoreBadge">
-              <span className="gp-scoreIcon">⭐</span>
+            <div className="roundBadge">
+              <span>⭐</span>
               <span>{score.toFixed(0)} pts</span>
             </div>
           </div>
@@ -511,19 +511,30 @@ export default function GamePage() {
               )}
             </div>
 
-            <div className="gp-badgesContainer">
+            <div className="badgesContainer">
               <div className="gp-badgeGroup gp-badgePrimary">
                 {job.company && <span className="gp-badge gp-badgeCompany">🏢 {job.company}</span>}
                 <span className="gp-badge gp-badgeLocation">📍 {job.location}</span>
+                {job.postalCode && <span className="gp-badge">📮 {job.postalCode}</span>}
               </div>
+              
               <div className="gp-badgeGroup">
                 {job.contractType && <span className="gp-badge">📄 {job.contractType}</span>}
+                {job.contractHours && <span className="gp-badge">⏱️ {job.contractHours}</span>}
+                {job.travailType && <span className="gp-badge">💼 {job.travailType}</span>}
                 {job.experience && <span className="gp-badge">🎓 {job.experience}</span>}
+                {job.qualification && <span className="gp-badge">📊 {job.qualification}</span>}
                 {job.nombrePostes > 1 && <span className="gp-badge">👥 {job.nombrePostes} postes</span>}
+              </div>
+              
+              <div className="gp-badgeGroup">
+                {job.deplacement && job.deplacement !== "Jamais" && <span className="gp-badge">🚗 {job.deplacement}</span>}
+                {job.permis && <span className="gp-badge">🚗 Permis: {job.permis}</span>}
                 {job.alternance && <span className="gp-badge gp-badgeSpecial">🔄 Alternance</span>}
                 {job.accessibleTH && <span className="gp-badge gp-badgeSpecial">♿ Accessible TH</span>}
                 {job.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">🤝 Handi-Engagé</span>}
               </div>
+              
               <div className="gp-badgeGroup">
                 {job.romeLabel && (
                   <span className="gp-badge gp-badgeRome">
