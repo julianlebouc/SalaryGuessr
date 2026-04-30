@@ -1,107 +1,15 @@
-:root {
-  --gp-bg-a: #4f46e5;
-  --gp-bg-b: #9333ea;
-  --gp-bg-c: #ec4899;
-  --gp-panel: rgba(20, 16, 40, 0.55);
-  --gp-panel-strong: rgba(20, 16, 40, 0.72);
-  --gp-border: rgba(255, 255, 255, 0.12);
-  --gp-border-soft: rgba(255, 255, 255, 0.18);
-  --gp-text: #ffffff;
-}
-
-* {
-  box-sizing: border-box;
-}
+@import "./global.css";
 
 .gp-container {
   position: relative;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  padding: 20px;
-  color: var(--gp-text);
-  overflow: hidden;
-}
-
-/* Bulles flottantes cartoon */
-.gp-bubble {
-  position: absolute;
-  font-size: 2rem;
-  pointer-events: none;
-  animation: gp-floatBubble 8s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-  z-index: 1;
-}
-
-.gp-bubble-1 { top: 10%; left: 5%; animation-delay: 0s; font-size: 2.5rem; }
-.gp-bubble-2 { top: 20%; right: 8%; animation-delay: 1.5s; font-size: 2rem; }
-.gp-bubble-3 { bottom: 15%; left: 12%; animation-delay: 0.8s; font-size: 3rem; }
-.gp-bubble-4 { bottom: 25%; right: 15%; animation-delay: 2.2s; font-size: 2rem; }
-
-@keyframes gp-floatBubble {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  25% { transform: translateY(-20px) rotate(5deg); }
-  75% { transform: translateY(15px) rotate(-5deg); }
-}
-
-.gp-float {
-  position: absolute;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  filter: blur(40px);
-  pointer-events: none;
-  z-index: 0;
-  animation: gp-floaty 14s ease-in-out infinite;
-}
-
-.gp-float--one {
-  width: 300px;
-  height: 300px;
-  top: 5%;
-  left: -5%;
-  background: #ff6b6b;
-}
-
-.gp-float--two {
-  width: 400px;
-  height: 400px;
-  bottom: 10%;
-  right: -10%;
-  background: #4ecdc4;
-  animation-duration: 20s;
-  animation-delay: -4s;
-}
-
-.gp-float--three {
-  width: 250px;
-  height: 250px;
-  top: 40%;
-  right: 20%;
-  background: #ffe66d;
-  animation-duration: 18s;
-  animation-delay: -8s;
-}
-
-@keyframes gp-floaty {
-  0%, 100% { transform: translateY(0) translateX(0) scale(1); }
-  50% { transform: translateY(-18px) translateX(10px) scale(1.06); }
+  color: var(--text-light);
 }
 
 .gp-card {
-  position: relative;
   z-index: 1;
   width: 100%;
   max-width: 850px;
   padding: 40px;
-  color: white;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 48px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.3);
   overflow: hidden;
   animation: gp-cardIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
@@ -111,52 +19,6 @@
   transform: translateY(-4px) scale(1.005);
   box-shadow: 0 32px 60px rgba(0, 0, 0, 0.3);
 }
-
-.gp-cardGlow {
-  position: absolute;
-  inset: -30%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent 45%);
-  filter: blur(30px);
-  opacity: 0.5;
-  pointer-events: none;
-  animation: gp-glowFloat 10s ease-in-out infinite;
-}
-
-.gp-cardShine {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-  transform: rotate(45deg);
-  animation: gp-shine 8s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes gp-shine {
-  0% { transform: translateX(-100%) rotate(45deg); }
-  20%, 100% { transform: translateX(100%) rotate(45deg); }
-}
-
-@keyframes gp-cardIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes gp-glowFloat {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(18px) scale(1.04); }
-}
-
-/* Section progression cartoon */
-
 
 .gp-roundInfo {
   display: flex;
@@ -202,10 +64,7 @@
 
 .gp-progressGlowGame {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
   animation: gp-shimmerGame 1.5s infinite;
 }
@@ -221,7 +80,6 @@
   opacity: 0.7;
 }
 
-/* Job Hero */
 .gp-jobHero {
   animation: gp-fadeUp 0.55s ease both;
 }
@@ -258,7 +116,6 @@
   }
 }
 
-/* Badges */
 .gp-badgesContainer {
   margin-bottom: 16px;
 }
@@ -268,21 +125,6 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 10px;
-}
-
-.gp-badge {
-  background: rgba(255, 255, 255, 0.12);
-  padding: 6px 14px;
-  border-radius: 40px;
-  font-size: 0.75rem;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-.gp-badge:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.2);
 }
 
 .gp-badgeCompany, .gp-badgeLocation {
@@ -304,7 +146,6 @@
   opacity: 0.7;
 }
 
-/* Date info */
 .gp-dateInfo {
   margin-bottom: 16px;
 }
@@ -320,7 +161,6 @@
   border-radius: 20px;
 }
 
-/* Description */
 .gp-descriptionBox {
   background: rgba(0, 0, 0, 0.25);
   border-radius: 24px;
@@ -357,7 +197,6 @@
   border-radius: 10px;
 }
 
-/* Company blurb */
 .gp-companyBlurb {
   display: flex;
   align-items: flex-start;
@@ -373,7 +212,6 @@
   font-size: 1.2rem;
 }
 
-/* Input section */
 .gp-inputWrapper {
   margin-top: 20px;
   animation: gp-fadeUp 0.45s ease both;
@@ -419,7 +257,6 @@
   opacity: 0.6;
 }
 
-/* Animation shake */
 @keyframes gp-shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
@@ -435,7 +272,6 @@
   box-shadow: 0 0 0 3px rgba(255,107,107,0.3);
 }
 
-/* Buttons */
 .gp-validateBtn, .gp-nextBtn, .gp-replayButton, .gp-homeButton {
   display: inline-flex;
   align-items: center;
@@ -482,7 +318,6 @@
   transform: translateX(5px);
 }
 
-/* Result box */
 .gp-resultBox {
   margin-top: 20px;
   padding: 20px;
@@ -591,64 +426,8 @@
   text-decoration: underline;
 }
 
-/* Home button */
-.gp-homeBtn {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  padding: 10px 20px;
-  border-radius: 50px; /* Bouton rond */
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  cursor: pointer;
-  transition: all 0.22s ease;
-  z-index: 10;
-  font-weight: bold;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.gp-homeLogo {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-}
-
-.gp-homeBtn:hover {
-  transform: scale(1.05);
-  background: rgba(255, 255, 255, 0.25);
-}
-
-/* Loading state */
 .gp-loadingCard {
   text-align: center;
-}
-
-.gp-loader {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.gp-loader span {
-  width: 14px;
-  height: 14px;
-  background: linear-gradient(135deg, #fff, #ffeaa7);
-  border-radius: 50%;
-  animation: gp-loaderBounce 1s ease-in-out infinite;
-}
-
-.gp-loader span:nth-child(2) { animation-delay: 0.15s; }
-.gp-loader span:nth-child(3) { animation-delay: 0.3s; }
-
-@keyframes gp-loaderBounce {
-  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
-  40% { transform: scale(1.2); opacity: 1; }
 }
 
 .gp-loadingAnimation {
@@ -679,7 +458,6 @@
   opacity: 0.7;
 }
 
-/* Settings page */
 .gp-settingsCard {
   text-align: center;
 }
@@ -695,11 +473,6 @@
 .gp-settingsIcon {
   font-size: 2rem;
   animation: gp-spin 4s linear infinite;
-}
-
-@keyframes gp-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 .gp-titleMain {
@@ -766,7 +539,6 @@
   transform: scale(0.95);
 }
 
-/* Pour Firefox */
 .gp-range::-moz-range-thumb {
   width: 28px;
   height: 28px;
@@ -784,6 +556,7 @@
   font-size: 0.6rem;
   opacity: 0.6;
 }
+
 .gp-statsPreview {
   display: flex;
   justify-content: center;
@@ -828,7 +601,6 @@
   transform: scale(0.98);
 }
 
-/* Result page */
 .gp-resultFinal {
   text-align: center;
 }
@@ -899,10 +671,7 @@
 
 .gp-progressGlow {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
   animation: gp-shimmerProgress 1.5s infinite;
 }
@@ -1019,64 +788,48 @@
   color: white;
 }
 
-/* Responsive */
 @media (max-width: 820px) {
   .gp-card {
     padding: 24px;
     max-width: 95%;
   }
-  
+
   .gp-jobTitle {
     font-size: 24px;
   }
-  
+
   .gp-resultContent {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .gp-resultVs {
     transform: rotate(90deg);
   }
-  
+
   .gp-historyItem {
     flex-wrap: wrap;
   }
 }
 
 @media (max-width: 560px) {
-  .gp-container {
-    padding: 12px;
-  }
-  
   .gp-card {
     padding: 20px;
   }
-  
-  .gp-bubble {
-    display: none;
-  }
-  
-  .gp-homeBtn {
-    top: 10px;
-    left: 10px;
-    padding: 8px 16px;
-    font-size: 0.8rem;
-  }
-  
+
   .gp-badgeGroup {
     gap: 6px;
   }
-  
+
   .gp-badge {
     font-size: 0.65rem;
     padding: 4px 10px;
   }
-  
+
   .gp-statsGrid {
     grid-template-columns: 1fr;
   }
-  
+
   .gp-resultActions {
     flex-direction: column;
   }

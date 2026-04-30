@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "../HomePage/HomePage";
-import GamePage from "../GamePage/GamePage";
-import HighLowGame from "../HighLowGame/HighLowGame";
-import ModeSelectPage from "../ModeSelectPage/ModeSelectPage";
+import HomePage from "./HomePage";
+import GamePage from "./GamePage";
+import HighLowGame from "./HighLowGame";
+import ModeSelectPage from "./ModeSelectPage";
 
 function App() {
   return (

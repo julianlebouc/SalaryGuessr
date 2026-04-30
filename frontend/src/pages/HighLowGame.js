@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./HighLowGame.css";
+import "../styles/HighLowGame.css";
 import { 
   fetchJob, 
   fetchMultipleJobs, 
   evaluateHigherLowerGuess,
   formatDate 
-} from "../../utils/gameUtils";
+} from "../utils/gameUtils";
 
 export default function HighLowGame() {
   const navigate = useNavigate();

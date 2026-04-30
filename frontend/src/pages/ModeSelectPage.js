@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./ModeSelectPage.css";
+import "../styles/ModeSelectPage.css";
 
 export default function ModeSelectPage() {
   const navigate = useNavigate();

@@ -1,22 +1,9 @@
+@import "./global.css";
+
 .hp-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 24px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-}
-
-/* Bulles cartoon flottantes */
-.hp-bubble {
-  position: absolute;
-  font-size: 2rem;
-  pointer-events: none;
-  animation: hp-floatBubble 8s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 
 .hp-bubble-1 { top: 10%; left: 5%; animation-delay: 0s; font-size: 3rem; }
@@ -31,7 +18,6 @@
   75% { transform: translateY(15px) rotate(-5deg); }
 }
 
-/* Personnage cartoon */
 .hp-character {
   position: absolute;
   bottom: 5%;
@@ -146,16 +132,6 @@
   50% { transform: translateY(-5px); }
 }
 
-/* Cartes et conteneurs */
-.hp-bgOrb {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(40px);
-  opacity: 0.3;
-  pointer-events: none;
-  animation: hp-float 12s ease-in-out infinite;
-}
-
 .hp-orb1 {
   width: 300px;
   height: 300px;
@@ -189,24 +165,8 @@
 }
 
 .hp-card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px);
-  border-radius: 48px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.3);
   padding: 40px;
   animation: hp-cardIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-@keyframes hp-cardIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
 }
 
 .hp-heroGrid {
@@ -216,7 +176,6 @@
   align-items: start;
 }
 
-/* Titre cartoon */
 .hp-titleWrapper {
   margin-bottom: 20px;
 }
@@ -227,8 +186,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  align-items: center;  /* Changé de 'baseline' à 'center' pour un meilleur alignement */
-  justify-content: center;  /* Centrer l'ensemble */
+  align-items: center;
+  justify-content: center;
 }
 
 .hp-subtitle {
@@ -242,7 +201,7 @@
   color: transparent;
   text-shadow: 4px 4px 0 rgba(0,0,0,0.1);
   animation: hp-titlePop 0.5s ease-out;
-  line-height: 1;  /* Ajouté pour contrôler la hauteur */
+  line-height: 1;
 }
 
 .hp-title-guessr {
@@ -252,11 +211,11 @@
 }
 
 .hp-title-emoji {
-  width: 1.2em;  /* Relative à la taille de la police */
-  height: 1.2em; /* Relative à la taille de la police */
+  width: 1.2em;
+  height: 1.2em;
   object-fit: contain;
   display: inline-block;
-  vertical-align: middle;  /* Alignement vertical */
+  vertical-align: middle;
 }
 
 @keyframes hp-titlePop {
@@ -270,7 +229,6 @@
   50% { transform: translateY(-8px); }
 }
 
-/* Badge */
 .hp-badge {
   display: inline-flex;
   align-items: center;
@@ -291,7 +249,6 @@
   50% { opacity: 1; transform: scale(1.05); }
 }
 
-/* Stats cards cartoon */
 .hp-statsRow {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -359,7 +316,6 @@
   opacity: 1;
 }
 
-/* Bouton play cartoon */
 .hp-playButton {
   background: linear-gradient(135deg, #ffd93d, #ff6b6b);
   border: none;
@@ -402,7 +358,6 @@
   cursor: not-allowed;
 }
 
-/* Panel preview */
 .hp-previewPanel {
   border-radius: 32px;
   background: rgba(26, 26, 46, 0.6);
@@ -616,11 +571,6 @@
   animation: hp-spin 2s linear infinite;
 }
 
-@keyframes hp-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 .hp-revealBadge {
   background: rgba(0,210,255,0.2);
   padding: 4px 12px;
@@ -661,7 +611,6 @@
   50% { opacity: 1; transform: scale(1.2); }
 }
 
-/* Contact section - Centré */
 .hp-contactSection {
   margin-top: 24px;
   display: flex;
@@ -670,7 +619,6 @@
   justify-content: center;
 }
 
-/* Boutons row (Discord + GitHub) */
 .hp-buttonsRow {
   display: flex;
   gap: 16px;
@@ -720,19 +668,6 @@
   height: 18px;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-  .hp-buttonsRow {
-    flex-direction: column;
-    gap: 12px;
-    max-width: 280px;
-  }
-  
-  .hp-discordButton, .hp-githubButton {
-    width: 100%;
-  }
-}
-
 .hp-discordHint {
   text-align: center;
   font-size: 0.7rem;
@@ -740,12 +675,11 @@
   margin-top: 12px;
 }
 
-/* Responsive */
 @media (max-width: 980px) {
   .hp-heroGrid {
     grid-template-columns: 1fr;
   }
-  
+
   .hp-character {
     display: none;
   }
@@ -755,12 +689,24 @@
   .hp-card {
     padding: 24px;
   }
-  
+
   .hp-statsRow {
     grid-template-columns: 1fr;
   }
-  
+
   .hp-previewTitle {
     font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hp-buttonsRow {
+    flex-direction: column;
+    gap: 12px;
+    max-width: 280px;
+  }
+
+  .hp-discordButton, .hp-githubButton {
+    width: 100%;
   }
 }

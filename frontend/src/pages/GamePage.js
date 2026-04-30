@@ -9,14 +9,14 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import "./GamePage.css";
+import "../styles/GamePage.css";
 import { 
   fetchJob, 
   fetchMultipleJobs,
   hasValidSalary, 
   formatDate, 
   calculateScore 
-} from "../../utils/gameUtils";
+} from "../utils/gameUtils";
 
 const BUFFER_TARGET = 3;
 const REFILL_THRESHOLD = 1;
