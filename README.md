@@ -1,6 +1,6 @@
 # SalaryGuessr 💰
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-18.2.0-61dafb)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0-009688)](https://fastapi.tiangolo.com/)
 
