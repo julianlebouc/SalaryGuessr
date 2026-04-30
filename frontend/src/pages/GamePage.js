@@ -569,9 +569,8 @@ export default function GamePage() {
                 onChange={(e) => setGuess(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && validate()}
                 className={`gp-input ${inputShake}`}
-                placeholder="Estimation du salaire mensuel"
+                placeholder="Estimation du salaire mensuel (€/mois)"
               />
-              <span className="gp-inputSuffix">€/mois</span>
             </div>
             <button onClick={validate} className="gp-validateBtn">
               <span>✅ VALIDER</span>
