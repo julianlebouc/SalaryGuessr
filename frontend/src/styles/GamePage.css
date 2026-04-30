@@ -11,7 +11,7 @@
   width: 100%;
   max-width: 850px;
   padding: 40px;
-  overflow-x: hidden;
+  overflow: hidden;
   animation: gp-cardIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
