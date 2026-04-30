@@ -3,6 +3,7 @@
 .gp-container {
   position: relative;
   color: var(--text-light);
+  overflow-x: hidden;
 }
 
 .gp-card {
@@ -10,7 +11,7 @@
   width: 100%;
   max-width: 850px;
   padding: 40px;
-  overflow: hidden;
+  overflow-x: hidden;
   animation: gp-cardIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
@@ -253,8 +254,9 @@
 }
 
 .gp-inputSuffix {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   opacity: 0.6;
+  white-space: nowrap;
 }
 
 @keyframes gp-shake {
@@ -550,6 +552,7 @@
 }
 
 .gp-rangeMarks {
+  padding: 0 18px;
   display: flex;
   justify-content: space-between;
   margin-top: 6px;

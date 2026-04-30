@@ -10,6 +10,11 @@
   --text-dark: #1a1a2e;
 }
 
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 * {
   box-sizing: border-box;
 }
