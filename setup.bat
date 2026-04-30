@@ -24,6 +24,7 @@ python -m venv venv
 REM Activation et installation
 echo Installation des packages Python...
 call venv\Scripts\activate.bat
+pip install --upgrade pip
 pip install fastapi uvicorn requests beautifulsoup4 python-dotenv
 
 echo.
@@ -55,8 +56,6 @@ echo ========================================
 echo Installation terminee !
 echo ========================================
 echo.
-echo Pour demarrer :
-echo   Backend:  venv\Scripts\activate && uvicorn main:app --reload
-echo   Frontend: cd frontend && npm start
+echo Pour demarrer le jeu, lancez start.bat
 echo.
 pause

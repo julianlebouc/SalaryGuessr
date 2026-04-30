@@ -9,7 +9,7 @@ echo ""
 echo "[1/2] Demarrage du backend FastAPI..."
 cd "$(dirname "$0")"
 source venv/bin/activate
-uvicorn main:app --reload --host 127.0.0.1 --port 8000 &
+uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000 &
 BACKEND_PID=$!
 
 sleep 3
@@ -31,8 +31,5 @@ echo ""
 echo "Appuyez sur Ctrl+C pour arreter les deux serveurs"
 echo ""
 
-# Attendre l'interruption utilisateur
 trap "kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; exit" INT
-
-# Garder le script actif
 wait
