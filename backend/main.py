@@ -1,19 +1,35 @@
+import sys
 import os
+import threading
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from .config import ENVIRONMENT, DEBUG, BACKEND_PORT, BACKEND_URL, FRONTEND_URL, CORS_ORIGINS, POOL_TARGET_SIZE
+import socketio
+
+from .config import ENVIRONMENT, DEBUG, BACKEND_PORT, CORS_ORIGINS, POOL_TARGET_SIZE
 from .services.offer_pool import get_random_job, get_pool_size, build_offer_pool
 from .services.salary_parser import parse_salary
 from .utils.memory import get_played_count, clear_played
 from .services.offer_pool import OFFER_POOL, refill_in_progress
-import threading
+
+# Importer le système multijoueur
+from .multiplayer import get_room_manager, BattleRoyaleGame
+from .multiplayer.socket_handlers import SocketHandlers
+
+# ==========================================================
+# INITIALISATION
+# ==========================================================
+
+# Enregistrer les modes de jeu
+room_manager = get_room_manager()
+room_manager.register_game(BattleRoyaleGame())
 
 # ==========================================================
 # FASTAPI APP
 # ==========================================================
 app = FastAPI(title="SalaryGuessr API")
-
-print(f"[CORS] Origines autorisées: {CORS_ORIGINS}")
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,27 +39,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+print(f"[CORS] Origines autorisées: {CORS_ORIGINS}")
 print(f"[CONFIG] Environnement: {ENVIRONMENT}")
-print(f"[CONFIG] Backend: {BACKEND_URL}")
-print(f"[CONFIG] Frontend: {FRONTEND_URL}")
 
 # ==========================================================
-# ROUTES
+# SOCKET.IO
+# ==========================================================
+sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi')
+sio_app = socketio.ASGIApp(sio)
+app.mount("/socket.io/", sio_app)
+
+# Initialiser les handlers Socket.IO
+socket_handlers = SocketHandlers(sio)
+
+# ==========================================================
+# REST ROUTES
 # ==========================================================
 @app.get("/")
 def root():
-    return {
-        "message": "SalaryGuessr API running",
-        "environment": ENVIRONMENT,
-        "played_memory": get_played_count(),
-        "pool_size": get_pool_size()
-    }
+    return {"message": "SalaryGuessr API running", "environment": ENVIRONMENT}
 
 @app.get("/job")
 def job():
     try:
         job = get_random_job()
-        
         salaire = job.get("salaire", {})
         salary_text = salaire.get("libelle", "") or salaire.get("commentaire", "")
         salary_value = parse_salary(salary_text)
@@ -54,7 +73,6 @@ def job():
         result["salary_real"] = salary_value
         result["already_played_pool_size"] = get_played_count()
         result["pool_remaining"] = get_pool_size()
-        
         return result
     except Exception as e:
         print(f"[ERROR] {str(e)}")
@@ -70,15 +88,10 @@ def stats():
 
 @app.post("/reset")
 def reset():
-    from backend.services.offer_pool import OFFER_POOL, refill_in_progress
-    from backend.utils.memory import clear_played
-    import threading
-    
     with threading.Lock():
         clear_played()
         OFFER_POOL.clear()
         refill_in_progress = False
-    
     build_offer_pool(POOL_TARGET_SIZE)
     return {"message": "Reset complet"}
 

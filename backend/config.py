@@ -9,14 +9,22 @@ load_dotenv()
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 BACKEND_PORT = int(os.getenv("BACKEND_PORT", 8000))
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
-BACKEND_URL = os.getenv("BACKEND_URL", f"http://localhost:{BACKEND_PORT}")
 
 # ==========================================================
 # CORS CONFIGURATION
 # ==========================================================
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
-CORS_ORIGINS = [origin.strip() for origin in CORS_ORIGINS]
+CORS_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+# ==========================================================
+# BATTLE ROYALE CONFIGURATION
+# ==========================================================
+BR_MIN_PLAYERS = 2
+BR_MAX_PLAYERS = 10
+BR_ROUND_DURATION = 30
+BR_PAUSE_BETWEEN_ROUNDS = 5
 
 # ==========================================================
 # FRANCE TRAVAIL API CONFIG
@@ -29,9 +37,9 @@ SEARCH_URL = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/se
 # ==========================================================
 # POOL CONFIGURATION
 # ==========================================================
-POOL_TARGET_SIZE = 200
-POOL_MIN_SIZE = 100
-PLAYED_IDS_MAXLEN = 1000
+POOL_TARGET_SIZE = 100
+POOL_MIN_SIZE = 50
+PLAYED_IDS_MAXLEN = 2000
 
 if not FRANCE_TRAVAIL_CLIENT_ID or not FRANCE_TRAVAIL_CLIENT_SECRET:
-    raise ValueError("Variables FRANCE_TRAVAIL_CLIENT_ID et FRANCE_TRAVAIL_CLIENT_SECRET requises")
+    raise ValueError("FRANCE_TRAVAIL_CLIENT_ID et FRANCE_TRAVAIL_CLIENT_SECRET requis")
