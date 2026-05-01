@@ -75,8 +75,9 @@ html, body {
 .hp-bgOrb {
   position: absolute;
   border-radius: 999px;
-  filter: blur(40px);
+  filter: blur(50px);
   pointer-events: none;
+  opacity: 0.4;
   z-index: 0;
 }
 
