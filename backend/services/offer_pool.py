@@ -133,3 +133,25 @@ def get_random_job():
 def get_pool_size():
     with pool_lock:
         return len(OFFER_POOL)
+
+def get_normalized_job():
+    """Retourne une offre normalisée avec salary_real (comme la route /job)"""
+    from .salary_parser import parse_salary
+    from .text_cleaner import clean_html
+    from ..utils.memory import get_played_count
+    from ..config import POOL_TARGET_SIZE
+    
+    job = get_random_job()
+    
+    salaire = job.get("salaire", {})
+    salary_text = salaire.get("libelle", "") or salaire.get("commentaire", "")
+    salary_value = parse_salary(salary_text)
+    
+    result = dict(job)
+    result["description"] = clean_html(job.get("description", ""))
+    result["salary_text"] = salary_text
+    result["salary_real"] = salary_value
+    result["already_played_pool_size"] = get_played_count()
+    result["pool_remaining"] = get_pool_size()
+    
+    return result

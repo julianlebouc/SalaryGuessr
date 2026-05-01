@@ -1,7 +1,7 @@
 @import "./global.css";
 
 /* ==========================================================
-   BATTLE ROYALE - STYLES
+   BATTLE ROYALE - STYLES SPÉCIFIQUES
    ========================================================== */
 
 /* Container principal */
@@ -13,7 +13,7 @@
   overflow-x: hidden;
 }
 
-/* Cartes */
+/* Cartes de création/attente */
 .br-card {
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
@@ -24,6 +24,7 @@
   margin: 0 auto;
   position: relative;
   overflow: hidden;
+  animation: cardIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
 }
 
 /* Header */
@@ -45,7 +46,7 @@
   color: transparent;
 }
 
-/* Description */
+/* Description du mode */
 .br-description {
   text-align: center;
   background: rgba(0, 0, 0, 0.2);
@@ -138,7 +139,7 @@
   margin-top: 8px;
 }
 
-/* Liste des joueurs */
+/* Liste des joueurs en attente */
 .br-players-list {
   margin-bottom: 24px;
 }
@@ -320,7 +321,7 @@
   font-size: 0.8rem;
 }
 
-/* Carte d'offre */
+/* Carte d'offre pendant le jeu */
 .br-offer-card {
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
@@ -329,6 +330,24 @@
   padding: 30px;
   position: relative;
   overflow: hidden;
+}
+
+.br-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.br-question-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  padding: 4px 12px;
+  border-radius: 40px;
+  font-size: 0.7rem;
+  color: white;
+  font-weight: bold;
 }
 
 .br-offer-title {
@@ -345,13 +364,6 @@
   font-size: 0.85rem;
   opacity: 0.8;
   margin-bottom: 16px;
-}
-
-.br-offer-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 20px;
 }
 
 .br-offer-desc {
@@ -409,7 +421,7 @@
   opacity: 0.7;
 }
 
-/* Résultats */
+/* Résultats du round */
 .br-results-card {
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
@@ -477,7 +489,7 @@
   color: #34d399;
 }
 
-/* Élimination */
+/* Message élimination */
 .br-eliminated-message {
   text-align: center;
   padding: 20px;
@@ -517,7 +529,7 @@
   margin-bottom: 20px;
 }
 
-/* Spectateur */
+/* Mode spectateur */
 .br-spectator-card {
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
@@ -536,6 +548,35 @@
 
 .br-spectator-content span {
   font-size: 4rem;
+}
+
+.br-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.br-question-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  padding: 4px 12px;
+  border-radius: 40px;
+  font-size: 0.7rem;
+  color: white;
+  font-weight: bold;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* Animations */

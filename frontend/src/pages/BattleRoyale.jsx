@@ -9,7 +9,7 @@ export default function BattleRoyale() {
   const navigate = useNavigate();
   
   // UI State
-  const [view, setView] = useState("join"); // join, waiting, playing
+  const [view, setView] = useState("join");
   const [activeTab, setActiveTab] = useState("create");
   
   // Room State
@@ -35,12 +35,10 @@ export default function BattleRoyale() {
   const socketRef = useRef(null);
 
   useEffect(() => {
-    // Initialiser la socket
     socketRef.current = io(SOCKET_URL, {
       transports: ["websocket", "polling"]
     });
     
-    // Événements Socket.IO
     socketRef.current.on("connect", () => {
       console.log("✅ Socket connectée");
     });
@@ -109,7 +107,6 @@ export default function BattleRoyale() {
       setGameState("round_end");
       setIsWaitingNextRound(true);
       
-      // Mettre à jour les joueurs
       const updatedPlayers = players.map(p => ({
         ...p,
         is_alive: p.id !== data.eliminated_id
@@ -367,7 +364,7 @@ export default function BattleRoyale() {
             </div>
             {players.filter(p => p.is_alive === false).length > 0 && (
               <div className="br-sidebar-section">
-                <div className="br-sidebar-title">Éliminés</div>
+                <div className="br-sidebar-title">Éliminés 💀</div>
                 {players.filter(p => p.is_alive === false).map(p => (
                   <div key={p.id} className="br-sidebar-player dead">
                     <span className="br-dot red"></span>
@@ -383,8 +380,8 @@ export default function BattleRoyale() {
         <div className="br-main">
           <div className="br-game-header">
             <div className="br-room-code">Salle: {roomCode}</div>
-            <div className={`br-timer ${timer <= 10 ? "urgent" : ""}`}>⏱️ {timer}s</div>
-            <div className="br-round">Round {roundResults?.round || round || 1}</div>
+            <div className={`br-timer ${timer <= 10 && timer > 0 ? "urgent" : ""}`}>⏱️ {timer}s</div>
+            <div className="br-round">Manche {roundResults?.round || round || 1}</div>
           </div>
           
           {/* GAME OVER */}
@@ -407,19 +404,20 @@ export default function BattleRoyale() {
               <div className="gp-cardShine"></div>
               
               <div className="br-results-header">
-                📊 RÉSULTATS DU ROUND {roundResults.round}
+                📊 RÉSULTATS DE LA MANCHE {roundResults.round}
               </div>
               
               <div className="br-real-salary">
-                Salaire réel: <strong>{roundResults.real_salary?.toLocaleString()} €</strong>
+                💰 Salaire réel: <strong>{roundResults.real_salary?.toLocaleString()} €</strong>
+              </div>
+              
+              <div className="br-eliminated-info">
+                ❌ ÉLIMINÉ: <strong>{roundResults.eliminated_name}</strong>
               </div>
               
               <div className="br-rankings">
                 <div className="br-ranking-header">
-                  <span>#</span>
-                  <span>JOUEUR</span>
-                  <span>ESTIMATION</span>
-                  <span>ÉCART</span>
+                  <span>#</span><span>JOUEUR</span><span>ESTIMATION</span><span>ÉCART</span>
                 </div>
                 {roundResults.results.map((r, idx) => (
                   <div 
@@ -438,40 +436,65 @@ export default function BattleRoyale() {
                 ))}
               </div>
               
-              {isEliminated ? (
-                <div className="br-eliminated-message">
-                  <div className="br-skull">💀</div>
-                  <h3>VOUS AVEZ ÉTÉ ÉLIMINÉ !</h3>
-                </div>
-              ) : (
-                <div className="br-eliminated-info">
-                  ❌ ÉLIMINÉ: <strong>{roundResults.eliminated_name}</strong>
-                </div>
-              )}
-              
               {isWaitingNextRound && !isEliminated && (
                 <div className="br-waiting-next">
-                  Prochain round dans quelques secondes...
+                  Prochaine manche dans quelques secondes...
                 </div>
               )}
             </div>
           )}
           
-          {/* ACTIVE ROUND */}
+          {/* ACTIVE ROUND - AFFICHAGE COMPLET COMME DANS HIGHLOWGAME */}
           {gameState === "playing" && currentOffer && !roundResults && !isEliminated && (
             <div className="br-offer-card">
               <div className="gp-cardGlow" />
               <div className="gp-cardShine"></div>
               
-              <h2 className="br-offer-title">{currentOffer.title}</h2>
-              {currentOffer.appellation && currentOffer.appellation !== currentOffer.title && (
-                <div className="br-offer-sub">{currentOffer.appellation}</div>
+              <div className="br-card-header">
+                <span className="gp-badge">OFFRE À DEVINER</span>
+                <span className="br-question-badge">❓ Salaire ?</span>
+              </div>
+              
+              <h2 className="br-offer-title">{currentOffer.intitule || currentOffer.title}</h2>
+              {currentOffer.appellationlibelle && currentOffer.appellationlibelle !== currentOffer.intitule && (
+                <div className="br-offer-sub">{currentOffer.appellationlibelle}</div>
               )}
               
-              <div className="br-offer-meta">
-                {currentOffer.company && <span className="gp-badge">🏢 {currentOffer.company}</span>}
-                <span className="gp-badge">📍 {currentOffer.location}</span>
-                {currentOffer.contractType && <span className="gp-badge">📄 {currentOffer.contractType}</span>}
+              {/* Badges complets comme dans HighLowGame */}
+              <div className="badgesContainer">
+                <div className="gp-badgeGroup gp-badgePrimary">
+                  {currentOffer.entreprise?.nom && <span className="gp-badge gp-badgeCompany">🏢 {currentOffer.entreprise.nom}</span>}
+                  <span className="gp-badge gp-badgeLocation">📍 {currentOffer.lieuTravail?.libelle || "Localisation inconnue"}</span>
+                </div>
+                
+                <div className="gp-badgeGroup">
+                  {currentOffer.typeContratLibelle && <span className="gp-badge">📄 {currentOffer.typeContratLibelle}</span>}
+                  {currentOffer.dureeTravailLibelle && <span className="gp-badge">⏱️ {currentOffer.dureeTravailLibelle}</span>}
+                  {currentOffer.dureeTravailLibelleConverti && <span className="gp-badge">💼 {currentOffer.dureeTravailLibelleConverti}</span>}
+                  {currentOffer.experienceLibelle && <span className="gp-badge">🎓 {currentOffer.experienceLibelle}</span>}
+                  {currentOffer.qualificationLibelle && <span className="gp-badge">📊 {currentOffer.qualificationLibelle}</span>}
+                  {currentOffer.nombrePostes > 1 && <span className="gp-badge">👥 {currentOffer.nombrePostes} postes</span>}
+                </div>
+                
+                <div className="gp-badgeGroup">
+                  {currentOffer.deplacementLibelle && currentOffer.deplacementLibelle !== "Jamais" && <span className="gp-badge">🚗 {currentOffer.deplacementLibelle}</span>}
+                  {currentOffer.permis && currentOffer.permis.length > 0 && (
+                    <span className="gp-badge">🚗 Permis: {currentOffer.permis.map(p => p.libelle).join(", ")}</span>
+                  )}
+                  {currentOffer.alternance && <span className="gp-badge gp-badgeSpecial">🔄 Alternance</span>}
+                  {currentOffer.accessibleTH && <span className="gp-badge gp-badgeSpecial">♿ Accessible TH</span>}
+                  {currentOffer.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">🤝 Handi-Engagé</span>}
+                </div>
+                
+                <div className="gp-badgeGroup">
+                  {currentOffer.romeLibelle && (
+                    <span className="gp-badge gp-badgeRome">
+                      🏷️ {currentOffer.romeLibelle}
+                      {currentOffer.romeCode && <span className="gp-romeCode"> · {currentOffer.romeCode}</span>}
+                    </span>
+                  )}
+                  {currentOffer.secteurActiviteLibelle && !currentOffer.romeLibelle && <span className="gp-badge">🏭 {currentOffer.secteurActiviteLibelle}</span>}
+                </div>
               </div>
               
               <div className="br-offer-desc">
@@ -508,8 +531,8 @@ export default function BattleRoyale() {
               <div className="gp-cardShine"></div>
               <div className="br-spectator-content">
                 <span>👀</span>
-                <h3>Vous êtes éliminé</h3>
-                <p>Vous pouvez regarder la suite de la partie</p>
+                <h3>Mode spectateur</h3>
+                <p>Vous avez été éliminé à la manche {roundResults?.round || round}</p>
               </div>
             </div>
           )}

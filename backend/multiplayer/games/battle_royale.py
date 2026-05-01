@@ -1,6 +1,6 @@
 from typing import Dict, Any, Tuple, Optional, List
 from backend.config import BR_MIN_PLAYERS, BR_MAX_PLAYERS, BR_ROUND_DURATION, BR_PAUSE_BETWEEN_ROUNDS
-from backend.services.offer_pool import get_random_job
+from backend.services.offer_pool import get_normalized_job
 from backend.multiplayer.base import BaseGame, GameRoom, GameState, Player
 
 
@@ -37,8 +37,10 @@ class BattleRoyaleGame(BaseGame):
         room.game_data = {
             "round": 1,
             "guesses": {},
-            "current_offer": get_random_job()
+            "current_offer": get_normalized_job()
         }
+        print(f"[BATTLE] Partie démarrée avec offre: {room.game_data['current_offer'].get('intitule')}")
+        print(f"[BATTLE] Salaire: {room.game_data['current_offer'].get('salary_real')} €")
         return {"offer": room.game_data["current_offer"]}
     
     def on_round_start(self, room: GameRoom) -> Dict[str, Any]:
@@ -66,19 +68,17 @@ class BattleRoyaleGame(BaseGame):
             return False, None
         
         room.game_data["guesses"][player_id] = int(guess)
-        
-        # Vérifier si tous les joueurs ont répondu
-        alive_count = len(room.get_alive_players())
-        if len(room.game_data["guesses"]) >= alive_count:
-            # Le round sera terminé par le timer ou manuellement
-            pass
+        print(f"[BATTLE] {player.name} a deviné {guess}")
         
         return True, {"player_id": player_id, "guess": guess}
     
     def on_round_end(self, room: GameRoom) -> Dict[str, Any]:
         """Calcule les résultats du round"""
         current_offer = room.game_data["current_offer"]
-        real_salary = current_offer.get("salary", 0)
+        real_salary = current_offer.get("salary_real", 0)
+        
+        print(f"[BATTLE] Fin du round {room.game_data['round']}")
+        print(f"[BATTLE] Salaire réel: {real_salary} €")
         
         alive_players = room.get_alive_players()
         
@@ -107,10 +107,13 @@ class BattleRoyaleGame(BaseGame):
         eliminated_player = room.get_player(eliminated["player_id"])
         if eliminated_player:
             eliminated_player.is_alive = False
+            print(f"[BATTLE] {eliminated_player.name} est éliminé (erreur: {eliminated['error']})")
+        
+        current_round = room.game_data["round"]
         
         # Préparer le prochain round
         room.game_data["round"] += 1
-        room.game_data["current_offer"] = get_random_job()
+        room.game_data["current_offer"] = get_normalized_job()
         room.game_data["guesses"] = {}
         
         return {
@@ -119,7 +122,7 @@ class BattleRoyaleGame(BaseGame):
             "eliminated_name": eliminated["name"],
             "eliminated_error": eliminated["error"],
             "real_salary": real_salary,
-            "round": room.game_data["round"] - 1
+            "round": current_round
         }
     
     def on_game_over(self, room: GameRoom) -> Dict[str, Any]:
@@ -128,6 +131,7 @@ class BattleRoyaleGame(BaseGame):
         
         if len(alive_players) <= 1:
             winner = alive_players[0].name if alive_players else None
+            print(f"[BATTLE] Partie terminée! Vainqueur: {winner}")
             return {
                 "is_over": True,
                 "winner": winner
