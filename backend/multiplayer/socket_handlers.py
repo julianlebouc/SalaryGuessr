@@ -95,7 +95,6 @@ class SocketHandlers:
             
             await self.broadcast_room(code, "game_started", start_data)
             
-            await asyncio.sleep(2)
             await self.start_round(code)
         
         @self.sio.on("game_action")

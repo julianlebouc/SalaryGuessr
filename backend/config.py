@@ -13,10 +13,8 @@ BACKEND_PORT = int(os.getenv("BACKEND_PORT", 8000))
 # ==========================================================
 # CORS CONFIGURATION
 # ==========================================================
-CORS_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+CORS_ORIGINS = [origin.strip() for origin in CORS_ORIGINS]
 
 # ==========================================================
 # BATTLE ROYALE CONFIGURATION
