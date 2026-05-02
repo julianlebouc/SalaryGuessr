@@ -190,10 +190,6 @@
   justify-content: center;
 }
 
-.hp-subtitle {
-  color: white;
-}
-
 .hp-title-word {
   background: linear-gradient(135deg, #fff, #ffeaa7);
   -webkit-background-clip: text;
@@ -202,6 +198,7 @@
   text-shadow: 4px 4px 0 rgba(0,0,0,0.1);
   animation: hp-titlePop 0.5s ease-out;
   line-height: 1;
+  padding: 0 0 12px 0;
 }
 
 .hp-title-guessr {
@@ -216,6 +213,46 @@
   object-fit: contain;
   display: inline-block;
   vertical-align: middle;
+}
+
+.hp-subtitles {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.hp-subtitle {
+  color: white;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.hp-subtitle-main {
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px 20px;
+  border-radius: 60px;
+  backdrop-filter: blur(4px);
+  text-align: center;
+}
+
+.hp-subtitle-secondary {
+  font-size: 1rem;
+  opacity: 0.9;
+  text-align: center;
+  padding: 0 10px;
+}
+
+.hp-subtitle-icon {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 @keyframes hp-titlePop {
@@ -680,12 +717,30 @@
 }
 
 @media (max-width: 640px) {
+  .hp-title {
+    font-size: clamp(40px, 8vw, 48px);
+  }
+
   .hp-card {
     padding: 24px;
   }
 
   .hp-previewTitle {
     font-size: 1.3rem;
+  }
+  
+  .hp-subtitle-main {
+    font-size: 1rem;
+    padding: 10px 16px;
+  }
+  
+  .hp-subtitle-secondary {
+    font-size: 1rem;
+  }
+  
+  .hp-subtitles {
+    gap: 12px;
+    margin-bottom: 24px;
   }
 }
 

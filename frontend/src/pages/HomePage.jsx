@@ -75,19 +75,23 @@ export default function HomePage() {
               </h1>
             </div>
             
-            <p className="hp-subtitle">
-              Teste ton instinct ! Deviens un pro de l'estimation salariale 🔥
-            </p>
-
-            <p className="hp-subtitle">
-              À chaque manche, découvre une offre d'emploi réelle. À toi de deviner 
-              le salaire le plus précisément possible. Chaque point compte !
-            </p>
+            <div className="hp-subtitles">
+              <p className="hp-subtitle hp-subtitle-main">
+                <span className="hp-subtitle-icon">🔥</span>
+                Teste ton instinct ! Deviens un pro de l'estimation salariale
+              </p>
+              
+              <p className="hp-subtitle hp-subtitle-secondary">
+                <span className="hp-subtitle-icon">🎯</span>
+                À chaque manche, découvre une offre d'emploi réelle. Devine le salaire 
+                le plus précisément possible. Chaque point compte !
+              </p>
+            </div>
 
             <div className="hp-statsRow">
               {[
                 { value: "∞", label: "Offres Réelles", icon: "📊", color: "#4f46e5" },
-                { value: "2", label: "Modes de jeu", icon: "🎮", color: "#ec4899" },
+                { value: "3", label: "Modes de jeu", icon: "🎮", color: "#ec4899" },
                 { value: "100%", label: "GRATUIT", icon: "🎁", color: "#10b981" }
               ].map((stat, idx) => (
                 <div 
