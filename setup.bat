@@ -25,7 +25,7 @@ REM Activation et installation
 echo Installation des packages Python...
 call venv\Scripts\activate.bat
 pip install --upgrade pip
-pip install fastapi uvicorn requests beautifulsoup4 python-dotenv python-socketio==5.9.0 python-engineio==4.7.0
+pip install fastapi "uvicorn[standard]" requests beautifulsoup4 python-dotenv python-socketio==5.9.0 python-engineio==4.7.0 websockets wsproto
 
 echo.
 echo Backend installe avec succes !
