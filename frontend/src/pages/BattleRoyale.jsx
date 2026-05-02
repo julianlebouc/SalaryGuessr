@@ -231,6 +231,10 @@ export default function BattleRoyale() {
         <div className="gp-float gp-float--one" />
         <div className="gp-float gp-float--two" />
         <div className="gp-float gp-float--three" />
+        <button className="gp-homeBtn" onClick={() => navigate("/")}>
+          <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
+          <span>SalaryGuessr</span>
+        </button>
         
         <div className="br-card">
           <div className="gp-cardGlow" />
@@ -310,6 +314,10 @@ export default function BattleRoyale() {
         <div className="gp-float gp-float--one" />
         <div className="gp-float gp-float--two" />
         <div className="gp-float gp-float--three" />
+        <button className="gp-homeBtn" onClick={() => navigate("/")}>
+          <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
+          <span>SalaryGuessr</span>
+        </button>
         
         <div className="br-card">
           <div className="gp-cardGlow" />
@@ -376,8 +384,8 @@ export default function BattleRoyale() {
       <div className="gp-float gp-float--two" />
       <div className="gp-float gp-float--three" />
       
-      <button className="br-home-btn" onClick={() => navigate("/")}>
-        <img src="/logo512.svg" alt="SalaryGuessr" className="br-home-logo" />
+      <button className="gp-homeBtn" onClick={() => navigate("/")}>
+        <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
         <span>SalaryGuessr</span>
       </button>
       
@@ -480,7 +488,7 @@ export default function BattleRoyale() {
                 ))}
               </div>
               
-              {isWaitingNextRound && isHost && (
+              {isWaitingNextRound && isHost && !roundResults?.will_game_over && (
                 <button className="br-btn-primary" onClick={startNextRoundNow}>
                   ⚡ Lancer la prochaine manche
                 </button>

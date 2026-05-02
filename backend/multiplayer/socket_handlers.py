@@ -250,6 +250,8 @@ class SocketHandlers:
             round_results = game.on_round_end(room)
             pause_duration = getattr(game, "pause_between_rounds", BR_PAUSE_BETWEEN_ROUNDS)
             round_results["pause_duration"] = pause_duration
+            game_over_after_pause = game.on_game_over(room)
+            round_results["will_game_over"] = game_over_after_pause.get("is_over", False)
             await self.broadcast_room(room_code, "round_end", round_results)
 
             next_round_event = asyncio.Event()
@@ -263,10 +265,9 @@ class SocketHandlers:
                     continue
             await self.broadcast_room(room_code, "between_round_update", {"remaining": 0})
 
-            game_over_data = game.on_game_over(room)
-            if game_over_data.get("is_over", False):
+            if game_over_after_pause.get("is_over", False):
                 room.game_state = GameState.GAME_OVER
-                await self.broadcast_room(room_code, "game_over", game_over_data)
+                await self.broadcast_room(room_code, "game_over", game_over_after_pause)
                 return
             
             room.game_state = GameState.PLAYING

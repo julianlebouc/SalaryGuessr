@@ -8,6 +8,8 @@
 .br-container {
   min-height: 100vh;
   background: var(--app-bg);
+  color: var(--text-light);
+  font-family: var(--app-font);
   padding: 20px;
   position: relative;
   overflow-x: hidden;
@@ -185,29 +187,6 @@
   text-align: center;
   opacity: 0.7;
   padding: 16px;
-}
-
-/* Bouton home */
-.br-home-btn {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  padding: 8px 16px;
-  border-radius: 40px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  z-index: 10;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.br-home-logo {
-  width: 24px;
-  height: 24px;
 }
 
 /* Layout de jeu */
@@ -497,12 +476,12 @@
 }
 
 .br-ranking-row.eliminated {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.05);
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .br-ranking-row.current {
-  background: rgba(0, 217, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .br-ranking-row span{
@@ -534,6 +513,7 @@
   background: rgba(239, 68, 68, 0.1);
   border-radius: 20px;
   margin-top: 16px;
+  margin-bottom: 16px;
   font-size: 1rem;
   font-weight: bold;
 }
@@ -565,11 +545,12 @@
 
 /* Mode spectateur */
 .br-spectator-card {
+  margin-top: 20px;
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
   border: 2px solid var(--glass-border);
   border-radius: 48px;
-  padding: 20px;
+  padding: 0px;
   text-align: center;
 }
 
@@ -577,11 +558,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
 }
 
 .br-spectator-content span {
-  font-size: 4rem;
+  font-size: 3rem;
 }
 
 .br-card-header {
