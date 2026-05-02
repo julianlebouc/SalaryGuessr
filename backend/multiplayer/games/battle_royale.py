@@ -41,12 +41,19 @@ class BattleRoyaleGame(BaseGame):
         }
         print(f"[BATTLE] Partie démarrée avec offre: {room.game_data['current_offer'].get('intitule')}")
         print(f"[BATTLE] Salaire: {room.game_data['current_offer'].get('salary_real')} €")
-        return {"offer": room.game_data["current_offer"]}
+        return {
+            "offer": room.game_data["current_offer"],
+            "round": room.game_data["round"]
+        }
     
     def on_round_start(self, room: GameRoom) -> Dict[str, Any]:
         """Démarre un round"""
         room.game_data["guesses"] = {}
-        return {"duration": self.round_duration}
+        return {
+            "duration": self.round_duration,
+            "round": room.game_data.get("round", 1),
+            "offer": room.game_data.get("current_offer")
+        }
     
     def on_player_action(self, room: GameRoom, player_id: str, action: str, data: Any) -> Tuple[bool, Optional[Dict]]:
         """Traite l'action d'un joueur (soumettre une estimation)"""

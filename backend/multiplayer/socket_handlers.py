@@ -92,13 +92,20 @@ class SocketHandlers:
             if not can_start:
                 await self.sio.emit("error", {"message": msg}, to=sid)
                 return
-            
-            room.game_state = GameState.PLAYING
-            start_data = game.on_game_start(room)
-            
-            await self.broadcast_room(code, "game_started", start_data)
-            
-            await self.start_round(code)
+
+            await self.broadcast_room(code, "start_game_pending", {"status": "loading"})
+            previous_state = room.game_state
+
+            try:
+                room.game_state = GameState.PLAYING
+                start_data = game.on_game_start(room)
+                await self.broadcast_room(code, "game_started", start_data)
+                await self.start_round(code)
+            except Exception as e:
+                room.game_state = previous_state
+                error_message = f"Impossible de démarrer la partie: {str(e)}"
+                print(f"[START_GAME] {error_message}")
+                await self.broadcast_room(code, "start_game_failed", {"message": error_message})
         
         @self.sio.on("game_action")
         async def handle_game_action(sid, data):

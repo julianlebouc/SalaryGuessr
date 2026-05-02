@@ -34,6 +34,7 @@ export default function BattleRoyale() {
   const [winner, setWinner] = useState(null);
   const [isWaitingNextRound, setIsWaitingNextRound] = useState(false);
   const [nextRoundTimer, setNextRoundTimer] = useState(null);
+  const [isStartingGame, setIsStartingGame] = useState(false);
   
   const socketRef = useRef(null);
 
@@ -85,9 +86,10 @@ export default function BattleRoyale() {
     
     socketRef.current.on("game_started", (data) => {
       console.log("🎮 Partie démarrée");
+      setIsStartingGame(false);
       setCurrentOffer(data.offer);
       setGameState("playing");
-      setRound(1);
+      setRound(data.round || 1);
       setRoundResults(null);
       setHasGuessed(false);
       setWinner(null);
@@ -102,7 +104,22 @@ export default function BattleRoyale() {
       setIsWaitingNextRound(false);
       setNextRoundTimer(null);
       setTimer(data.duration);
+      setRound(data.round || 1);
+      if (data.offer) {
+        setCurrentOffer(data.offer);
+      }
       setGameState("playing");
+    });
+
+    socketRef.current.on("start_game_pending", () => {
+      setIsStartingGame(true);
+    });
+
+    socketRef.current.on("start_game_failed", (data) => {
+      setIsStartingGame(false);
+      if (data?.message) {
+        alert(data.message);
+      }
     });
     
     socketRef.current.on("timer_update", (data) => {
@@ -112,6 +129,7 @@ export default function BattleRoyale() {
     socketRef.current.on("round_end", (data) => {
       console.log("📊 Fin du round:", data);
       setRoundResults(data);
+      setRound(data.round || 1);
       setGameState("round_end");
       setIsWaitingNextRound(true);
       setNextRoundTimer(data.pause_duration ?? null);
@@ -131,16 +149,6 @@ export default function BattleRoyale() {
       setNextRoundTimer(data.remaining);
     });
     
-    socketRef.current.on("new_round", (data) => {
-      console.log("🔄 Nouveau round:", data.round);
-      setCurrentOffer(data.offer);
-      setRound(data.round);
-      setRoundResults(null);
-      setHasGuessed(false);
-      setIsWaitingNextRound(false);
-      setGameState("playing");
-    });
-    
     socketRef.current.on("game_over", (data) => {
       console.log("🏆 Game over, vainqueur:", data.winner);
       setWinner(data.winner);
@@ -157,6 +165,7 @@ export default function BattleRoyale() {
     });
     
     socketRef.current.on("error", (data) => {
+      setIsStartingGame(false);
       alert(data.message);
     });
     
@@ -198,6 +207,7 @@ export default function BattleRoyale() {
       alert(`Minimum ${minPlayers} joueurs requis. Actuellement: ${players.length}`);
       return;
     }
+    setIsStartingGame(true);
     socketRef.current.emit("start_game", { code: roomCode });
   };
 
@@ -343,8 +353,12 @@ export default function BattleRoyale() {
           
           {isHost ? (
             readyToStart ? (
-              <button onClick={startGame} className="br-btn-primary">
-                🚀 LANCER LA PARTIE ({players.length} joueurs)
+              <button
+                onClick={startGame}
+                className="br-btn-primary"
+                disabled={isStartingGame}
+              >
+                {isStartingGame ? "⏳ PRÉPARATION DE LA PARTIE..." : `🚀 LANCER LA PARTIE (${players.length} joueurs)`}
               </button>
             ) : (
               <div className="br-waiting-message">
@@ -370,6 +384,11 @@ export default function BattleRoyale() {
   );
   const eliminatedNames = roundResults?.eliminated_names ||
     (roundResults?.eliminated_name ? [roundResults.eliminated_name] : []);
+  const displayedRound = Math.max(
+    roundResults?.round ?? 0,
+    round ?? 0,
+    1
+  );
   const currentPlayer = players.find((p) => p.id === playerId);
   const isPlayerAlive = currentPlayer ? currentPlayer.is_alive !== false : true;
   const isEliminated = !isPlayerAlive || eliminatedIds.has(playerId);
@@ -429,7 +448,7 @@ export default function BattleRoyale() {
             ) : (
               <div className={`br-timer ${timer <= 10 && timer > 0 ? "urgent" : ""}`}>⏱️ {timer}s</div>
             )}
-            <div className="br-round">Manche {roundResults?.round || round || 1}</div>
+            <div className="br-round">Manche {displayedRound}</div>
           </div>
           
           {/* GAME OVER */}
@@ -586,7 +605,7 @@ export default function BattleRoyale() {
               <div className="br-spectator-content">
                 <span>👀</span>
                 <h3>Mode spectateur</h3>
-                <p>Vous avez été éliminé à la manche {roundResults?.round || round}</p>
+                <p>Vous avez été éliminé à la manche {displayedRound}</p>
               </div>
             </div>
           )}

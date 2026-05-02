@@ -32,7 +32,11 @@ def build_offer_pool(target_size=POOL_TARGET_SIZE):
                 if existing_job.get("id"):
                     seen_ids.add(existing_job.get("id"))
         
-        pages_to_fetch = random.sample(range(0, 300), min(30, 300))
+        primary_pages = list(range(0, 40))
+        random.shuffle(primary_pages)
+        fallback_pages = list(range(40, 120))
+        random.shuffle(fallback_pages)
+        pages_to_fetch = primary_pages + fallback_pages
         success_count = 0
         
         for page in pages_to_fetch:

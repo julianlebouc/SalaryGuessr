@@ -120,6 +120,13 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+.br-btn-primary:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 /* Code de salle */
 .br-room-code-display {
   text-align: center;
