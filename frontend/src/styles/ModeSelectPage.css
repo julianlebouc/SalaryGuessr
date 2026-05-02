@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--text-light);
 }
 
 .mode-card {
@@ -39,12 +40,6 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-
-.mode-subtitle {
-  font-size: 1rem;
-  opacity: 0.8;
-  margin: 0;
 }
 
 .mode-grid {

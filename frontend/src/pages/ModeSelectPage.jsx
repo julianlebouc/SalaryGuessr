@@ -59,7 +59,6 @@ export default function ModeSelectPage() {
         <div className="mode-header">
           <div className="mode-header-icon">🎲</div>
           <h1 className="mode-title">Choisis ton mode de jeu</h1>
-          <p className="mode-subtitle">Deux façons différentes de tester ton instinct !</p>
         </div>
 
         <div className="mode-grid">

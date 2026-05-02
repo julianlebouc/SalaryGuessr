@@ -38,10 +38,6 @@ html, body {
   justify-content: center;
 }
 
-.gp-container,
-.hp-container {
-}
-
 .mode-container,
 .hl-container {
   overflow-x: hidden;
