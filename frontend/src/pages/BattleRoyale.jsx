@@ -18,8 +18,10 @@ export default function BattleRoyale() {
   const [playerId, setPlayerId] = useState(null);
   const [players, setPlayers] = useState([]);
   const [isHost, setIsHost] = useState(false);
-  const [minPlayers, setMinPlayers] = useState(2);
-  const [maxPlayers, setMaxPlayers] = useState(10);
+  const [hostId, setHostId] = useState(null);
+  const [hostName, setHostName] = useState("");
+  const [minPlayers, setMinPlayers] = useState(5);
+  const [maxPlayers, setMaxPlayers] = useState(50);
   
   // Game State
   const [gameState, setGameState] = useState("waiting");
@@ -31,6 +33,7 @@ export default function BattleRoyale() {
   const [roundResults, setRoundResults] = useState(null);
   const [winner, setWinner] = useState(null);
   const [isWaitingNextRound, setIsWaitingNextRound] = useState(false);
+  const [nextRoundTimer, setNextRoundTimer] = useState(null);
   
   const socketRef = useRef(null);
 
@@ -46,6 +49,9 @@ export default function BattleRoyale() {
     socketRef.current.on("room_created", (data) => {
       console.log("🏠 Salle créée:", data.code);
       setRoomCode(data.code);
+      setPlayerId(data.player_id);
+      setHostId(data.player_id);
+      setIsHost(true);
     });
     
     socketRef.current.on("joined", (data) => {
@@ -57,7 +63,8 @@ export default function BattleRoyale() {
       console.log("📊 État de la salle:", data);
       setPlayers(data.players);
       setGameState(data.game_state);
-      setIsHost(data.host_name === playerName);
+      setHostId(data.host_id || null);
+      setHostName(data.host_name || "");
       setRoomCode(data.code);
       setMinPlayers(data.min_players);
       setMaxPlayers(data.max_players);
@@ -93,6 +100,7 @@ export default function BattleRoyale() {
       setHasGuessed(false);
       setRoundResults(null);
       setIsWaitingNextRound(false);
+      setNextRoundTimer(null);
       setTimer(data.duration);
       setGameState("playing");
     });
@@ -106,12 +114,21 @@ export default function BattleRoyale() {
       setRoundResults(data);
       setGameState("round_end");
       setIsWaitingNextRound(true);
-      
-      const updatedPlayers = players.map(p => ({
-        ...p,
-        is_alive: p.id !== data.eliminated_id
-      }));
-      setPlayers(updatedPlayers);
+      setNextRoundTimer(data.pause_duration ?? null);
+
+      const eliminatedSet = new Set(
+        data.eliminated_ids || (data.eliminated_id ? [data.eliminated_id] : [])
+      );
+      setPlayers(prevPlayers =>
+        prevPlayers.map(p => ({
+          ...p,
+          is_alive: p.is_alive !== false && !eliminatedSet.has(p.id)
+        }))
+      );
+    });
+
+    socketRef.current.on("between_round_update", (data) => {
+      setNextRoundTimer(data.remaining);
     });
     
     socketRef.current.on("new_round", (data) => {
@@ -129,6 +146,7 @@ export default function BattleRoyale() {
       setWinner(data.winner);
       setGameState("game_over");
       setIsWaitingNextRound(false);
+      setNextRoundTimer(null);
     });
     
     socketRef.current.on("action_confirmed", (data) => {
@@ -148,6 +166,10 @@ export default function BattleRoyale() {
       }
     };
   }, [playerName]);
+
+  useEffect(() => {
+    setIsHost(Boolean(hostId && playerId && hostId === playerId));
+  }, [hostId, playerId]);
 
   const createRoom = () => {
     if (!playerName.trim()) {
@@ -191,6 +213,10 @@ export default function BattleRoyale() {
       action: "submit_guess",
       data: { guess: val }
     });
+  };
+
+  const startNextRoundNow = () => {
+    socketRef.current.emit("start_next_round", { code: roomCode });
   };
 
   // ==========================================================
@@ -301,7 +327,7 @@ export default function BattleRoyale() {
                 <div key={p.id} className="br-player-card">
                   <span>{p.name}</span>
                   {p.id === playerId && <span className="br-badge">TOI</span>}
-                  {p.name === "host" && <span className="br-crown">👑</span>}
+                  {p.id === hostId && <span className="br-crown">👑</span>}
                 </div>
               ))}
             </div>
@@ -330,7 +356,15 @@ export default function BattleRoyale() {
   // ==========================================================
   // ÉCRAN DE JEU
   // ==========================================================
-  const isEliminated = roundResults && roundResults.eliminated_id === playerId;
+  const eliminatedIds = new Set(
+    roundResults?.eliminated_ids ||
+    (roundResults?.eliminated_id ? [roundResults.eliminated_id] : [])
+  );
+  const eliminatedNames = roundResults?.eliminated_names ||
+    (roundResults?.eliminated_name ? [roundResults.eliminated_name] : []);
+  const currentPlayer = players.find((p) => p.id === playerId);
+  const isPlayerAlive = currentPlayer ? currentPlayer.is_alive !== false : true;
+  const isEliminated = !isPlayerAlive || eliminatedIds.has(playerId);
   const alivePlayersCount = players.filter(p => p.is_alive !== false).length;
   
   return (
@@ -380,7 +414,13 @@ export default function BattleRoyale() {
         <div className="br-main">
           <div className="br-game-header">
             <div className="br-room-code">Salle: {roomCode}</div>
-            <div className={`br-timer ${timer <= 10 && timer > 0 ? "urgent" : ""}`}>⏱️ {timer}s</div>
+            {gameState === "round_end" && isWaitingNextRound ? (
+              <div className="br-next-round-timer">
+                Début de la prochaine manche dans {nextRoundTimer ?? 0} s
+              </div>
+            ) : (
+              <div className={`br-timer ${timer <= 10 && timer > 0 ? "urgent" : ""}`}>⏱️ {timer}s</div>
+            )}
             <div className="br-round">Manche {roundResults?.round || round || 1}</div>
           </div>
           
@@ -408,11 +448,15 @@ export default function BattleRoyale() {
               </div>
               
               <div className="br-real-salary">
-                💰 Salaire réel: <strong>{roundResults.real_salary?.toLocaleString()} €</strong>
+                💰 Salaire réel: 
+                <span>
+                  <strong> {roundResults.real_salary?.toLocaleString()} €</strong>
+                </span>
               </div>
               
               <div className="br-eliminated-info">
-                ❌ ÉLIMINÉ: <strong>{roundResults.eliminated_name}</strong>
+                ❌ {eliminatedNames.length > 1 ? "ÉLIMINÉS " : "ÉLIMINÉ "}:{" "}
+                <strong>{eliminatedNames.join(", ") || "Aucun"}</strong>
               </div>
               
               <div className="br-rankings">
@@ -423,29 +467,29 @@ export default function BattleRoyale() {
                   <div 
                     key={r.player_id} 
                     className={`br-ranking-row ${
-                      r.player_id === roundResults.eliminated_id ? "eliminated" : ""
+                      eliminatedIds.has(r.player_id) ? "eliminated" : ""
                     } ${r.player_id === playerId ? "current" : ""}`}
                   >
                     <span>{idx + 1}</span>
                     <span>{r.name}</span>
-                    <span>{r.guess?.toLocaleString() || "Pas de réponse"} €</span>
-                    <span className={r.player_id === roundResults.eliminated_id ? "error-high" : "error-low"}>
-                      {r.error === Infinity ? "∞" : `${Math.abs(r.error).toFixed(1)}%`}
+                    <span>{r.guess != null ? `${r.guess.toLocaleString()} €` : "Pas de réponse"}</span>
+                    <span className={eliminatedIds.has(r.player_id) ? "error-high" : "error-low"}>
+                      {Number.isFinite(r.error) ? `${Math.abs(r.error).toFixed(1)}€` : "∞"}
                     </span>
                   </div>
                 ))}
               </div>
               
-              {isWaitingNextRound && !isEliminated && (
-                <div className="br-waiting-next">
-                  Prochaine manche dans quelques secondes...
-                </div>
+              {isWaitingNextRound && isHost && (
+                <button className="br-btn-primary" onClick={startNextRoundNow}>
+                  ⚡ Lancer la prochaine manche
+                </button>
               )}
             </div>
           )}
           
           {/* ACTIVE ROUND - AFFICHAGE COMPLET COMME DANS HIGHLOWGAME */}
-          {gameState === "playing" && currentOffer && !roundResults && !isEliminated && (
+          {gameState === "playing" && currentOffer && !roundResults && (
             <div className="br-offer-card">
               <div className="gp-cardGlow" />
               <div className="gp-cardShine"></div>
@@ -502,7 +546,9 @@ export default function BattleRoyale() {
                 <p>{currentOffer.description || "Aucune description disponible"}</p>
               </div>
               
-              {!hasGuessed ? (
+              {isEliminated ? (
+                <div className="br-eliminated-block">Vous êtes éliminé</div>
+              ) : !hasGuessed ? (
                 <div className="br-guess-area">
                   <input
                     type="number"
@@ -525,7 +571,7 @@ export default function BattleRoyale() {
           )}
           
           {/* SPECTATOR MODE */}
-          {isEliminated && !winner && (
+          {isEliminated && !winner && gameState !== "playing" && (
             <div className="br-spectator-card">
               <div className="gp-cardGlow" />
               <div className="gp-cardShine"></div>

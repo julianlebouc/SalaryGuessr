@@ -4,6 +4,7 @@ from typing import Dict, Any
 
 from .room_manager import get_room_manager
 from .base import GameState
+from backend.config import BR_ROUND_DURATION, BR_PAUSE_BETWEEN_ROUNDS
 
 
 class SocketHandlers:
@@ -13,6 +14,8 @@ class SocketHandlers:
         self.sio = sio
         self.room_manager = get_room_manager()
         self.active_timers: Dict[str, asyncio.Task] = {}
+        self.ending_rounds: set[str] = set()
+        self.next_round_events: Dict[str, asyncio.Event] = {}
         self._register_handlers()
     
     def _register_handlers(self):
@@ -137,6 +140,27 @@ class SocketHandlers:
                 if guesses_count >= len(alive_players) and len(alive_players) > 0:
                     print(f"[SOCKET] Dernier joueur a répondu, fin du round immédiate")
                     await self.end_round(code)
+
+        @self.sio.on("start_next_round")
+        async def handle_start_next_round(sid, data):
+            code = data.get("code")
+
+            room = self.room_manager.get_room(code)
+            if not room:
+                await self.sio.emit("error", {"message": "Salle introuvable"}, to=sid)
+                return
+
+            if room.host_sid != sid:
+                await self.sio.emit("error", {"message": "Seul l'hôte peut lancer la prochaine manche"}, to=sid)
+                return
+
+            if room.game_state != GameState.ROUND_END:
+                await self.sio.emit("error", {"message": "La manche suivante ne peut pas être lancée maintenant"}, to=sid)
+                return
+
+            event = self.next_round_events.get(code)
+            if event:
+                event.set()
     
     async def broadcast_room(self, room_code: str, event: str, data: Dict = None):
         room = self.room_manager.get_room(room_code)
@@ -180,7 +204,7 @@ class SocketHandlers:
         if not game:
             return
         
-        duration = getattr(game, "round_duration", 30)
+        duration = getattr(game, "round_duration", BR_ROUND_DURATION)
         
         for remaining in range(duration, 0, -1):
             if room.game_state != GameState.PLAYING:
@@ -199,33 +223,54 @@ class SocketHandlers:
             await asyncio.sleep(1)
         
         if room.game_state == GameState.PLAYING:
+            await self.broadcast_room(room_code, "timer_update", {"remaining": 0})
             await self.end_round(room_code)
     
     async def end_round(self, room_code: str):
         room = self.room_manager.get_room(room_code)
         if not room:
             return
-        
-        game = self.room_manager.get_game(room_code)
-        if not game:
+        if room_code in self.ending_rounds:
             return
+        self.ending_rounds.add(room_code)
         
-        if room_code in self.active_timers:
-            self.active_timers[room_code].cancel()
-            del self.active_timers[room_code]
-        
-        room.game_state = GameState.ROUND_END
-        round_results = game.on_round_end(room)
-        await self.broadcast_room(room_code, "round_end", round_results)
-        
-        game_over_data = game.on_game_over(room)
-        if game_over_data.get("is_over", False):
-            room.game_state = GameState.GAME_OVER
-            await self.broadcast_room(room_code, "game_over", game_over_data)
-            return
-        
-        pause_duration = getattr(game, "pause_between_rounds", 5)
-        await asyncio.sleep(pause_duration)
-        
-        room.game_state = GameState.PLAYING
-        await self.start_round(room_code)
+        try:
+            game = self.room_manager.get_game(room_code)
+            if not game:
+                return
+            
+            timer_task = self.active_timers.get(room_code)
+            current_task = asyncio.current_task()
+            if timer_task and timer_task is not current_task:
+                timer_task.cancel()
+            if room_code in self.active_timers:
+                del self.active_timers[room_code]
+            
+            room.game_state = GameState.ROUND_END
+            round_results = game.on_round_end(room)
+            pause_duration = getattr(game, "pause_between_rounds", BR_PAUSE_BETWEEN_ROUNDS)
+            round_results["pause_duration"] = pause_duration
+            await self.broadcast_room(room_code, "round_end", round_results)
+
+            next_round_event = asyncio.Event()
+            self.next_round_events[room_code] = next_round_event
+            for remaining in range(pause_duration, 0, -1):
+                await self.broadcast_room(room_code, "between_round_update", {"remaining": remaining})
+                try:
+                    await asyncio.wait_for(next_round_event.wait(), timeout=1)
+                    break
+                except asyncio.TimeoutError:
+                    continue
+            await self.broadcast_room(room_code, "between_round_update", {"remaining": 0})
+
+            game_over_data = game.on_game_over(room)
+            if game_over_data.get("is_over", False):
+                room.game_state = GameState.GAME_OVER
+                await self.broadcast_room(room_code, "game_over", game_over_data)
+                return
+            
+            room.game_state = GameState.PLAYING
+            await self.start_round(room_code)
+        finally:
+            self.ending_rounds.discard(room_code)
+            self.next_round_events.pop(room_code, None)

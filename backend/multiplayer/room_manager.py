@@ -102,6 +102,7 @@ class RoomManager:
             "game_state": room.game_state.value,
             "min_players": game.min_players,
             "max_players": game.max_players,
+            "host_id": room.host_id,
             "host_name": room.host_name,
             **game.get_room_state(room)
         }

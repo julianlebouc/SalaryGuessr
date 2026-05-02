@@ -86,28 +86,45 @@ class BattleRoyaleGame(BaseGame):
         for player in alive_players:
             guess = room.game_data["guesses"].get(player.id)
             if guess is None:
-                error = float('inf')
-                guess_value = 0
+                error = None
+                rank_error = float("inf")
+                guess_value = None
             else:
                 error = abs(guess - real_salary)
+                rank_error = error
                 guess_value = guess
             
             results.append({
                 "player_id": player.id,
                 "name": player.name,
                 "guess": guess_value,
-                "error": error
+                "error": error,
+                "rank_error": rank_error
             })
         
-        # Trier par erreur décroissante
-        results.sort(key=lambda x: x["error"], reverse=True)
+        no_answer_results = [r for r in results if r["guess"] is None]
+        guessed_results = [r for r in results if r["guess"] is not None]
+        guessed_results.sort(key=lambda x: x["error"], reverse=True)
+
+        eliminated_ids = {r["player_id"] for r in no_answer_results}
+
+        # Éliminer aussi le plus éloigné uniquement si au moins 2 joueurs ont répondu.
+        furthest_result = guessed_results[0] if len(guessed_results) >= 2 else None
+        if furthest_result:
+            eliminated_ids.add(furthest_result["player_id"])
+
+        eliminated_names: List[str] = []
+        for eliminated_id in eliminated_ids:
+            eliminated_player = room.get_player(eliminated_id)
+            if eliminated_player and eliminated_player.is_alive:
+                eliminated_player.is_alive = False
+                eliminated_names.append(eliminated_player.name)
+                print(f"[BATTLE] {eliminated_player.name} est éliminé")
         
-        # Éliminer le joueur avec la plus grande erreur
-        eliminated = results[0]
-        eliminated_player = room.get_player(eliminated["player_id"])
-        if eliminated_player:
-            eliminated_player.is_alive = False
-            print(f"[BATTLE] {eliminated_player.name} est éliminé (erreur: {eliminated['error']})")
+        public_results = [
+            {k: v for k, v in result.items() if k != "rank_error"}
+            for result in results
+        ]
         
         current_round = room.game_data["round"]
         
@@ -117,10 +134,14 @@ class BattleRoyaleGame(BaseGame):
         room.game_data["guesses"] = {}
         
         return {
-            "results": results,
-            "eliminated_id": eliminated["player_id"],
-            "eliminated_name": eliminated["name"],
-            "eliminated_error": eliminated["error"],
+            "results": public_results,
+            "eliminated_id": furthest_result["player_id"] if furthest_result else (next(iter(eliminated_ids)) if eliminated_ids else None),
+            "eliminated_name": furthest_result["name"] if furthest_result else (eliminated_names[0] if eliminated_names else None),
+            "eliminated_error": furthest_result["error"] if furthest_result else None,
+            "eliminated_ids": list(eliminated_ids),
+            "eliminated_names": eliminated_names,
+            "eliminated_no_answer_ids": [r["player_id"] for r in no_answer_results],
+            "eliminated_furthest_id": furthest_result["player_id"] if furthest_result else None,
             "real_salary": real_salary,
             "round": current_round
         }

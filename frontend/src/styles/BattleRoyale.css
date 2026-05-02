@@ -81,7 +81,7 @@
 
 .br-tab.active {
   background: linear-gradient(135deg, #ffd93d, #ff6b6b);
-  color: #1a1a2e;
+  color: #ffffff;
 }
 
 /* Inputs */
@@ -109,7 +109,7 @@
   font-weight: bold;
   cursor: pointer;
   width: 100%;
-  color: #1a1a2e;
+  color: #ffffff;
   transition: all 0.2s;
 }
 
@@ -170,7 +170,7 @@
 
 .br-badge {
   background: #22c55e;
-  color: #1a1a2e;
+  color: #ffffff;
   padding: 2px 8px;
   border-radius: 20px;
   font-size: 0.7rem;
@@ -321,6 +321,13 @@
   font-size: 0.8rem;
 }
 
+.br-next-round-timer {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fbbf24;
+  text-align: center;
+}
+
 /* Carte d'offre pendant le jeu */
 .br-offer-card {
   background: var(--glass-bg);
@@ -421,6 +428,17 @@
   opacity: 0.7;
 }
 
+.br-eliminated-block {
+  text-align: center;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  color: rgba(241, 245, 249, 0.95);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
 /* Résultats du round */
 .br-results-card {
   background: var(--glass-bg);
@@ -439,10 +457,17 @@
 
 .br-real-salary {
   text-align: center;
-  padding: 12px;
+  padding: 15px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 20px;
   margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.br-real-salary span {
+  color: #34d399;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .br-rankings {
@@ -453,7 +478,7 @@
 
 .br-ranking-header {
   display: grid;
-  grid-template-columns: 40px 1fr 100px 80px;
+  grid-template-columns: 40px 1fr 150px 100px;
   padding: 10px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
@@ -464,7 +489,7 @@
 
 .br-ranking-row {
   display: grid;
-  grid-template-columns: 40px 1fr 100px 80px;
+  grid-template-columns: 40px 1fr 150px 100px;
   padding: 10px;
   border-radius: 12px;
   font-size: 0.8rem;
@@ -477,12 +502,15 @@
 }
 
 .br-ranking-row.current {
-  background: rgba(255, 217, 61, 0.15);
+  background: rgba(0, 217, 0, 0.15);
+}
+
+.br-ranking-row span{
+  font-weight: bold;
 }
 
 .error-high {
   color: #ef4444;
-  font-weight: bold;
 }
 
 .error-low {
@@ -506,6 +534,12 @@
   background: rgba(239, 68, 68, 0.1);
   border-radius: 20px;
   margin-top: 16px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.br-eliminated-info strong {
+  color: #ef4444;
+  font-size: 1.5rem;
 }
 
 .br-waiting-next {
@@ -535,7 +569,7 @@
   backdrop-filter: blur(20px);
   border: 2px solid var(--glass-border);
   border-radius: 48px;
-  padding: 40px;
+  padding: 20px;
   text-align: center;
 }
 
