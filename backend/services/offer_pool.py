@@ -8,7 +8,7 @@ from .france_travail import fetch_offers_from_page
 from .salary_parser import parse_salary
 from .text_cleaner import clean_html
 
-OFFER_POOL = deque(maxlen=200)
+OFFER_POOL = deque(maxlen=POOL_TARGET_SIZE)
 pool_lock = threading.Lock()
 refill_in_progress = False
 

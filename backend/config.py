@@ -21,7 +21,7 @@ CORS_ORIGINS = [origin.strip() for origin in CORS_ORIGINS]
 # ==========================================================
 BR_MIN_PLAYERS = 5
 BR_MAX_PLAYERS = 50
-BR_ROUND_DURATION = 45
+BR_ROUND_DURATION = 30
 BR_PAUSE_BETWEEN_ROUNDS = 10
 
 # ==========================================================
@@ -35,9 +35,9 @@ SEARCH_URL = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/se
 # ==========================================================
 # POOL CONFIGURATION
 # ==========================================================
-POOL_TARGET_SIZE = 100
-POOL_MIN_SIZE = 50
-PLAYED_IDS_MAXLEN = 2000
+POOL_TARGET_SIZE = 500
+POOL_MIN_SIZE = 400
+PLAYED_IDS_MAXLEN = 1000
 
 if not FRANCE_TRAVAIL_CLIENT_ID or not FRANCE_TRAVAIL_CLIENT_SECRET:
     raise ValueError("FRANCE_TRAVAIL_CLIENT_ID et FRANCE_TRAVAIL_CLIENT_SECRET requis")
