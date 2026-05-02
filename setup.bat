@@ -25,7 +25,7 @@ REM Activation et installation
 echo Installation des packages Python...
 call venv\Scripts\activate.bat
 pip install --upgrade pip
-pip install fastapi uvicorn requests beautifulsoup4 python-dotenv
+pip install fastapi uvicorn requests beautifulsoup4 python-dotenv python-socketio==5.9.0 python-engineio==4.7.0
 
 echo.
 echo Backend installe avec succes !
@@ -45,7 +45,7 @@ if exist "frontend\node_modules" (
 cd frontend
 echo Installation des packages Node...
 call npm install
-call npm install framer-motion recharts
+call npm install framer-motion recharts socket.io-client@4.5.4
 
 echo.
 echo Frontend installe avec succes !
