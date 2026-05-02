@@ -130,16 +130,16 @@ export default function BattleRoyale() {
     
     socketRef.current.on("round_end", (data) => {
       console.log("📊 Fin du round:", data);
-      play("roundEnd");
+      const eliminatedSet = new Set(
+        data.eliminated_ids || (data.eliminated_id ? [data.eliminated_id] : [])
+      );
+      const isCurrentPlayerEliminated = playerId != null && eliminatedSet.has(playerId);
+      play(isCurrentPlayerEliminated ? "elimination" : "success");
       setRoundResults(data);
       setRound(data.round || 1);
       setGameState("round_end");
       setIsWaitingNextRound(true);
       setNextRoundTimer(data.pause_duration ?? null);
-
-      const eliminatedSet = new Set(
-        data.eliminated_ids || (data.eliminated_id ? [data.eliminated_id] : [])
-      );
       setPlayers(prevPlayers =>
         prevPlayers.map(p => ({
           ...p,
@@ -154,7 +154,9 @@ export default function BattleRoyale() {
     
     socketRef.current.on("game_over", (data) => {
       console.log("🏆 Game over, vainqueur:", data.winner);
-      play("gameEnd");
+      const normalizedWinner = String(data.winner || "").trim().toLowerCase();
+      const normalizedPlayer = String(playerName || "").trim().toLowerCase();
+      play(normalizedWinner && normalizedWinner === normalizedPlayer ? "victory" : "elimination");
       setWinner(data.winner);
       setGameState("game_over");
       setIsWaitingNextRound(false);
@@ -178,7 +180,7 @@ export default function BattleRoyale() {
         socketRef.current.disconnect();
       }
     };
-  }, [playerName]);
+  }, [playerName, playerId, play]);
 
   useEffect(() => {
     setIsHost(Boolean(hostId && playerId && hostId === playerId));

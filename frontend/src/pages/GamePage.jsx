@@ -156,6 +156,12 @@ export default function GamePage() {
     void refillBuffer(Math.min(maxRounds - 1, BUFFER_TARGET));
   };
 
+  const getRoundEndSound = (roundScoreValue) => {
+    if (roundScoreValue < 33) return "roundEnd1";
+    if (roundScoreValue < 66) return "roundEnd2";
+    return "roundEnd3";
+  };
+
   const validate = () => {
     if (!currentJob) return;
 
@@ -191,7 +197,7 @@ export default function GamePage() {
     });
 
     setShowResult(true);
-    play("roundEnd");
+    play(getRoundEndSound(roundScore));
 
     void refillBuffer(BUFFER_TARGET);
   };
@@ -200,7 +206,14 @@ export default function GamePage() {
     const nextIndex = round + 1;
 
     if (nextIndex >= maxRounds) {
-      play("gameEnd");
+      const maxScore = maxRounds * 100;
+      if (score < maxScore / 3) {
+        play("gameEnd1");
+      } else if (score < (2 * maxScore) / 3) {
+        play("gameEnd2");
+      } else {
+        play("gameEnd3");
+      }
       setPage("result");
       return;
     }
