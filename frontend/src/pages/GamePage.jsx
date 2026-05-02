@@ -17,6 +17,7 @@ import {
   formatDate, 
   calculateScore 
 } from "../utils/gameUtils";
+import { useSound } from "../sound/SoundProvider";
 
 const BUFFER_TARGET = 3;
 const REFILL_THRESHOLD = 1;
@@ -25,6 +26,7 @@ const PARALLEL_REQUESTS = 4;
 
 export default function GamePage() {
   const navigate = useNavigate();
+  const { play } = useSound();
 
   const [page, setPage] = useState("settings");
   const [maxRounds, setMaxRounds] = useState(10);
@@ -161,6 +163,7 @@ export default function GamePage() {
     const user = Number(guess);
 
     if (!Number.isFinite(real) || real <= 0 || !Number.isFinite(user) || user <= 0) {
+      play("error");
       setShakeAnimation(true);
       setTimeout(() => setShakeAnimation(false), 500);
       return;
@@ -188,6 +191,7 @@ export default function GamePage() {
     });
 
     setShowResult(true);
+    play("roundEnd");
 
     void refillBuffer(BUFFER_TARGET);
   };
@@ -196,6 +200,7 @@ export default function GamePage() {
     const nextIndex = round + 1;
 
     if (nextIndex >= maxRounds) {
+      play("gameEnd");
       setPage("result");
       return;
     }

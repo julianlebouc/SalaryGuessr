@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import "../styles/BattleRoyale.css";
+import { useSound } from "../sound/SoundProvider";
 
 const SOCKET_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 export default function BattleRoyale() {
   const navigate = useNavigate();
+  const { play } = useSound();
   
   // UI State
   const [view, setView] = useState("join");
@@ -128,6 +130,7 @@ export default function BattleRoyale() {
     
     socketRef.current.on("round_end", (data) => {
       console.log("📊 Fin du round:", data);
+      play("roundEnd");
       setRoundResults(data);
       setRound(data.round || 1);
       setGameState("round_end");
@@ -151,6 +154,7 @@ export default function BattleRoyale() {
     
     socketRef.current.on("game_over", (data) => {
       console.log("🏆 Game over, vainqueur:", data.winner);
+      play("gameEnd");
       setWinner(data.winner);
       setGameState("game_over");
       setIsWaitingNextRound(false);

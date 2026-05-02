@@ -7,9 +7,11 @@ import {
   evaluateHigherLowerGuess,
   formatDate 
 } from "../utils/gameUtils";
+import { useSound } from "../sound/SoundProvider";
 
 export default function HighLowGame() {
   const navigate = useNavigate();
+  const { play } = useSound();
   const [jobs, setJobs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -74,6 +76,7 @@ export default function HighLowGame() {
     setShowSalary(true);
     
     if (isCorrect) {
+      play("success");
       setGuessResult("correct");
       setScore(prev => prev + 1);
       setIsWaiting(true);
@@ -81,6 +84,7 @@ export default function HighLowGame() {
         nextRound();
       }, 1500);
     } else {
+      play("gameEnd");
       setGuessResult("wrong");
       setTimeout(() => {
         setGameOver(true);
