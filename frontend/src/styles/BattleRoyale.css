@@ -1,0 +1,652 @@
+@import "./global.css";
+
+/* ==========================================================
+   BATTLE ROYALE - STYLES SPÉCIFIQUES
+   ========================================================== */
+
+/* Container principal */
+.br-container {
+  min-height: 100vh;
+  background: var(--app-bg);
+  color: var(--text-light);
+  font-family: var(--app-font);
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Cartes de création/attente */
+.br-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 2px solid var(--glass-border);
+  border-radius: 48px;
+  padding: 40px;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  animation: cardIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+}
+
+/* Header */
+.br-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.br-icon {
+  font-size: 2.5rem;
+}
+
+.br-title {
+  font-size: 1.8rem;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Description du mode */
+.br-description {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  border-radius: 24px;
+  margin-bottom: 24px;
+  font-size: 0.85rem;
+}
+
+.br-description strong {
+  color: #ff6b6b;
+}
+
+/* Tabs */
+.br-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.br-tab {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border-soft);
+  padding: 12px;
+  border-radius: 40px;
+  cursor: pointer;
+  text-align: center;
+  color: white;
+  transition: all 0.2s;
+}
+
+.br-tab.active {
+  background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+  color: #ffffff;
+}
+
+/* Inputs */
+.br-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border-soft);
+  border-radius: 60px;
+  padding: 14px 20px;
+  color: white;
+  margin-bottom: 16px;
+  outline: none;
+}
+
+.br-input:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Bouton principal */
+.br-btn-primary {
+  background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+  border: none;
+  padding: 14px;
+  border-radius: 60px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  color: #ffffff;
+  transition: all 0.2s;
+}
+
+.br-btn-primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Code de salle */
+.br-room-code-display {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.br-room-code-display span {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.br-room-code-display strong {
+  font-size: 2rem;
+  display: block;
+  letter-spacing: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 20px;
+  margin-top: 8px;
+}
+
+/* Liste des joueurs en attente */
+.br-players-list {
+  margin-bottom: 24px;
+}
+
+.br-players-list h3 {
+  font-size: 1rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.br-players-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.br-player-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.br-badge {
+  background: #22c55e;
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+}
+
+.br-crown {
+  font-size: 1rem;
+}
+
+/* Message d'attente */
+.br-waiting-message {
+  text-align: center;
+  opacity: 0.7;
+  padding: 16px;
+}
+
+/* Layout de jeu */
+.br-game-layout {
+  display: flex;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 60px auto 0;
+}
+
+/* Sidebar */
+.br-sidebar {
+  width: 260px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 32px;
+  border: 1px solid var(--glass-border-soft);
+  overflow: hidden;
+  height: fit-content;
+}
+
+.br-sidebar-header {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.br-sidebar-players {
+  padding: 16px;
+}
+
+.br-sidebar-section {
+  margin-bottom: 20px;
+}
+
+.br-sidebar-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
+.br-sidebar-player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.br-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.br-dot.green {
+  background: #22c55e;
+  box-shadow: 0 0 4px #22c55e;
+}
+
+.br-dot.red {
+  background: #ef4444;
+}
+
+.br-badge-small {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 20px;
+  font-size: 0.6rem;
+  margin-left: auto;
+}
+
+/* Zone principale */
+.br-main {
+  flex: 1;
+}
+
+.br-game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 60px;
+  margin-bottom: 24px;
+}
+
+.br-room-code {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.br-timer {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #34d399;
+}
+
+.br-timer.urgent {
+  color: #ef4444;
+  animation: pulse 0.5s ease infinite;
+}
+
+.br-round {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 14px;
+  border-radius: 40px;
+  font-size: 0.8rem;
+}
+
+.br-next-round-timer {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fbbf24;
+  text-align: center;
+}
+
+/* Carte d'offre pendant le jeu */
+.br-offer-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 2px solid var(--glass-border);
+  border-radius: 48px;
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.br-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.br-question-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  padding: 4px 12px;
+  border-radius: 40px;
+  font-size: 0.7rem;
+  color: white;
+  font-weight: bold;
+}
+
+.br-offer-title {
+  font-size: 28px;
+  margin-bottom: 8px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fff, #ffeaa7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.br-offer-sub {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-bottom: 16px;
+}
+
+.br-offer-desc {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 24px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.br-desc-header {
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
+.br-offer-desc p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* Zone d'estimation */
+.br-guess-area {
+  display: flex;
+  gap: 12px;
+}
+
+.br-guess-area .br-input {
+  margin: 0;
+  flex: 1;
+}
+
+.br-validate-btn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  padding: 14px 24px;
+  border-radius: 60px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s;
+}
+
+.br-validate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.br-waiting {
+  text-align: center;
+  padding: 16px;
+  opacity: 0.7;
+}
+
+.br-eliminated-block {
+  text-align: center;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  color: rgba(241, 245, 249, 0.95);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* Résultats du round */
+.br-results-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 2px solid var(--glass-border);
+  border-radius: 48px;
+  padding: 24px;
+}
+
+.br-results-header {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.br-real-salary {
+  text-align: center;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.br-real-salary span {
+  color: #34d399;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.br-rankings {
+  margin-bottom: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.br-ranking-header {
+  display: grid;
+  grid-template-columns: 40px 1fr 150px 100px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.br-ranking-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 150px 100px;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+.br-ranking-row.eliminated {
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.br-ranking-row.current {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.br-ranking-row span{
+  font-weight: bold;
+}
+
+.error-high {
+  color: #ef4444;
+}
+
+.error-low {
+  color: #34d399;
+}
+
+/* Message élimination */
+.br-eliminated-message {
+  text-align: center;
+  padding: 20px;
+}
+
+.br-skull {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.br-eliminated-info {
+  text-align: center;
+  padding: 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 20px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.br-eliminated-info strong {
+  color: #ef4444;
+  font-size: 1.5rem;
+}
+
+.br-waiting-next {
+  text-align: center;
+  margin-top: 20px;
+  opacity: 0.7;
+}
+
+/* Vainqueur */
+.br-winner-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 2px solid var(--glass-border);
+  border-radius: 48px;
+  padding: 48px;
+  text-align: center;
+}
+
+.br-trophy-icon {
+  font-size: 5rem;
+  margin-bottom: 20px;
+}
+
+/* Mode spectateur */
+.br-spectator-card {
+  margin-top: 20px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 2px solid var(--glass-border);
+  border-radius: 48px;
+  padding: 0px;
+  text-align: center;
+}
+
+.br-spectator-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.br-spectator-content span {
+  font-size: 3rem;
+}
+
+.br-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.br-question-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  padding: 4px 12px;
+  border-radius: 40px;
+  font-size: 0.7rem;
+  color: white;
+  font-weight: bold;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .br-game-layout {
+    flex-direction: column;
+  }
+  
+  .br-sidebar {
+    width: 100%;
+    order: 2;
+  }
+  
+  .br-main {
+    order: 1;
+  }
+  
+  .br-ranking-header,
+  .br-ranking-row {
+    grid-template-columns: 30px 1fr 80px 70px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .br-card {
+    padding: 24px;
+  }
+  
+  .br-title {
+    font-size: 1.4rem;
+  }
+  
+  .br-offer-title {
+    font-size: 20px;
+  }
+  
+  .br-guess-area {
+    flex-direction: column;
+  }
+  
+  .br-ranking-header,
+  .br-ranking-row {
+    grid-template-columns: 25px 1fr 70px 60px;
+    font-size: 0.65rem;
+  }
+}

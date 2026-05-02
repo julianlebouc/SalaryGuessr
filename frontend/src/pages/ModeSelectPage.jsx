@@ -15,7 +15,6 @@ export default function ModeSelectPage() {
       features: ["Estimation précise", "Score sur 100 points", "5 à 50 manches"],
       color: "#4f46e5",
       route: "/game",
-      bgGradient: "linear-gradient(135deg, #4f46e5, #7c3aed)"
     },
     {
       id: "highlow",
@@ -25,8 +24,16 @@ export default function ModeSelectPage() {
       features: ["Comparaison rapide", "Score infini", "Challenge de mémoire"],
       color: "#ec4899",
       route: "/highlow",
-      bgGradient: "linear-gradient(135deg, #ec4899, #f43f5e)"
-    }
+    },
+    {
+      id: "battleroyale",
+      title: "BATTLE ROYALE",
+      icon: "⚔️",
+      description: "Affronte d'autres joueurs dans une élimination à mort",
+      features: ["Multijoueur", "Élimination", "Dernier survivant"],
+      color: "#f59e0b",
+      route: "/battleroyale",
+    },
   ];
 
   return (
