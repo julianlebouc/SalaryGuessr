@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import "../styles/BattleRoyale.css";
@@ -14,6 +14,83 @@ function BrNotice({ notice, onDismiss }) {
       <span className="br-notice-text">{notice.message}</span>
       <button type="button" className="br-notice-dismiss" onClick={onDismiss} aria-label="Fermer">
         ×
+      </button>
+    </div>
+  );
+}
+
+function IconCopy() {
+  return (
+    <svg className="br-room-code-svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+      />
+    </svg>
+  );
+}
+
+function IconEye() {
+  return (
+    <svg className="br-room-code-svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none">
+      <path
+        d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function IconEyeOff() {
+  return (
+    <svg className="br-room-code-svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none">
+      <path
+        d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a21.77 21.77 0 015.06-7.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a21.53 21.53 0 01-4.94 8M14.12 14.12a3 3 0 11-4.24-4.24"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M1 1l22 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function BrRoomCodeToolbar({ roomCode, revealed, onToggleReveal, onCopy, compact }) {
+  if (!roomCode) return null;
+  const chipClass =
+    compact
+      ? "br-room-code-chip br-room-code-chip--compact"
+      : "br-room-code-chip";
+  return (
+    <div className={`br-room-code-toolbar${compact ? " br-room-code-toolbar--compact" : ""}`}>
+      <button
+        type="button"
+        className="br-room-code-icon-btn"
+        onClick={onCopy}
+        aria-label="Copier le code de la salle"
+        title="Copier le code"
+      >
+        <IconCopy />
+      </button>
+      <strong
+        className={`${chipClass}${revealed ? "" : " br-room-code-chip--masked"}`}
+        aria-label={revealed ? `Code ${roomCode}` : "Code masqué"}
+      >
+        {roomCode}
+      </strong>
+      <button
+        type="button"
+        className="br-room-code-icon-btn"
+        onClick={onToggleReveal}
+        aria-label={revealed ? "Masquer le code" : "Afficher le code"}
+        title={revealed ? "Masquer le code" : "Afficher le code"}
+      >
+        {revealed ? <IconEyeOff /> : <IconEye />}
       </button>
     </div>
   );
@@ -51,6 +128,7 @@ export default function BattleRoyale() {
   const [nextRoundTimer, setNextRoundTimer] = useState(null);
   const [isStartingGame, setIsStartingGame] = useState(false);
   const [notice, setNotice] = useState(null);
+  const [roomCodeRevealed, setRoomCodeRevealed] = useState(false);
 
   const socketRef = useRef(null);
   const playerIdRef = useRef(null);
@@ -88,6 +166,7 @@ export default function BattleRoyale() {
     socket.on("room_created", (data) => {
       console.log("🏠 Salle créée:", data.code);
       setNotice(null);
+      setRoomCodeRevealed(false);
       setRoomCode(data.code);
       setPlayerId(data.player_id);
       setHostId(data.player_id);
@@ -97,6 +176,7 @@ export default function BattleRoyale() {
     socket.on("joined", (data) => {
       console.log("📦 Rejoint la salle:", data);
       setNotice(null);
+      setRoomCodeRevealed(false);
       setPlayerId(data.player_id);
     });
 
@@ -230,6 +310,30 @@ export default function BattleRoyale() {
 
   const dismissNotice = () => setNotice(null);
 
+  const copyRoomCode = useCallback(async () => {
+    if (!roomCode) return;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(roomCode);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = roomCode;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setNotice({ variant: "success", message: "Code copié dans le presse-papiers." });
+    } catch {
+      setNotice({ variant: "error", message: "Copie automatique impossible. Copie le code à la main." });
+    }
+  }, [roomCode]);
+
+  const toggleRoomCodeReveal = () => setRoomCodeRevealed((v) => !v);
+
   const createRoom = () => {
     if (!playerName.trim()) {
       setNotice({ variant: "error", message: "Entrez un pseudo." });
@@ -263,6 +367,7 @@ export default function BattleRoyale() {
       return;
     }
     if (!socketRef.current) return;
+    play("gamestart");
     setIsStartingGame(true);
     socketRef.current.emit("start_game", { code: roomCode });
   };
@@ -397,7 +502,13 @@ export default function BattleRoyale() {
           
           <div className="br-room-code-display">
             <span>CODE DE LA SALLE</span>
-            <strong>{roomCode}</strong>
+            <BrRoomCodeToolbar
+              roomCode={roomCode}
+              revealed={roomCodeRevealed}
+              onToggleReveal={toggleRoomCodeReveal}
+              onCopy={copyRoomCode}
+              compact={false}
+            />
           </div>
           
           <div className="br-players-list">
@@ -504,7 +615,16 @@ export default function BattleRoyale() {
         {/* Zone principale */}
         <div className="br-main">
           <div className="br-game-header">
-            <div className="br-room-code">Salle: {roomCode}</div>
+            <div className="br-room-code-header-slot">
+              <span className="br-room-code-header-label">Salle</span>
+              <BrRoomCodeToolbar
+                roomCode={roomCode}
+                revealed={roomCodeRevealed}
+                onToggleReveal={toggleRoomCodeReveal}
+                onCopy={copyRoomCode}
+                compact
+              />
+            </div>
             {gameState === "round_end" && isWaitingNextRound ? (
               <div className="br-next-round-timer">
                 Début de la prochaine manche dans {nextRoundTimer ?? 0} s

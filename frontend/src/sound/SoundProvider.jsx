@@ -126,6 +126,14 @@ export function SoundProvider({ children }) {
           playTone(audioCtx, { frequency: 1567.98, volume: 0.95 * volume, duration: 0.28, type: "sine", delay: 0.4 });
           break;
 
+        case "gamestart":
+          playTone(audioCtx, { frequency: 392.0, volume: 0.55 * volume, duration: 0.07, type: "triangle" });
+          playTone(audioCtx, { frequency: 523.25, volume: 0.65 * volume, duration: 0.07, type: "triangle", delay: 0.07 });
+          playTone(audioCtx, { frequency: 659.25, volume: 0.72 * volume, duration: 0.08, type: "triangle", delay: 0.14 });
+          playTone(audioCtx, { frequency: 783.99, volume: 0.78 * volume, duration: 0.09, type: "sine", delay: 0.22 });
+          playTone(audioCtx, { frequency: 1046.5, volume: 0.85 * volume, duration: 0.14, type: "sine", delay: 0.3 });
+          break;
+
         case "success":
           playTone(audioCtx, { frequency: 1046.50, volume: 0.8 * volume, duration: 0.06, type: "sine" });
           playTone(audioCtx, { frequency: 1318.52, volume: 0.8 * volume, duration: 0.08, type: "sine", delay: 0.06 });

@@ -141,6 +141,7 @@ export default function GamePage() {
   };
 
   const startGame = async () => {
+    play("gamestart");
     setLoadingStart(true);
     resetGameState();
 

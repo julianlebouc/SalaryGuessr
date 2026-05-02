@@ -39,7 +39,11 @@ export default function ModeSelectPage() {
   ];
 
   const handleModeSelect = (route) => {
-    play("click");
+    if (route === "/highlow") {
+      play("gamestart");
+    } else {
+      play("click");
+    }
     setTimeout(() => {
       navigate(route);
     }, 50);

@@ -1,14 +1,33 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useSound } from "./SoundProvider";
 
 export default function SoundToggleSlider() {
   const { volume, setVolume } = useSound();
+  const volumeBeforeMuteRef = useRef(volume > 0 ? volume : 0.5);
+
+  const toggleMute = () => {
+    if (volume <= 0) {
+      const restore = volumeBeforeMuteRef.current > 0 ? volumeBeforeMuteRef.current : 0.5;
+      setVolume(restore);
+    } else {
+      volumeBeforeMuteRef.current = volume;
+      setVolume(0);
+    }
+  };
 
   return (
     <div className="sg-sound-slider-wrap" aria-label="Contrôle du volume des sons">
-      <span className="sg-sound-icon" aria-hidden="true">
-        {volume <= 0 ? "🔇" : volume < 0.5 ? "🔉" : "🔊"}
-      </span>
+      <button
+        type="button"
+        className="sg-sound-icon-btn"
+        onClick={toggleMute}
+        aria-label={volume <= 0 ? "Réactiver le son" : "Couper le son"}
+        title={volume <= 0 ? "Réactiver le son" : "Couper le son"}
+      >
+        <span className="sg-sound-icon" aria-hidden="true">
+          {volume <= 0 ? "🔇" : volume < 0.5 ? "🔉" : "🔊"}
+        </span>
+      </button>
       <input
         className="sg-sound-slider"
         type="range"
@@ -16,7 +35,11 @@ export default function SoundToggleSlider() {
         max="100"
         step="1"
         value={Math.round(volume * 100)}
-        onChange={(e) => setVolume(Number(e.target.value) / 100)}
+        onChange={(e) => {
+          const v = Number(e.target.value) / 100;
+          if (v > 0) volumeBeforeMuteRef.current = v;
+          setVolume(v);
+        }}
         aria-label="Volume"
       />
     </div>
