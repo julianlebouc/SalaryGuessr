@@ -4,18 +4,23 @@ import GamePage from "./GamePage";
 import HighLowGame from "./HighLowGame";
 import ModeSelectPage from "./ModeSelectPage";
 import BattleRoyale from "./BattleRoyale";
+import { SoundProvider } from "../sound/SoundProvider";
+import SoundToggleSlider from "../sound/SoundToggleSlider";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/mode-select" element={<ModeSelectPage />} />
-        <Route path="/game" element={<GamePage />} />
-        <Route path="/highlow" element={<HighLowGame />} />
-        <Route path="/battleroyale" element={<BattleRoyale />} />
-      </Routes>
-    </Router>
+    <SoundProvider>
+      <Router>
+        <SoundToggleSlider />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/mode-select" element={<ModeSelectPage />} />
+          <Route path="/game" element={<GamePage />} />
+          <Route path="/highlow" element={<HighLowGame />} />
+          <Route path="/battleroyale" element={<BattleRoyale />} />
+        </Routes>
+      </Router>
+    </SoundProvider>
   );
 }
 

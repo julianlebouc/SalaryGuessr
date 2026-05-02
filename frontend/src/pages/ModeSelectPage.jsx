@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/ModeSelectPage.css";
+import { useSound } from "../sound/SoundProvider";
 
 export default function ModeSelectPage() {
   const navigate = useNavigate();
+  const { play } = useSound();
   const [hoveredMode, setHoveredMode] = useState(null);
 
   const modes = [
@@ -35,6 +37,13 @@ export default function ModeSelectPage() {
       route: "/battleroyale",
     },
   ];
+
+  const handleModeSelect = (route) => {
+    play("click");
+    setTimeout(() => {
+      navigate(route);
+    }, 50);
+  };
 
   return (
     <div className="mode-container">
@@ -68,7 +77,7 @@ export default function ModeSelectPage() {
               className={`mode-item ${hoveredMode === mode.id ? "hovered" : ""}`}
               onMouseEnter={() => setHoveredMode(mode.id)}
               onMouseLeave={() => setHoveredMode(null)}
-              onClick={() => navigate(mode.route)}
+              onClick={() => handleModeSelect(mode.route)}
               style={{ '--mode-color': mode.color }}
             >
               <div className="mode-item-glow"></div>
