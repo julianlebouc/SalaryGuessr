@@ -173,7 +173,8 @@
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 40px;
-  align-items: start;
+  align-items: center;
+  
 }
 
 .hp-titleWrapper {
@@ -658,7 +659,7 @@
   justify-content: center;
 }
 
-.hp-discordButton, .hp-githubButton {
+.hp-discordButton, .hp-githubButton, .hp-linkedinButton {
   flex: 1;
   border: none;
   padding: 12px 16px;
@@ -682,7 +683,11 @@
   background: linear-gradient(135deg, #24292e, #1a1e22);
 }
 
-.hp-discordButton:hover, .hp-githubButton:hover {
+.hp-linkedinButton {
+  background: linear-gradient(135deg, #0077b5, #005582);
+}
+
+.hp-discordButton:hover, .hp-githubButton:hover, .hp-linkedinButton:hover {
   transform: translateY(-2px);
 }
 
@@ -694,7 +699,11 @@
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
-.hp-githubIcon {
+.hp-linkedinButton:hover {
+  box-shadow: 0 10px 20px rgba(0, 119, 181, 0.4);
+}
+
+.hp-githubIcon, .hp-discordIcon, .hp-linkedinIcon {
   width: 18px;
   height: 18px;
 }
