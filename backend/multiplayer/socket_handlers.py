@@ -58,8 +58,14 @@ class SocketHandlers:
         @self.sio.on("join_room")
         async def handle_join_room(sid, data):
             code = data.get("code")
+            if isinstance(code, str):
+                code = code.strip().upper()
             name = data.get("name", "Joueur")
-            
+
+            if not code:
+                await self.sio.emit("error", {"message": "Code de salle invalide"}, to=sid)
+                return
+
             player_id, error = self.room_manager.join_room(code, name, sid)
             if error:
                 await self.sio.emit("error", {"message": error}, to=sid)
@@ -73,7 +79,9 @@ class SocketHandlers:
         @self.sio.on("start_game")
         async def handle_start_game(sid, data):
             code = data.get("code")
-            
+            if isinstance(code, str):
+                code = code.strip().upper()
+
             room = self.room_manager.get_room(code)
             if not room:
                 await self.sio.emit("error", {"message": "Salle introuvable"}, to=sid)
@@ -110,6 +118,8 @@ class SocketHandlers:
         @self.sio.on("game_action")
         async def handle_game_action(sid, data):
             code = data.get("code")
+            if isinstance(code, str):
+                code = code.strip().upper()
             action = data.get("action")
             action_data = data.get("data")
             
@@ -151,6 +161,8 @@ class SocketHandlers:
         @self.sio.on("start_next_round")
         async def handle_start_next_round(sid, data):
             code = data.get("code")
+            if isinstance(code, str):
+                code = code.strip().upper()
 
             room = self.room_manager.get_room(code)
             if not room:

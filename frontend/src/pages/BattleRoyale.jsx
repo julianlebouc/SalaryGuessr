@@ -6,6 +6,19 @@ import { useSound } from "../sound/SoundProvider";
 
 const SOCKET_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
+function BrNotice({ notice, onDismiss }) {
+  if (!notice) return null;
+  const variant = notice.variant || "error";
+  return (
+    <div className={`br-notice br-notice--${variant}`} role="alert">
+      <span className="br-notice-text">{notice.message}</span>
+      <button type="button" className="br-notice-dismiss" onClick={onDismiss} aria-label="Fermer">
+        ×
+      </button>
+    </div>
+  );
+}
+
 export default function BattleRoyale() {
   const navigate = useNavigate();
   const { play } = useSound();
@@ -37,32 +50,57 @@ export default function BattleRoyale() {
   const [isWaitingNextRound, setIsWaitingNextRound] = useState(false);
   const [nextRoundTimer, setNextRoundTimer] = useState(null);
   const [isStartingGame, setIsStartingGame] = useState(false);
-  
+  const [notice, setNotice] = useState(null);
+
   const socketRef = useRef(null);
+  const playerIdRef = useRef(null);
+  const playerNameRef = useRef("");
+  const playRef = useRef(play);
 
   useEffect(() => {
-    socketRef.current = io(SOCKET_URL, {
-      transports: ["websocket", "polling"]
+    playerIdRef.current = playerId;
+  }, [playerId]);
+
+  useEffect(() => {
+    playerNameRef.current = playerName;
+  }, [playerName]);
+
+  useEffect(() => {
+    playRef.current = play;
+  }, [play]);
+
+  useEffect(() => {
+    if (!notice) return;
+    const t = setTimeout(() => setNotice(null), 8000);
+    return () => clearTimeout(t);
+  }, [notice]);
+
+  useEffect(() => {
+    const socket = io(SOCKET_URL, {
+      transports: ["websocket", "polling"],
     });
-    
-    socketRef.current.on("connect", () => {
+    socketRef.current = socket;
+
+    socket.on("connect", () => {
       console.log("✅ Socket connectée");
     });
-    
-    socketRef.current.on("room_created", (data) => {
+
+    socket.on("room_created", (data) => {
       console.log("🏠 Salle créée:", data.code);
+      setNotice(null);
       setRoomCode(data.code);
       setPlayerId(data.player_id);
       setHostId(data.player_id);
       setIsHost(true);
     });
-    
-    socketRef.current.on("joined", (data) => {
+
+    socket.on("joined", (data) => {
       console.log("📦 Rejoint la salle:", data);
+      setNotice(null);
       setPlayerId(data.player_id);
     });
-    
-    socketRef.current.on("room_state", (data) => {
+
+    socket.on("room_state", (data) => {
       console.log("📊 État de la salle:", data);
       setPlayers(data.players);
       setGameState(data.game_state);
@@ -80,13 +118,13 @@ export default function BattleRoyale() {
         setView("waiting");
       }
     });
-    
-    socketRef.current.on("player_joined", (data) => {
+
+    socket.on("player_joined", (data) => {
       console.log("👥 Joueur rejoint:", data.players);
       setPlayers(data.players);
     });
-    
-    socketRef.current.on("game_started", (data) => {
+
+    socket.on("game_started", (data) => {
       console.log("🎮 Partie démarrée");
       setIsStartingGame(false);
       setCurrentOffer(data.offer);
@@ -98,8 +136,8 @@ export default function BattleRoyale() {
       setIsWaitingNextRound(false);
       setView("playing");
     });
-    
-    socketRef.current.on("round_start", (data) => {
+
+    socket.on("round_start", (data) => {
       console.log("⏰ Round start, durée:", data.duration);
       setHasGuessed(false);
       setRoundResults(null);
@@ -113,28 +151,29 @@ export default function BattleRoyale() {
       setGameState("playing");
     });
 
-    socketRef.current.on("start_game_pending", () => {
+    socket.on("start_game_pending", () => {
       setIsStartingGame(true);
     });
 
-    socketRef.current.on("start_game_failed", (data) => {
+    socket.on("start_game_failed", (data) => {
       setIsStartingGame(false);
       if (data?.message) {
-        alert(data.message);
+        setNotice({ variant: "warning", message: data.message });
       }
     });
-    
-    socketRef.current.on("timer_update", (data) => {
+
+    socket.on("timer_update", (data) => {
       setTimer(data.remaining);
     });
-    
-    socketRef.current.on("round_end", (data) => {
+
+    socket.on("round_end", (data) => {
       console.log("📊 Fin du round:", data);
       const eliminatedSet = new Set(
         data.eliminated_ids || (data.eliminated_id ? [data.eliminated_id] : [])
       );
-      const isCurrentPlayerEliminated = playerId != null && eliminatedSet.has(playerId);
-      play(isCurrentPlayerEliminated ? "elimination" : "success");
+      const pid = playerIdRef.current;
+      const isCurrentPlayerEliminated = pid != null && eliminatedSet.has(pid);
+      playRef.current(isCurrentPlayerEliminated ? "elimination" : "success");
       setRoundResults(data);
       setRound(data.round || 1);
       setGameState("round_end");
@@ -148,49 +187,55 @@ export default function BattleRoyale() {
       );
     });
 
-    socketRef.current.on("between_round_update", (data) => {
+    socket.on("between_round_update", (data) => {
       setNextRoundTimer(data.remaining);
     });
-    
-    socketRef.current.on("game_over", (data) => {
+
+    socket.on("game_over", (data) => {
       console.log("🏆 Game over, vainqueur:", data.winner);
       const normalizedWinner = String(data.winner || "").trim().toLowerCase();
-      const normalizedPlayer = String(playerName || "").trim().toLowerCase();
-      play(normalizedWinner && normalizedWinner === normalizedPlayer ? "victory" : "elimination");
+      const normalizedPlayer = String(playerNameRef.current || "").trim().toLowerCase();
+      playRef.current(normalizedWinner && normalizedWinner === normalizedPlayer ? "victory" : "elimination");
       setWinner(data.winner);
       setGameState("game_over");
       setIsWaitingNextRound(false);
       setNextRoundTimer(null);
     });
-    
-    socketRef.current.on("action_confirmed", (data) => {
+
+    socket.on("action_confirmed", (data) => {
       if (data.action === "submit_guess") {
         setHasGuessed(true);
         setGuess("");
       }
     });
-    
-    socketRef.current.on("error", (data) => {
+
+    socket.on("error", (data) => {
       setIsStartingGame(false);
-      alert(data.message);
+      const message =
+        typeof data?.message === "string" && data.message.trim()
+          ? data.message
+          : "Une erreur est survenue.";
+      setNotice({ variant: "error", message });
     });
-    
+
     return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-      }
+      socket.disconnect();
+      socketRef.current = null;
     };
-  }, [playerName, playerId, play]);
+  }, []);
 
   useEffect(() => {
     setIsHost(Boolean(hostId && playerId && hostId === playerId));
   }, [hostId, playerId]);
 
+  const dismissNotice = () => setNotice(null);
+
   const createRoom = () => {
     if (!playerName.trim()) {
-      alert("Entrez un pseudo");
+      setNotice({ variant: "error", message: "Entrez un pseudo." });
       return;
     }
+    if (!socketRef.current) return;
     socketRef.current.emit("create_room", { 
       game_type: "battle_royale", 
       name: playerName 
@@ -199,9 +244,10 @@ export default function BattleRoyale() {
 
   const joinRoom = () => {
     if (!roomCode.trim() || !playerName.trim()) {
-      alert("Entrez le code et votre pseudo");
+      setNotice({ variant: "error", message: "Entrez le code de la salle et votre pseudo." });
       return;
     }
+    if (!socketRef.current) return;
     socketRef.current.emit("join_room", { 
       code: roomCode.toUpperCase(), 
       name: playerName 
@@ -210,9 +256,13 @@ export default function BattleRoyale() {
 
   const startGame = () => {
     if (players.length < minPlayers) {
-      alert(`Minimum ${minPlayers} joueurs requis. Actuellement: ${players.length}`);
+      setNotice({
+        variant: "warning",
+        message: `Minimum ${minPlayers} joueurs requis. Actuellement : ${players.length}.`,
+      });
       return;
     }
+    if (!socketRef.current) return;
     setIsStartingGame(true);
     socketRef.current.emit("start_game", { code: roomCode });
   };
@@ -221,9 +271,10 @@ export default function BattleRoyale() {
     if (!guess || hasGuessed) return;
     const val = parseInt(guess);
     if (isNaN(val) || val <= 0) {
-      alert("Entrez un salaire valide");
+      setNotice({ variant: "error", message: "Entrez un salaire valide (nombre positif)." });
       return;
     }
+    if (!socketRef.current) return;
     socketRef.current.emit("game_action", {
       code: roomCode,
       action: "submit_guess",
@@ -232,6 +283,7 @@ export default function BattleRoyale() {
   };
 
   const startNextRoundNow = () => {
+    if (!socketRef.current) return;
     socketRef.current.emit("start_next_round", { code: roomCode });
   };
 
@@ -251,7 +303,9 @@ export default function BattleRoyale() {
           <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
           <span>SalaryGuessr</span>
         </button>
-        
+
+        <BrNotice notice={notice} onDismiss={dismissNotice} />
+
         <div className="br-card">
           <div className="gp-cardGlow" />
           <div className="gp-cardShine"></div>
@@ -334,7 +388,9 @@ export default function BattleRoyale() {
           <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
           <span>SalaryGuessr</span>
         </button>
-        
+
+        <BrNotice notice={notice} onDismiss={dismissNotice} />
+
         <div className="br-card">
           <div className="gp-cardGlow" />
           <div className="gp-cardShine"></div>
@@ -413,7 +469,9 @@ export default function BattleRoyale() {
         <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
         <span>SalaryGuessr</span>
       </button>
-      
+
+      <BrNotice notice={notice} onDismiss={dismissNotice} />
+
       <div className="br-game-layout">
         {/* Sidebar des joueurs */}
         <div className="br-sidebar">

@@ -62,6 +62,8 @@ class RoomManager:
         Ajoute un joueur à une salle.
         Retourne (id_joueur, message_erreur)
         """
+        if isinstance(code, str):
+            code = code.strip().upper()
         room = self._rooms.get(code)
         if not room:
             return None, "Salle introuvable"
@@ -83,6 +85,8 @@ class RoomManager:
         return player.id, None
     
     def get_room(self, code: str) -> Optional[GameRoom]:
+        if isinstance(code, str):
+            code = code.strip().upper()
         return self._rooms.get(code)
     
     def get_room_state(self, code: str) -> Optional[Dict]:
