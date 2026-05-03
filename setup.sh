@@ -24,7 +24,7 @@ python3 -m venv venv
 echo "Installation des packages Python..."
 source venv/bin/activate
 pip install --upgrade pip
-pip install fastapi "uvicorn[standard]" requests beautifulsoup4 python-dotenv python-socketio==5.9.0 python-engineio==4.7.0 websockets wsproto sphinx sphinx-rtd-theme
+pip install fastapi "uvicorn[standard]" requests beautifulsoup4 python-dotenv python-socketio==5.9.0 python-engineio==4.7.0 websockets wsproto sphinx sphinx-rtd-theme pytest pytest-asyncio httpx pytest-cov
 
 echo ""
 echo "Backend installe avec succes !"

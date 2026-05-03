@@ -18,6 +18,12 @@ SalaryGuessr is an interactive web game where you test your knowledge of salarie
 - Guess which offer has the higher salary
 - Endless chain of comparisons
 
+### Battle Royale Mode
+- Multiplayer game with 5 to 50 players
+- All players guess the salary of the same job offer at the same time
+- Every round, the player with the worst guess is eliminated
+- The game ends when there is only one player left
+
 ## 📋 Prerequisites
 
 - Node.js (v18 or higher)
@@ -96,3 +102,42 @@ sphinx-build -b html docs docs/_build
 ```
 
 The documentation will be generated in `backend/docs/_build/index.html`.
+
+## 🧪 Testing & Coverage
+
+A comprehensive testing suite for both the frontend and backend.
+
+### Unified Testing
+You can run all tests for the entire project with a single command:
+- **Windows**: `test.bat`
+- **Linux**: `./test.sh`
+
+### Manual Execution
+
+#### Backend (Pytest)
+To run all backend tests manually:
+```bash
+# Activate venv first
+python -m pytest backend/tests/
+```
+
+To generate a coverage report:
+```bash
+python -m pytest --cov=backend backend/tests/ --cov-report=html:backend/htmlcov
+```
+The report will be available in `backend/htmlcov/index.html`.
+
+#### Frontend (Vitest)
+To run all frontend tests manually:
+```bash
+cd frontend
+npm test
+```
+
+To generate a coverage report:
+```bash
+cd frontend
+npm run coverage
+```
+The report will be available in `frontend/coverage/index.html`.
+
