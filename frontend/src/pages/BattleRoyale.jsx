@@ -685,7 +685,17 @@ export default function BattleRoyale() {
                 <div className="br-ranking-header">
                   <span>#</span><span>JOUEUR</span><span>ESTIMATION</span><span>ÉCART</span>
                 </div>
-                {roundResults.results.map((r, idx) => (
+                {[...roundResults.results]
+                  .sort((a, b) => {
+                    const aElim = eliminatedIds.has(a.player_id);
+                    const bElim = eliminatedIds.has(b.player_id);
+                    if (aElim !== bElim) return aElim ? -1 : 1;
+                    const aErr = Number.isFinite(a.error) ? Math.abs(a.error) : Infinity;
+                    const bErr = Number.isFinite(b.error) ? Math.abs(b.error) : Infinity;
+                    if (aErr !== bErr) return aErr - bErr;
+                    return String(a.name ?? "").localeCompare(String(b.name ?? ""));
+                  })
+                  .map((r, idx) => (
                   <div 
                     key={r.player_id} 
                     className={`br-ranking-row ${
@@ -699,7 +709,7 @@ export default function BattleRoyale() {
                       {Number.isFinite(r.error) ? `${Math.abs(r.error).toFixed(1)}€` : "∞"}
                     </span>
                   </div>
-                ))}
+                  ))}
               </div>
               
               {isWaitingNextRound && isHost && !roundResults?.will_game_over && (
