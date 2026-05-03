@@ -16,7 +16,7 @@ export default function SoundToggleSlider() {
   };
 
   return (
-    <div className="sg-sound-slider-wrap" aria-label="Contrôle du volume des sons">
+    <div className="sg-sound-slider-wrap">
       <button
         type="button"
         className="sg-sound-icon-btn"
