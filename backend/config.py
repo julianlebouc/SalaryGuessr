@@ -19,10 +19,10 @@ CORS_ORIGINS = [origin.strip() for origin in CORS_ORIGINS]
 # ==========================================================
 # BATTLE ROYALE CONFIGURATION
 # ==========================================================
-BR_MIN_PLAYERS = 2
+BR_MIN_PLAYERS = 5
 BR_MAX_PLAYERS = 50
 BR_ROUND_DURATION = 30
-BR_PAUSE_BETWEEN_ROUNDS = 10000
+BR_PAUSE_BETWEEN_ROUNDS = 10
 
 # ==========================================================
 # FRANCE TRAVAIL API CONFIG
