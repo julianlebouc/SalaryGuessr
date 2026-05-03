@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
     "framer-motion": "^12.38.0",
@@ -19,7 +18,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
     "eject": "react-scripts eject",
     "docs": "jsdoc -c jsdoc.json"
   },
@@ -27,9 +27,15 @@
     "@babel/core": "^7.29.0",
     "@babel/preset-react": "^7.28.5",
     "@jsdoc/salty": "^0.2.12",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.5",
     "better-docs": "^2.7.3",
     "jsdoc": "^4.0.4",
-    "jsdoc-babel": "^0.5.0"
+    "jsdoc-babel": "^0.5.0",
+    "jsdom": "^29.1.1",
+    "vite-plugin-svgr": "^5.2.0",
+    "vitest": "^4.1.5"
   },
   "eslintConfig": {
     "extends": [
