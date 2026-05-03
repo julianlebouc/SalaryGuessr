@@ -3,6 +3,7 @@
   --app-bg: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   --app-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-bg-red: rgba(255, 100, 100, 0.30);
   --glass-bg-strong: rgba(255, 255, 255, 0.95);
   --glass-border: rgba(255, 255, 255, 0.3);
   --glass-border-soft: rgba(255, 255, 255, 0.2);

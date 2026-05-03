@@ -699,12 +699,19 @@
 /* Mode spectateur */
 .br-spectator-card {
   margin-top: 20px;
+  margin-bottom: 20px;
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
   border: 2px solid var(--glass-border);
   border-radius: 48px;
   padding: 0px;
   text-align: center;
+  animation: br-eliminated-pulse 1.5s ease-in-out alternate infinite;
+}
+
+@keyframes br-eliminated-pulse {
+  0% { background: var(--glass-bg); }
+  100% { background: var(--glass-bg-red); }
 }
 
 .br-spectator-content {

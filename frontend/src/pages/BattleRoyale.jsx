@@ -651,6 +651,17 @@ export default function BattleRoyale() {
           {/* ROUND RESULTS */}
           {roundResults && !winner && (
             <div className="br-results-card">
+              {/* SPECTATOR MODE */}
+              {isEliminated && !winner && gameState !== "playing" && (
+                <div className="br-spectator-card">
+                  <div className="gp-cardGlow" />
+                  <div className="gp-cardShine"></div>
+                  <div className="br-spectator-content">
+                    <span>⛔</span>
+                    <h3>Vous avez été éliminé</h3>
+                  </div>
+                </div>
+              )}
               <div className="gp-cardGlow" />
               <div className="gp-cardShine"></div>
               
@@ -778,19 +789,6 @@ export default function BattleRoyale() {
                   ✅ En attente des autres joueurs...
                 </div>
               )}
-            </div>
-          )}
-          
-          {/* SPECTATOR MODE */}
-          {isEliminated && !winner && gameState !== "playing" && (
-            <div className="br-spectator-card">
-              <div className="gp-cardGlow" />
-              <div className="gp-cardShine"></div>
-              <div className="br-spectator-content">
-                <span>👀</span>
-                <h3>Mode spectateur</h3>
-                <p>Vous avez été éliminé à la manche {displayedRound}</p>
-              </div>
             </div>
           )}
         </div>
