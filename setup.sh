@@ -43,8 +43,7 @@ fi
 
 cd frontend
 echo "Installation des packages Node..."
-npm install
-npm install framer-motion recharts socket.io-client@4.5.4
+npm install --legacy-peer-deps
 
 echo ""
 echo "Frontend installe avec succes !"

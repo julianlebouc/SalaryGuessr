@@ -5,6 +5,16 @@ import { ReactComponent as GithubIcon } from '../assets/github.svg';
 import { ReactComponent as LinkedinIcon } from '../assets/linkedin.svg';
 import "../styles/HomePage.css";
 
+/**
+ * @module Pages/HomePage
+ */
+
+/**
+ * Home page for SalaryGuessr.
+ * Displays the app landing experience and navigates to game mode selection.
+ * @component
+ * @returns {JSX.Element}
+ */
 export default function HomePage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -18,6 +28,11 @@ export default function HomePage() {
     return () => clearTimeout(timer);
   }, []);
 
+/**
+   * Navigate to the mode selection screen.
+   * @memberof module:Pages/HomePage
+   * @returns {void}
+   */
   const goToModeSelect = () => {
     setLoading(true);
     setTimeout(() => {
@@ -25,6 +40,11 @@ export default function HomePage() {
     }, 1);
   };
 
+/**
+   * Copy Discord ID and open the Discord profile in a new tab.
+   * @memberof module:Pages/HomePage
+   * @returns {void}
+   */
   const contactDiscord = () => {
     navigator.clipboard.writeText(discordId);
     const btn = document.querySelector('.hp-discordButton');
@@ -37,19 +57,19 @@ export default function HomePage() {
 
   return (
     <div className="hp-container">
-      {/* Bulles cartoon flottantes */}
+      {/* Floating cartoon bubbles */}
       <div className="hp-bubble hp-bubble-1">💰</div>
       <div className="hp-bubble hp-bubble-2">🎯</div>
       <div className="hp-bubble hp-bubble-3">⚡</div>
       <div className="hp-bubble hp-bubble-4">🎮</div>
       <div className="hp-bubble hp-bubble-5">💵</div>
       
-      {/* Orbes de fond */}
+      {/* Background orbs */}
       <div className="hp-bgOrb hp-orb1" />
       <div className="hp-bgOrb hp-orb2" />
       <div className="hp-bgOrb hp-orb3" />
 
-      {/* Personnage cartoon */}
+      {/* Cartoon character */}
       <div className="hp-character">
         <div className="hp-character-face">
           <div className="hp-eye hp-eye-left">

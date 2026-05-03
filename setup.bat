@@ -44,8 +44,7 @@ if exist "frontend\node_modules" (
 
 cd frontend
 echo Installation des packages Node...
-call npm install
-call npm install framer-motion recharts socket.io-client@4.5.4
+call npm install --legacy-peer-deps
 
 echo.
 echo Frontend installe avec succes !

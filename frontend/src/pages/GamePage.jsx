@@ -24,6 +24,16 @@ const REFILL_THRESHOLD = 1;
 const MAX_FETCH_ATTEMPTS = 20;
 const PARALLEL_REQUESTS = 4;
 
+/**
+ * @module Pages/GamePage
+ */
+
+/**
+ * Classic single-player game page.
+ * Controls game state, loading, scoring, and rounds.
+ * @component
+ * @returns {JSX.Element}
+ */
 export default function GamePage() {
   const navigate = useNavigate();
   const { play } = useSound();
@@ -52,6 +62,11 @@ export default function GamePage() {
   const seenIdsRef = useRef(new Set());
   const lastJobIdRef = useRef(null);
 
+/**
+   * Fetch a normalized job with a valid salary, retrying until one is obtained.
+   * @memberof module:Pages/GamePage
+   * @returns {Promise<object>}
+   */
   const fetchNormalizedJobWithSalary = async () => {
     while (true) {
       try {
@@ -66,6 +81,12 @@ export default function GamePage() {
     }
   };
 
+/**
+   * Fetch multiple normalized jobs in parallel.
+   * @memberof module:Pages/GamePage
+   * @param {number} count
+   * @returns {Promise<object[]>}
+   */
   const fetchJobsParallel = async (count) => {
     const promises = Array.from({ length: count }, () =>
       fetchNormalizedJobWithSalary().catch(() => null)
@@ -74,6 +95,12 @@ export default function GamePage() {
     return results.filter(Boolean);
   };
 
+/**
+   * Remove duplicate jobs from an array based on their id.
+   * @memberof module:Pages/GamePage
+   * @param {object[]} jobs
+   * @returns {object[]}
+   */
   const dedupeJobs = (jobs) => {
     const seen = new Set();
     return jobs.filter((job) => {
@@ -87,6 +114,12 @@ export default function GamePage() {
   useEffect(() => { jobBufferRef.current = jobBuffer; }, [jobBuffer]);
   useEffect(() => { currentJobRef.current = currentJob; }, [currentJob]);
 
+/**
+   * Ensure the job buffer contains a minimum number of preload jobs.
+   * @memberof module:Pages/GamePage
+   * @param {number} [targetSize=BUFFER_TARGET]
+   * @returns {Promise<object[]>}
+   */
   const refillBuffer = useCallback(async (targetSize = BUFFER_TARGET) => {
     if (refillPromiseRef.current) return refillPromiseRef.current;
 
@@ -126,6 +159,11 @@ export default function GamePage() {
     void refillBuffer(Math.min(maxRounds - round - 1, BUFFER_TARGET));
   }, [page, currentJob, jobBuffer.length, refillBuffer, maxRounds, round]);
 
+/**
+   * Reset all game state values for a fresh start.
+   * @memberof module:Pages/GamePage
+   * @returns {void}
+   */
   const resetGameState = () => {
     setRound(0);
     setScore(0);
@@ -140,6 +178,11 @@ export default function GamePage() {
     lastJobIdRef.current = null;
   };
 
+/**
+   * Start a new game by fetching the first job and initializing state.
+   * @memberof module:Pages/GamePage
+   * @returns {Promise<void>}
+   */
   const startGame = async () => {
     play("gamestart");
     setLoadingStart(true);
@@ -157,12 +200,23 @@ export default function GamePage() {
     void refillBuffer(Math.min(maxRounds - 1, BUFFER_TARGET));
   };
 
+/**
+   * Choose which sound to play based on the score of the current round.
+   * @memberof module:Pages/GamePage
+   * @param {number} roundScoreValue
+   * @returns {string}
+   */
   const getRoundEndSound = (roundScoreValue) => {
     if (roundScoreValue < 33) return "roundEnd1";
     if (roundScoreValue < 66) return "roundEnd2";
     return "roundEnd3";
   };
 
+/**
+   * Validate the current estimate and compute score and result state.
+   * @memberof module:Pages/GamePage
+   * @returns {void}
+   */
   const validate = () => {
     if (!currentJob) return;
 
@@ -203,6 +257,11 @@ export default function GamePage() {
     void refillBuffer(BUFFER_TARGET);
   };
 
+/**
+   * Advance to the next round and preload the next job if needed.
+   * @memberof module:Pages/GamePage
+   * @returns {Promise<void>}
+   */
   const nextRound = async () => {
     const nextIndex = round + 1;
 
@@ -254,6 +313,11 @@ export default function GamePage() {
     }
   };
 
+/**
+   * Navigate back to the home page.
+   * @memberof module:Pages/GamePage
+   * @returns {void}
+   */
   const goHome = () => navigate("/");
 
   // SETTINGS PAGE

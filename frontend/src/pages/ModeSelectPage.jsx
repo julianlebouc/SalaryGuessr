@@ -3,6 +3,16 @@ import { useNavigate } from "react-router-dom";
 import "../styles/ModeSelectPage.css";
 import { useSound } from "../sound/SoundProvider";
 
+/**
+ * @module Pages/ModeSelectPage
+ */
+
+/**
+ * Mode selection page component.
+ * Allows the player to choose between game modes.
+ * @component
+ * @returns {JSX.Element}
+ */
 export default function ModeSelectPage() {
   const navigate = useNavigate();
   const { play } = useSound();
@@ -38,6 +48,12 @@ export default function ModeSelectPage() {
     },
   ];
 
+/**
+   * Handle mode selection and navigate to the chosen route.
+   * @memberof module:Pages/ModeSelectPage
+   * @param {string} route
+   * @returns {void}
+   */
   const handleModeSelect = (route) => {
     if (route === "/highlow") {
       play("gamestart");

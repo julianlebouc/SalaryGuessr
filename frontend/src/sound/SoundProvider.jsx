@@ -8,6 +8,35 @@ const SoundContext = createContext({
 
 const SOUND_VOLUME_STORAGE_KEY = "salaryguessr_sound_volume";
 
+/**
+ * @typedef {Object} PlayToneOptions
+ * @property {number} frequency
+ * @property {number} [volume]
+ * @property {number} [duration]
+ * @property {string} [type]
+ * @property {number} [delay]
+ */
+
+/**
+ * @typedef {Object} SoundContextValue
+ * @property {number} volume
+ * @property {function(number): void} setVolume
+ * @property {function(string=): Promise<void>} play
+ */
+
+/**
+ * @module Sound/SoundProvider
+ */
+
+/**
+ * Create a gain node with a quick attack and decay envelope.
+ * @memberof module:Sound/SoundProvider
+ * @param {AudioContext} audioCtx
+ * @param {number} [volume=1]
+ * @param {number} [duration=0.08]
+ * @param {number|null} [startTime=null]
+ * @returns {GainNode}
+ */
 function createEnvelopeGain(audioCtx, volume = 1, duration = 0.08, startTime = null) {
   const gainNode = audioCtx.createGain();
   const now = startTime !== null ? startTime : audioCtx.currentTime;
@@ -18,6 +47,13 @@ function createEnvelopeGain(audioCtx, volume = 1, duration = 0.08, startTime = n
   return gainNode;
 }
 
+/**
+ * Play a single tone using an oscillator and envelope.
+ * @memberof module:Sound/SoundProvider
+ * @param {AudioContext} audioCtx
+ * @param {PlayToneOptions} options
+ * @returns {void}
+ */
 function playTone(audioCtx, { frequency, volume = 1, duration = 0.08, type = "sine", delay = 0 }) {
   const osc = audioCtx.createOscillator();
   const startAt = audioCtx.currentTime + delay;
@@ -32,6 +68,12 @@ function playTone(audioCtx, { frequency, volume = 1, duration = 0.08, type = "si
   osc.stop(startAt + duration + 0.01);
 }
 
+/**
+ * Provides global sound context for the app.
+ * @component
+ * @param {{children: React.ReactNode}} props
+ * @returns {JSX.Element}
+ */
 export function SoundProvider({ children }) {
   const [volume, setVolumeState] = useState(() => {
     const stored = localStorage.getItem(SOUND_VOLUME_STORAGE_KEY);
@@ -41,6 +83,11 @@ export function SoundProvider({ children }) {
   });
   const audioCtxRef = useRef(null);
 
+/**
+   * Create or resume a web audio context for sound playback.
+   * @memberof module:Sound/SoundProvider
+   * @returns {Promise<AudioContext|null>}
+   */
   const ensureAudioContext = useCallback(async () => {
     if (!audioCtxRef.current) {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -57,6 +104,12 @@ export function SoundProvider({ children }) {
     return audioCtxRef.current;
   }, []);
 
+/**
+   * Play a sound effect by kind if audio is enabled.
+   * @memberof module:Sound/SoundProvider
+   * @param {string} [kind="click"]
+   * @returns {Promise<void>}
+   */
   const play = useCallback(
     async (kind = "click") => {
       if (volume <= 0) return;
@@ -154,6 +207,11 @@ export function SoundProvider({ children }) {
     [volume, ensureAudioContext]
   );
 
+/**
+   * Update the sound volume and persist it in local storage.
+   * @memberof module:Sound/SoundProvider
+   * @param {number} nextVolume
+   */
   const setVolume = useCallback((nextVolume) => {
     const safeVolume = Math.min(1, Math.max(0, nextVolume));
     setVolumeState(safeVolume);
@@ -178,6 +236,10 @@ export function SoundProvider({ children }) {
   return <SoundContext.Provider value={value}>{children}</SoundContext.Provider>;
 }
 
+/**
+ * Access the sound context from a component.
+ * @returns {SoundContextValue}
+ */
 export function useSound() {
   return useContext(SoundContext);
 }

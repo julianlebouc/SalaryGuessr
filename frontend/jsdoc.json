@@ -1,0 +1,51 @@
+{
+  "source": {
+    "include": [
+      "src"
+    ],
+    "includePattern": ".+\\.jsx?$",
+    "excludePattern": "(^|\\/)_(.*)$"
+  },
+  "sourceType": "module",
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": [
+      "jsdoc",
+      "closure"
+    ]
+  },
+  "opts": {
+    "destination": "docs/jsdoc",
+    "recurse": true,
+    "private": true,
+    "template": "node_modules/better-docs"
+  },
+  "plugins": [
+    "plugins/markdown",
+    "jsdoc-babel",
+    "node_modules/better-docs/component"
+  ],
+  "babel": {
+    "presets": [
+      "@babel/preset-react"
+    ]
+  },
+  "templates": {
+    "default": {
+      "includeDate": false,
+      "useLongnameInNav": true
+    },
+    "better-docs": {
+      "name": "SalaryGuessr Frontend",
+      "logo": "public/logo512.svg",
+      "hideGenerator": true,
+      "navigation": [
+        {
+          "label": "GitHub",
+          "href": "https://github.com/julianlebouc/SalaryGuessr",
+          "target": "_blank"
+        }
+      ]
+    }
+  }
+}
