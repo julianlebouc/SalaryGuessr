@@ -200,14 +200,14 @@
   display: inline-flex;
   align-items: center;
   background: linear-gradient(
-    -120deg, 
-    #ffd93d 0%,
-    #ffd93d 30%,
-    #ff8a65 45%,
-    #ff6b6b 50%,
-    #ff8a65 55%,
-    #ffd93d 70%,
-    #ffd93d 100%
+    -60deg, 
+    #fff 0%,
+    #fff 30%,
+    #fffab1 40%,
+    #ffd93d 50%,
+    #fffab1 60%,
+    #fff 70%,
+    #fff 100%
   );
   background-size: 300% 100%;
   background-position: 100% 50%;
