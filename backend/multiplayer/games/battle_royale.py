@@ -1,3 +1,8 @@
+"""
+Battle Royale game mode implementation.
+Players guess salaries, and the furthest guesser (or non-answerers) are eliminated each round.
+"""
+
 from typing import Dict, Any, Tuple, Optional, List
 from backend.config import BR_MIN_PLAYERS, BR_MAX_PLAYERS, BR_ROUND_DURATION, BR_PAUSE_BETWEEN_ROUNDS
 from backend.services.offer_pool import get_normalized_job
@@ -5,7 +10,10 @@ from backend.multiplayer.base import BaseGame, GameRoom, GameState, Player
 
 
 class BattleRoyaleGame(BaseGame):
-    """Mode de jeu Battle Royale"""
+    """
+    Battle Royale logic.
+    Eliminates players round by round until one winner remains.
+    """
     
     @property
     def game_type(self) -> str:
@@ -28,26 +36,31 @@ class BattleRoyaleGame(BaseGame):
         return BR_PAUSE_BETWEEN_ROUNDS
     
     def can_start(self, room: GameRoom) -> Tuple[bool, str]:
+        """Check if enough players are in the room."""
         if len(room.players) < self.min_players:
-            return False, f"Minimum {self.min_players} joueurs requis"
+            return False, f"Minimum {self.min_players} players required"
         return True, ""
     
     def on_game_start(self, room: GameRoom) -> Dict[str, Any]:
-        """Démarre la partie"""
+        """
+        Initialize the game state with the first round and job offer.
+        """
         room.game_data = {
             "round": 1,
             "guesses": {},
             "current_offer": get_normalized_job()
         }
-        print(f"[BATTLE] Partie démarrée avec offre: {room.game_data['current_offer'].get('intitule')}")
-        print(f"[BATTLE] Salaire: {room.game_data['current_offer'].get('salary_real')} €")
+        print(f"[BATTLE] Game started with offer: {room.game_data['current_offer'].get('intitule')}")
+        print(f"[BATTLE] Real salary: {room.game_data['current_offer'].get('salary_real')} EUR")
         return {
             "offer": room.game_data["current_offer"],
             "round": room.game_data["round"]
         }
     
     def on_round_start(self, room: GameRoom) -> Dict[str, Any]:
-        """Démarre un round"""
+        """
+        Prepare data for the current round.
+        """
         room.game_data["guesses"] = {}
         return {
             "duration": self.round_duration,
@@ -56,7 +69,9 @@ class BattleRoyaleGame(BaseGame):
         }
     
     def on_player_action(self, room: GameRoom, player_id: str, action: str, data: Any) -> Tuple[bool, Optional[Dict]]:
-        """Traite l'action d'un joueur (soumettre une estimation)"""
+        """
+        Process a guess submission from a player.
+        """
         if action != "submit_guess":
             return False, None
         
@@ -75,17 +90,19 @@ class BattleRoyaleGame(BaseGame):
             return False, None
         
         room.game_data["guesses"][player_id] = int(guess)
-        print(f"[BATTLE] {player.name} a deviné {guess}")
+        print(f"[BATTLE] {player.name} guessed {guess}")
         
         return True, {"player_id": player_id, "guess": guess}
     
     def on_round_end(self, room: GameRoom) -> Dict[str, Any]:
-        """Calcule les résultats du round"""
+        """
+        Calculate results, determine error margins, and eliminate the furthest guesser.
+        """
         current_offer = room.game_data["current_offer"]
         real_salary = current_offer.get("salary_real", 0)
         
-        print(f"[BATTLE] Fin du round {room.game_data['round']}")
-        print(f"[BATTLE] Salaire réel: {real_salary} €")
+        print(f"[BATTLE] Round {room.game_data['round']} ended")
+        print(f"[BATTLE] Real salary: {real_salary} EUR")
         
         alive_players = room.get_alive_players()
         
@@ -111,11 +128,12 @@ class BattleRoyaleGame(BaseGame):
         
         no_answer_results = [r for r in results if r["guess"] is None]
         guessed_results = [r for r in results if r["guess"] is not None]
+        # Sort by error descending to find the worst guess
         guessed_results.sort(key=lambda x: x["error"], reverse=True)
 
         eliminated_ids = {r["player_id"] for r in no_answer_results}
 
-        # Éliminer aussi le plus éloigné uniquement si au moins 2 joueurs ont répondu.
+        # Eliminate the furthest guesser only if at least 2 players answered.
         furthest_result = guessed_results[0] if len(guessed_results) >= 2 else None
         if furthest_result:
             eliminated_ids.add(furthest_result["player_id"])
@@ -126,7 +144,7 @@ class BattleRoyaleGame(BaseGame):
             if eliminated_player and eliminated_player.is_alive:
                 eliminated_player.is_alive = False
                 eliminated_names.append(eliminated_player.name)
-                print(f"[BATTLE] {eliminated_player.name} est éliminé")
+                print(f"[BATTLE] {eliminated_player.name} was eliminated")
         
         public_results = [
             {k: v for k, v in result.items() if k != "rank_error"}
@@ -135,7 +153,7 @@ class BattleRoyaleGame(BaseGame):
         
         current_round = room.game_data["round"]
         
-        # Préparer le prochain round
+        # Prepare for the next round
         room.game_data["round"] += 1
         room.game_data["current_offer"] = get_normalized_job()
         room.game_data["guesses"] = {}
@@ -154,12 +172,12 @@ class BattleRoyaleGame(BaseGame):
         }
     
     def on_game_over(self, room: GameRoom) -> Dict[str, Any]:
-        """Vérifie si la partie est terminée et retourne le vainqueur"""
+        """Check if only one player remains and declare them the winner."""
         alive_players = room.get_alive_players()
         
         if len(alive_players) <= 1:
             winner = alive_players[0].name if alive_players else None
-            print(f"[BATTLE] Partie terminée! Vainqueur: {winner}")
+            print(f"[BATTLE] Game Over! Winner: {winner}")
             return {
                 "is_over": True,
                 "winner": winner
@@ -168,7 +186,7 @@ class BattleRoyaleGame(BaseGame):
         return {"is_over": False}
     
     def get_room_state(self, room: GameRoom) -> Dict[str, Any]:
-        """Retourne l'état public de la salle"""
+        """Return public state of the room."""
         return {
             "round": room.game_data.get("round", 0),
             "current_offer": room.game_data.get("current_offer"),

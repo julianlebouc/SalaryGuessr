@@ -1,3 +1,8 @@
+"""
+Global Room Manager for handling multiplayer game sessions.
+Implements a singleton pattern to manage game rooms and types.
+"""
+
 import time
 import random
 from typing import Dict, Optional, Tuple, List
@@ -5,11 +10,17 @@ from .base import GameRoom, Player, BaseGame
 
 
 class RoomManager:
-    """Gestionnaire générique des salles de jeu"""
+    """
+    Generic manager for game rooms.
+    Handles creation, joining, and state retrieval for multiplayer sessions.
+    """
     
     _instance = None
     
     def __new__(cls):
+        """
+        Singleton implementation for RoomManager.
+        """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._rooms = {}
@@ -17,12 +28,22 @@ class RoomManager:
         return cls._instance
     
     def register_game(self, game: BaseGame) -> None:
-        """Enregistre un mode de jeu"""
+        """
+        Register a game mode into the manager.
+        
+        Args:
+            game (BaseGame): An instance of a game class inheriting from BaseGame.
+        """
         self._games[game.game_type] = game
-        print(f"[ROOM] Mode de jeu enregistré: {game.game_type}")
+        print(f"[ROOM] Game mode registered: {game.game_type}")
     
     def generate_room_code(self) -> str:
-        """Génère un code de salle unique"""
+        """
+        Generate a unique 6-character uppercase alphanumeric room code.
+        
+        Returns:
+            str: A unique room code.
+        """
         chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         while True:
             code = ''.join(random.choices(chars, k=6))
@@ -31,12 +52,22 @@ class RoomManager:
     
     def create_room(self, game_type: str, host_name: str, host_sid: str) -> Tuple[str, str]:
         """
-        Crée une nouvelle salle.
-        Retourne (code_salle, id_joueur_hote)
+        Create a new game room.
+        
+        Args:
+            game_type (str): The registered type of game to play.
+            host_name (str): Display name of the host player.
+            host_sid (str): Socket ID of the host.
+            
+        Returns:
+            Tuple[str, str]: A tuple containing (room_code, host_player_id).
+            
+        Raises:
+            ValueError: If the game_type is not registered.
         """
         game = self._games.get(game_type)
         if not game:
-            raise ValueError(f"Mode de jeu inconnu: {game_type}")
+            raise ValueError(f"Unknown game mode: {game_type}")
         
         code = self.generate_room_code()
         player_id = str(Player().id)
@@ -54,43 +85,68 @@ class RoomManager:
         
         self._rooms[code] = room
         
-        print(f"[ROOM] Salle {code} créée pour {game_type} par {host_name}")
+        print(f"[ROOM] Room {code} created for {game_type} by {host_name}")
         return code, player_id
     
     def join_room(self, code: str, player_name: str, sid: str) -> Tuple[Optional[str], Optional[str]]:
         """
-        Ajoute un joueur à une salle.
-        Retourne (id_joueur, message_erreur)
+        Add a player to an existing room.
+        
+        Args:
+            code (str): The room code.
+            player_name (str): Display name of the joining player.
+            sid (str): Socket ID of the joining player.
+            
+        Returns:
+            Tuple[Optional[str], Optional[str]]: (player_id, error_message). 
+            If player_id is None, error_message contains the reason.
         """
         if isinstance(code, str):
             code = code.strip().upper()
         room = self._rooms.get(code)
         if not room:
-            return None, "Salle introuvable"
+            return None, "Room not found"
         
         game = self._games.get(room.game_type)
         if not game:
-            return None, "Mode de jeu invalide"
+            return None, "Invalid game mode"
         
         if room.game_state.value != "waiting":
-            return None, "La partie a déjà commencé"
+            return None, "Game has already started"
         
         if len(room.players) >= game.max_players:
-            return None, f"Salle pleine (max {game.max_players})"
+            return None, f"Room full (max {game.max_players})"
         
         player = Player(name=player_name, sid=sid)
         room.add_player(player)
         
-        print(f"[ROOM] {player_name} a rejoint {code} ({len(room.players)}/{game.max_players})")
+        print(f"[ROOM] {player_name} joined {code} ({len(room.players)}/{game.max_players})")
         return player.id, None
     
     def get_room(self, code: str) -> Optional[GameRoom]:
+        """
+        Retrieve a GameRoom object by its code.
+        
+        Args:
+            code (str): The room code.
+            
+        Returns:
+            Optional[GameRoom]: The room instance if found.
+        """
         if isinstance(code, str):
             code = code.strip().upper()
         return self._rooms.get(code)
     
     def get_room_state(self, code: str) -> Optional[Dict]:
-        """Retourne l'état public d'une salle"""
+        """
+        Retrieve the public state of a room for synchronization with clients.
+        
+        Args:
+            code (str): The room code.
+            
+        Returns:
+            Optional[Dict]: A dictionary containing players, game state, and metadata.
+        """
         room = self._rooms.get(code)
         if not room:
             return None
@@ -112,25 +168,42 @@ class RoomManager:
         }
     
     def remove_player(self, code: str, player_id: str) -> None:
-        """Retire un joueur d'une salle"""
+        """
+        Remove a player from a room. Deletes the room if it becomes empty.
+        
+        Args:
+            code (str): The room code.
+            player_id (str): The unique identifier of the player.
+        """
         room = self._rooms.get(code)
         if room:
             room.remove_player(player_id)
-            print(f"[ROOM] Joueur {player_id} a quitté {code}")
+            print(f"[ROOM] Player {player_id} left {code}")
             
-            # Si la salle est vide, la supprimer
+            # If the room is empty, delete it
             if len(room.players) == 0:
                 del self._rooms[code]
-                print(f"[ROOM] Salle {code} supprimée (vide)")
+                print(f"[ROOM] Room {code} deleted (empty)")
     
     def get_game(self, code: str) -> Optional[BaseGame]:
+        """
+        Get the game logic instance associated with a room.
+        """
         room = self._rooms.get(code)
         if not room:
             return None
         return self._games.get(room.game_type)
     
     def get_room_by_sid(self, sid: str) -> Optional[Tuple[str, GameRoom]]:
-        """Trouve la salle contenant un joueur par son SID"""
+        """
+        Find the room containing a player by their Socket ID.
+        
+        Args:
+            sid (str): The socket identifier.
+            
+        Returns:
+            Optional[Tuple[str, GameRoom]]: (room_code, GameRoom instance) if found.
+        """
         for code, room in self._rooms.items():
             for player in room.players.values():
                 if player.sid == sid:
@@ -138,10 +211,13 @@ class RoomManager:
         return None
 
 
-# Singleton
+# Singleton helper
 _room_manager = None
 
 def get_room_manager() -> RoomManager:
+    """
+    Get the global RoomManager singleton instance.
+    """
     global _room_manager
     if _room_manager is None:
         _room_manager = RoomManager()

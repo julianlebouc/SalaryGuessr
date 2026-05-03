@@ -1,3 +1,8 @@
+"""
+Service for interacting with the France Travail API (formerly Pôle Emploi).
+Handles OAuth2 token management and job offer fetching.
+"""
+
 import requests
 import random
 import time
@@ -10,13 +15,26 @@ token_expiry = 0
 token_lock = threading.Lock()
 
 def get_access_token(force_refresh=False):
+    """
+    Retrieve an OAuth2 access token for the France Travail API.
+    Uses a thread-safe cache to avoid redundant token generation.
+    
+    Args:
+        force_refresh (bool): If True, bypasses the cache and generates a new token.
+        
+    Returns:
+        str: The access token.
+        
+    Raises:
+        Exception: If token generation fails.
+    """
     global token_cache, token_expiry
     
     with token_lock:
         if not force_refresh and token_cache and time.time() < token_expiry:
             return token_cache
         
-        print("[TOKEN] Génération d'un nouveau token...")
+        print("[TOKEN] Generating a new token...")
         
         payload = {
             "grant_type": "client_credentials",
@@ -33,14 +51,24 @@ def get_access_token(force_refresh=False):
             token_cache = token_data["access_token"]
             token_expiry = time.time() + 3500
             
-            print(f"[TOKEN] Token généré, expire dans 58 minutes")
+            print(f"[TOKEN] Token generated, expires in 58 minutes")
             return token_cache
             
         except Exception as e:
-            print(f"[TOKEN] Erreur: {e}")
+            print(f"[TOKEN] Error: {e}")
             raise
 
 def fetch_offers_from_page(page_number, retry=0):
+    """
+    Fetch a page of job offers from the France Travail API.
+    
+    Args:
+        page_number (int): The page index to fetch (each page has ~150 offers).
+        retry (int): Internal counter for retrying on authentication failure.
+        
+    Returns:
+        list[dict]: A list of job offer dictionaries.
+    """
     if retry > 2:
         return []
     
@@ -58,7 +86,7 @@ def fetch_offers_from_page(page_number, retry=0):
         r = requests.get(SEARCH_URL, headers=headers, params=params, timeout=15)
         
         if r.status_code == 401:
-            print(f"[401] Token expiré, renouvellement...")
+            print(f"[401] Token expired, renewing...")
             get_access_token(force_refresh=True)
             return fetch_offers_from_page(page_number, retry + 1)
         
@@ -67,8 +95,8 @@ def fetch_offers_from_page(page_number, retry=0):
         return data.get("resultats", [])
         
     except requests.exceptions.Timeout:
-        print(f"[TIMEOUT] Page {page_number} - timeout après 15s")
+        print(f"[TIMEOUT] Page {page_number} - timeout after 15s")
         return []
     except Exception as e:
         print(f"[ERROR] Page {page_number}: {str(e)[:100]}")
-        return []
+        return []

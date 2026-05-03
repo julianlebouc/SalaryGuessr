@@ -1,3 +1,8 @@
+"""
+Main entry point for the SalaryGuessr API.
+Configures FastAPI, Socket.IO, and initializes the offer pool.
+"""
+
 import sys
 import os
 import threading
@@ -14,22 +19,25 @@ from .services.salary_parser import parse_salary
 from .utils.memory import get_played_count, clear_played
 from .services.offer_pool import OFFER_POOL, refill_in_progress
 
-# Importer le système multijoueur
+# Import multiplayer system
 from .multiplayer import get_room_manager, BattleRoyaleGame
 from .multiplayer.socket_handlers import SocketHandlers
 
 # ==========================================================
-# INITIALISATION
+# INITIALIZATION
 # ==========================================================
 
-# Enregistrer les modes de jeu
+# Register game modes
 room_manager = get_room_manager()
 room_manager.register_game(BattleRoyaleGame())
 
 # ==========================================================
 # FASTAPI APP
 # ==========================================================
-app = FastAPI(title="SalaryGuessr API")
+app = FastAPI(
+    title="SalaryGuessr API",
+    description="Backend API for SalaryGuessr providing job offers and multiplayer features."
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,8 +47,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-print(f"[CORS] Origines autorisées: {CORS_ORIGINS}")
-print(f"[CONFIG] Environnement: {ENVIRONMENT}")
+print(f"[CORS] Allowed origins: {CORS_ORIGINS}")
+print(f"[CONFIG] Environment: {ENVIRONMENT}")
 
 # ==========================================================
 # SOCKET.IO
@@ -49,18 +57,34 @@ sio = socketio.AsyncServer(cors_allowed_origins='*', async_mode='asgi')
 sio_app = socketio.ASGIApp(sio)
 app.mount("/socket.io/", sio_app)
 
-# Initialiser les handlers Socket.IO
+# Initialize Socket.IO handlers
 socket_handlers = SocketHandlers(sio)
 
 # ==========================================================
 # REST ROUTES
 # ==========================================================
+
 @app.get("/")
 def root():
+    """
+    Root endpoint to check API status.
+    
+    Returns:
+        dict: Status message and current environment.
+    """
     return {"message": "SalaryGuessr API running", "environment": ENVIRONMENT}
 
 @app.get("/job")
 def job():
+    """
+    Fetch a random job offer from the pool and parse its salary.
+    
+    Returns:
+        dict: Job offer details with parsed real salary and pool statistics.
+    
+    Raises:
+        HTTPException: If an error occurs during fetching or parsing.
+    """
     try:
         job = get_random_job()
         salaire = job.get("salaire", {})
@@ -80,6 +104,12 @@ def job():
 
 @app.get("/stats")
 def stats():
+    """
+    Retrieve statistics about the offer pool and played jobs.
+    
+    Returns:
+        dict: Played count, current pool size, and environment.
+    """
     return {
         "played_count": get_played_count(),
         "pool_size": get_pool_size(),
@@ -88,20 +118,32 @@ def stats():
 
 @app.post("/reset")
 def reset():
+    """
+    Reset the game state, clear the pool, and rebuild it.
+    
+    Returns:
+        dict: Success message.
+    """
     with threading.Lock():
         clear_played()
         OFFER_POOL.clear()
         refill_in_progress = False
     build_offer_pool(POOL_TARGET_SIZE)
-    return {"message": "Reset complet"}
+    return {"message": "Full reset complete"}
 
 # ==========================================================
-# INITIAL POOL BUILD
+# STARTUP LOGIC
 # ==========================================================
-print("🚀 SalaryGuessr API")
-print("📊 Rate limiting: 9 req/sec")
-build_offer_pool(POOL_TARGET_SIZE)
-print("✅ Serveur prêt")
+
+@app.on_event("startup")
+async def startup_event():
+    """
+    Execute startup tasks: build the initial offer pool.
+    """
+    print("SalaryGuessr API Starting...")
+    print("Rate limiting: 9 req/sec")
+    build_offer_pool(POOL_TARGET_SIZE)
+    print("Server ready")
 
 if __name__ == "__main__":
     import uvicorn
