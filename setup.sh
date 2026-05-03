@@ -24,7 +24,7 @@ python3 -m venv venv
 echo "Installation des packages Python..."
 source venv/bin/activate
 pip install --upgrade pip
-pip install fastapi "uvicorn[standard]" requests beautifulsoup4 python-dotenv python-socketio==5.9.0 python-engineio==4.7.0 websockets wsproto
+pip install fastapi "uvicorn[standard]" requests beautifulsoup4 python-dotenv python-socketio==5.9.0 python-engineio==4.7.0 websockets wsproto sphinx sphinx-rtd-theme
 
 echo ""
 echo "Backend installe avec succes !"
@@ -52,6 +52,37 @@ cd ..
 echo ""
 echo "========================================"
 echo "Installation terminee !"
+echo "========================================"
+echo ""
+
+# ========================================
+# DOCUMENTATION GENERATION
+# ========================================
+echo "[EXTRA] Generation de la documentation..."
+echo ""
+
+# Backend Docs
+echo "Generation de la documentation Backend (Sphinx)..."
+mkdir -p backend/docs/_static
+cp frontend/public/logo512.svg backend/docs/_static/logo512.svg
+source venv/bin/activate
+cd backend
+../venv/bin/sphinx-build -b html docs docs/_build
+cd ..
+
+# Frontend Docs
+echo "Generation de la documentation Frontend (JSDoc)..."
+cd frontend
+npm run docs
+cd ..
+
+echo ""
+echo "Documentation generee avec succes !"
+echo "- Backend: backend/docs/_build/index.html"
+echo "- Frontend: frontend/docs/jsdoc/index.html"
+echo ""
+echo "========================================"
+echo "Tout est pret !"
 echo "========================================"
 echo ""
 echo "Pour demarrer le jeu, lancez ./start.sh"

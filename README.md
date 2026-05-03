@@ -86,3 +86,13 @@ npm run docs
 ```
 
 The documentation will be generated in `frontend/docs/jsdoc/index.html`.
+
+To generate the Python backend documentation, run:
+
+```bash
+cd backend
+# Activate venv first (source venv/bin/activate or .\venv\Scripts\activate)
+sphinx-build -b html docs docs/_build
+```
+
+The documentation will be generated in `backend/docs/_build/index.html`.

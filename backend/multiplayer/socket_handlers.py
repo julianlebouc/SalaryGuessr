@@ -1,3 +1,8 @@
+"""
+Socket.IO event handlers for multiplayer communication.
+Manages connection lifecycle, room events, and real-time game synchronization.
+"""
+
 import asyncio
 import socketio
 from typing import Dict, Any
@@ -8,9 +13,18 @@ from backend.config import BR_ROUND_DURATION, BR_PAUSE_BETWEEN_ROUNDS
 
 
 class SocketHandlers:
-    """Gestionnaire générique des événements Socket.IO"""
+    """
+    Coordinator for all Socket.IO events.
+    Binds events to room manager logic and handles real-time broadcasting.
+    """
     
     def __init__(self, sio: socketio.AsyncServer):
+        """
+        Initialize socket handlers.
+        
+        Args:
+            sio (socketio.AsyncServer): The global Socket.IO server instance.
+        """
         self.sio = sio
         self.room_manager = get_room_manager()
         self.active_timers: Dict[str, asyncio.Task] = {}
@@ -19,15 +33,19 @@ class SocketHandlers:
         self._register_handlers()
     
     def _register_handlers(self):
-        """Enregistre tous les handlers génériques"""
+        """
+        Register event listeners for client communication.
+        """
         
         @self.sio.on("connect")
         async def handle_connect(sid, environ):
-            print(f"[SOCKET] Connecté: {sid}")
+            """Log new connection."""
+            print(f"[SOCKET] Connected: {sid}")
         
         @self.sio.on("disconnect")
         async def handle_disconnect(sid):
-            print(f"[SOCKET] Déconnecté: {sid}")
+            """Handle player disconnection and cleanup room membership."""
+            print(f"[SOCKET] Disconnected: {sid}")
             result = self.room_manager.get_room_by_sid(sid)
             if result:
                 code, room = result
@@ -42,8 +60,9 @@ class SocketHandlers:
         
         @self.sio.on("create_room")
         async def handle_create_room(sid, data):
+            """Create a new room and assign the sender as host."""
             game_type = data.get("game_type")
-            name = data.get("name", "Joueur")
+            name = data.get("name", "Player")
             
             try:
                 code, player_id = self.room_manager.create_room(game_type, name, sid)
@@ -57,13 +76,14 @@ class SocketHandlers:
         
         @self.sio.on("join_room")
         async def handle_join_room(sid, data):
+            """Allow a player to join an existing room."""
             code = data.get("code")
             if isinstance(code, str):
                 code = code.strip().upper()
-            name = data.get("name", "Joueur")
+            name = data.get("name", "Player")
 
             if not code:
-                await self.sio.emit("error", {"message": "Code de salle invalide"}, to=sid)
+                await self.sio.emit("error", {"message": "Invalid room code"}, to=sid)
                 return
 
             player_id, error = self.room_manager.join_room(code, name, sid)
@@ -78,22 +98,23 @@ class SocketHandlers:
         
         @self.sio.on("start_game")
         async def handle_start_game(sid, data):
+            """Initiate game start from the host."""
             code = data.get("code")
             if isinstance(code, str):
                 code = code.strip().upper()
 
             room = self.room_manager.get_room(code)
             if not room:
-                await self.sio.emit("error", {"message": "Salle introuvable"}, to=sid)
+                await self.sio.emit("error", {"message": "Room not found"}, to=sid)
                 return
             
             if room.host_sid != sid:
-                await self.sio.emit("error", {"message": "Seul l'hôte peut démarrer"}, to=sid)
+                await self.sio.emit("error", {"message": "Only the host can start the game"}, to=sid)
                 return
             
             game = self.room_manager.get_game(code)
             if not game:
-                await self.sio.emit("error", {"message": "Mode de jeu invalide"}, to=sid)
+                await self.sio.emit("error", {"message": "Invalid game mode"}, to=sid)
                 return
             
             can_start, msg = game.can_start(room)
@@ -111,12 +132,13 @@ class SocketHandlers:
                 await self.start_round(code)
             except Exception as e:
                 room.game_state = previous_state
-                error_message = f"Impossible de démarrer la partie: {str(e)}"
+                error_message = f"Failed to start game: {str(e)}"
                 print(f"[START_GAME] {error_message}")
                 await self.broadcast_room(code, "start_game_failed", {"message": error_message})
         
         @self.sio.on("game_action")
         async def handle_game_action(sid, data):
+            """Process in-game actions like submitting guesses."""
             code = data.get("code")
             if isinstance(code, str):
                 code = code.strip().upper()
@@ -125,7 +147,7 @@ class SocketHandlers:
             
             room = self.room_manager.get_room(code)
             if not room:
-                await self.sio.emit("error", {"message": "Salle introuvable"}, to=sid)
+                await self.sio.emit("error", {"message": "Room not found"}, to=sid)
                 return
             
             player_id = None
@@ -135,7 +157,7 @@ class SocketHandlers:
                     break
             
             if not player_id:
-                await self.sio.emit("error", {"message": "Joueur non trouvé"}, to=sid)
+                await self.sio.emit("error", {"message": "Player not found"}, to=sid)
                 return
             
             game = self.room_manager.get_game(code)
@@ -150,31 +172,32 @@ class SocketHandlers:
                 if broadcast_data:
                     await self.broadcast_room(code, "action_broadcast", broadcast_data)
                 
-                # Vérifier immédiatement si tous ont répondu
+                # Check immediately if all players have answered
                 alive_players = [p for p in room.players.values() if p.is_alive]
                 guesses_count = len(room.game_data.get("guesses", {}))
                 
                 if guesses_count >= len(alive_players) and len(alive_players) > 0:
-                    print(f"[SOCKET] Dernier joueur a répondu, fin du round immédiate")
+                    print(f"[SOCKET] All players answered, ending round early")
                     await self.end_round(code)
 
         @self.sio.on("start_next_round")
         async def handle_start_next_round(sid, data):
+            """Manually skip the pause between rounds (host only)."""
             code = data.get("code")
             if isinstance(code, str):
                 code = code.strip().upper()
 
             room = self.room_manager.get_room(code)
             if not room:
-                await self.sio.emit("error", {"message": "Salle introuvable"}, to=sid)
+                await self.sio.emit("error", {"message": "Room not found"}, to=sid)
                 return
 
             if room.host_sid != sid:
-                await self.sio.emit("error", {"message": "Seul l'hôte peut lancer la prochaine manche"}, to=sid)
+                await self.sio.emit("error", {"message": "Only the host can start the next round"}, to=sid)
                 return
 
             if room.game_state != GameState.ROUND_END:
-                await self.sio.emit("error", {"message": "La manche suivante ne peut pas être lancée maintenant"}, to=sid)
+                await self.sio.emit("error", {"message": "Next round cannot be started now"}, to=sid)
                 return
 
             event = self.next_round_events.get(code)
@@ -182,6 +205,7 @@ class SocketHandlers:
                 event.set()
     
     async def broadcast_room(self, room_code: str, event: str, data: Dict = None):
+        """Broadcast an event to all sockets in a room."""
         room = self.room_manager.get_room(room_code)
         if not room:
             return
@@ -192,11 +216,13 @@ class SocketHandlers:
             await self.sio.emit(event, data, room=room_code)
     
     async def send_room_state(self, sid: str, room_code: str):
+        """Send the full room state to a specific socket."""
         state = self.room_manager.get_room_state(room_code)
         if state:
             await self.sio.emit("room_state", state, to=sid)
     
     async def start_round(self, room_code: str):
+        """Start a new game round and launch the countdown timer."""
         room = self.room_manager.get_room(room_code)
         if not room or room.game_state != GameState.PLAYING:
             return
@@ -215,6 +241,7 @@ class SocketHandlers:
         self.active_timers[room_code] = task
     
     async def _round_timer(self, room_code: str):
+        """Countdown timer for a round. Automatically ends the round on timeout."""
         room = self.room_manager.get_room(room_code)
         if not room:
             return
@@ -235,7 +262,7 @@ class SocketHandlers:
             guesses_count = len(room.game_data.get("guesses", {}))
             
             if guesses_count >= len(alive_players) and len(alive_players) > 0:
-                print(f"[SOCKET] Tous les joueurs ont répondu, fin du round anticipée")
+                print(f"[SOCKET] Everyone answered, ending round early")
                 await self.end_round(room_code)
                 return
             
@@ -246,6 +273,7 @@ class SocketHandlers:
             await self.end_round(room_code)
     
     async def end_round(self, room_code: str):
+        """End the current round, process results, and handle eliminations."""
         room = self.room_manager.get_room(room_code)
         if not room:
             return
