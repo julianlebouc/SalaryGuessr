@@ -1,15 +1,14 @@
 # SalaryGuessr 💰
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.14.4-3776ab?logo=python)](https://www.python.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-24.15.0-339933?logo=node.js)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-19.2.5-61dafb?logo=react)](https://reactjs.org/)
+[![Uvicorn](https://img.shields.io/badge/Uvicorn-0.46.0-00BFFF?logo=uvicorn)](https://www.uvicorn.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.136.1-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![Socket.io](https://img.shields.io/badge/Socket.io-4.8.1-black?logo=socket.io)](https://socket.io/)
-[![Framer Motion](https://img.shields.io/badge/Framer_Motion-12.38.0-0055FF?logo=framer)](https://www.framer.com/motion/)
 [![Recharts](https://img.shields.io/badge/Recharts-3.8.1-22b5bf)](https://recharts.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-4.1.5-6E9F18?logo=vitest)](https://vitest.dev/)
 [![Pytest](https://img.shields.io/badge/Pytest-9.0.3-0A9EDC?logo=pytest)](https://docs.pytest.org/)
+[![JSDoc](https://img.shields.io/badge/JSDoc-4.0.4-8DC63F?logo=jsdoc)](https://jsdoc.app/)
 [![Sphinx](https://img.shields.io/badge/Sphinx-9.1.0-00123d?logo=sphinx)](https://www.sphinx-doc.org/)
 
 SalaryGuessr is an interactive web game where you test your knowledge of salaries in the French job market. You'll be presented with real job offers from France Travail (formerly Pôle Emploi), and your mission is to estimate the monthly salary as accurately as possible. The closer you are, the more points you earn!
