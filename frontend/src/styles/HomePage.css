@@ -818,3 +818,9 @@
   }
 
 }
+
+@media (max-width: 820px), (max-height: 560px) {
+  .hp-container {
+    padding-top: calc(24px + var(--sg-page-chrome-pad) + env(safe-area-inset-top, 0px));
+  }
+}

@@ -803,3 +803,9 @@
     font-size: 0.65rem;
   }
 }
+
+@media (max-width: 820px), (max-height: 560px) {
+  .br-container {
+    padding-top: calc(20px + var(--sg-page-chrome-pad) + env(safe-area-inset-top, 0px));
+  }
+}

@@ -429,6 +429,12 @@
 
 }
 
+@media (max-width: 820px) and (min-width: 561px), (max-height: 560px) and (min-width: 561px) {
+  .hl-container {
+    padding-top: calc(20px + var(--sg-page-chrome-pad) + env(safe-area-inset-top, 0px));
+  }
+}
+
 @media (max-width: 560px) {
 
   .hl-carousel {
@@ -436,6 +442,7 @@
   }
   .hl-container {
     padding: 12px;
+    padding-top: calc(12px + var(--sg-page-chrome-pad) + env(safe-area-inset-top, 0px));
   }
 
   .hl-card {

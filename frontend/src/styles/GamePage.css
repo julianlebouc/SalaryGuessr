@@ -812,3 +812,9 @@
     flex-direction: column;
   }
 }
+
+@media (max-width: 820px), (max-height: 560px) {
+  .gp-container {
+    padding-top: calc(var(--sg-page-chrome-pad) + env(safe-area-inset-top, 0px));
+  }
+}
