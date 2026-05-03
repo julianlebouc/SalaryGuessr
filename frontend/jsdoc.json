@@ -18,7 +18,8 @@
     "destination": "docs/jsdoc",
     "recurse": true,
     "private": true,
-    "template": "node_modules/better-docs"
+    "template": "node_modules/better-docs",
+    "readme": "../README.md"
   },
   "plugins": [
     "plugins/markdown",
@@ -33,11 +34,18 @@
   "templates": {
     "default": {
       "includeDate": false,
-      "useLongnameInNav": true
+      "useLongnameInNav": true,
+      "staticFiles": {
+        "include": [
+          "public/logo512.svg",
+          "docs-style.css"
+        ]
+      }
     },
     "better-docs": {
       "name": "SalaryGuessr Frontend",
-      "logo": "public/logo512.svg",
+      "logo": "logo512.svg",
+      "css": "docs-style.css",
       "hideGenerator": true,
       "navigation": [
         {
