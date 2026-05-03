@@ -629,20 +629,16 @@
 }
 
 .br-ranking-row.eliminated {
-  background: rgba(239, 68, 68, 0.05);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.br-ranking-row.current {
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255, 00, 00, 0.3);
 }
 
 .br-ranking-row span{
   font-weight: bold;
+  font-size: 1rem;
 }
 
 .error-high {
-  color: #ef4444;
+  color: #ff0000;
 }
 
 .error-low {
@@ -667,7 +663,7 @@
   border-radius: 20px;
   margin-top: 16px;
   margin-bottom: 16px;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: bold;
 }
 .br-eliminated-info strong {
