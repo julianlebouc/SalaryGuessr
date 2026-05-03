@@ -7,6 +7,15 @@ import BattleRoyale from "./BattleRoyale";
 import { SoundProvider } from "../sound/SoundProvider";
 import SoundToggleSlider from "../sound/SoundToggleSlider";
 
+/**
+ * @module Pages/App
+ */
+
+/**
+ * Root application component with routing and audio context.
+ * @component
+ * @returns {JSX.Element}
+ */
 function App() {
   return (
     <SoundProvider>

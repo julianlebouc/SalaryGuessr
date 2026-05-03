@@ -4,21 +4,59 @@ import io from "socket.io-client";
 import "../styles/BattleRoyale.css";
 import { useSound } from "../sound/SoundProvider";
 
+/**
+ * @typedef {Object} Notice
+ * @property {string} [variant]
+ * @property {string} message
+ */
+
+/**
+ * @typedef {Object} BrNoticeProps
+ * @property {Notice|null} notice
+ * @property {function(): void} onDismiss
+ */
+
+/**
+ * @typedef {Object} BrRoomCodeToolbarProps
+ * @property {string} roomCode
+ * @property {boolean} revealed
+ * @property {function(): void} onToggleReveal
+ * @property {function(): void} onCopy
+ * @property {boolean} compact
+ */
+
 const SOCKET_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
+/**
+ * @module Pages/BattleRoyale
+ */
+
+/**
+ * Displays a notice banner with an optional dismiss button.
+ * @memberof module:Pages/BattleRoyale
+ * @component
+ * @param {BrNoticeProps} props
+ * @returns {JSX.Element|null}
+ */
 function BrNotice({ notice, onDismiss }) {
   if (!notice) return null;
   const variant = notice.variant || "error";
   return (
     <div className={`br-notice br-notice--${variant}`} role="alert">
       <span className="br-notice-text">{notice.message}</span>
-      <button type="button" className="br-notice-dismiss" onClick={onDismiss} aria-label="Fermer">
+      <button type="button" className="br-notice-dismiss" onClick={onDismiss} aria-label="Close notice">
         ×
       </button>
     </div>
   );
 }
 
+/**
+ * Icon for copying the room code.
+ * @memberof module:Pages/BattleRoyale
+ * @component
+ * @returns {JSX.Element}
+ */
 function IconCopy() {
   return (
     <svg className="br-room-code-svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
@@ -30,6 +68,12 @@ function IconCopy() {
   );
 }
 
+/**
+ * Icon used to show the room code.
+ * @memberof module:Pages/BattleRoyale
+ * @component
+ * @returns {JSX.Element}
+ */
 function IconEye() {
   return (
     <svg className="br-room-code-svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none">
@@ -45,6 +89,12 @@ function IconEye() {
   );
 }
 
+/**
+ * Icon used to hide the room code.
+ * @memberof module:Pages/BattleRoyale
+ * @component
+ * @returns {JSX.Element}
+ */
 function IconEyeOff() {
   return (
     <svg className="br-room-code-svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none">
@@ -60,6 +110,13 @@ function IconEyeOff() {
   );
 }
 
+/**
+ * Toolbar for copying and toggling visibility of the room code.
+ * @memberof module:Pages/BattleRoyale
+ * @component
+ * @param {BrRoomCodeToolbarProps} props
+ * @returns {JSX.Element|null}
+ */
 function BrRoomCodeToolbar({ roomCode, revealed, onToggleReveal, onCopy, compact }) {
   if (!roomCode) return null;
   const chipClass =
@@ -96,15 +153,21 @@ function BrRoomCodeToolbar({ roomCode, revealed, onToggleReveal, onCopy, compact
   );
 }
 
+/**
+ * Battle Royale multiplayer game page.
+ * Manages room lifecycle, socket events, and game flow.
+ * @component
+ * @returns {JSX.Element}
+ */
 export default function BattleRoyale() {
   const navigate = useNavigate();
   const { play } = useSound();
   
-  // UI State
+  // UI state
   const [view, setView] = useState("join");
   const [activeTab, setActiveTab] = useState("create");
   
-  // Room State
+  // Room state
   const [roomCode, setRoomCode] = useState("");
   const [playerName, setPlayerName] = useState("");
   const [playerId, setPlayerId] = useState(null);
@@ -115,7 +178,7 @@ export default function BattleRoyale() {
   const [minPlayers, setMinPlayers] = useState(5);
   const [maxPlayers, setMaxPlayers] = useState(50);
   
-  // Game State
+  // Game state
   const [gameState, setGameState] = useState("waiting");
   const [currentOffer, setCurrentOffer] = useState(null);
   const [timer, setTimer] = useState(0);
@@ -308,8 +371,18 @@ export default function BattleRoyale() {
     setIsHost(Boolean(hostId && playerId && hostId === playerId));
   }, [hostId, playerId]);
 
+/**
+   * Hide the current notice.
+   * @memberof module:Pages/BattleRoyale
+   * @returns {void}
+   */
   const dismissNotice = () => setNotice(null);
 
+  /**
+   * Copy the current room code to the clipboard.
+   * @memberof module:Pages/BattleRoyale
+   * @returns {Promise<void>}
+   */
   const copyRoomCode = useCallback(async () => {
     if (!roomCode) return;
     try {
@@ -332,8 +405,18 @@ export default function BattleRoyale() {
     }
   }, [roomCode]);
 
+  /**
+   * Toggle whether the room code is visible.
+   * @memberof module:Pages/BattleRoyale
+   * @returns {void}
+   */
   const toggleRoomCodeReveal = () => setRoomCodeRevealed((v) => !v);
 
+  /**
+   * Create a new multiplayer room using the socket.
+   * @memberof module:Pages/BattleRoyale
+   * @returns {void}
+   */
   const createRoom = () => {
     if (!playerName.trim()) {
       setNotice({ variant: "error", message: "Entrez un pseudo." });
@@ -346,6 +429,11 @@ export default function BattleRoyale() {
     });
   };
 
+/**
+   * Join an existing multiplayer room by code.
+   * @memberof module:Pages/BattleRoyale
+   * @returns {void}
+   */
   const joinRoom = () => {
     if (!roomCode.trim() || !playerName.trim()) {
       setNotice({ variant: "error", message: "Entrez le code de la salle et votre pseudo." });
@@ -358,6 +446,11 @@ export default function BattleRoyale() {
     });
   };
 
+/**
+   * Request the host to start the game when enough players are present.
+   * @memberof module:Pages/BattleRoyale
+   * @returns {void}
+   */
   const startGame = () => {
     if (players.length < minPlayers) {
       setNotice({
@@ -372,6 +465,11 @@ export default function BattleRoyale() {
     socketRef.current.emit("start_game", { code: roomCode });
   };
 
+/**
+   * Submit the player's salary guess for the current offer.
+   * @memberof module:Pages/BattleRoyale
+   * @returns {void}
+   */
   const submitGuess = () => {
     if (!guess || hasGuessed) return;
     const val = parseInt(guess);
@@ -387,13 +485,18 @@ export default function BattleRoyale() {
     });
   };
 
+/**
+   * Ask the server to start the next round immediately.
+   * @memberof module:Pages/BattleRoyale
+   * @returns {void}
+   */
   const startNextRoundNow = () => {
     if (!socketRef.current) return;
     socketRef.current.emit("start_next_round", { code: roomCode });
   };
 
   // ==========================================================
-  // ÉCRAN DE CRÉATION / REJOINDRE
+  // CREATE / JOIN SCREEN
   // ==========================================================
   if (view === "join") {
     return (
@@ -476,7 +579,7 @@ export default function BattleRoyale() {
   }
 
   // ==========================================================
-  // ÉCRAN D'ATTENTE EN SALLE
+  // WAITING ROOM SCREEN
   // ==========================================================
   if (view === "waiting") {
     const readyToStart = isHost && players.length >= minPlayers;
@@ -549,7 +652,7 @@ export default function BattleRoyale() {
   }
 
   // ==========================================================
-  // ÉCRAN DE JEU
+  // GAME SCREEN
   // ==========================================================
   const eliminatedIds = new Set(
     roundResults?.eliminated_ids ||
@@ -584,7 +687,7 @@ export default function BattleRoyale() {
       <BrNotice notice={notice} onDismiss={dismissNotice} />
 
       <div className="br-game-layout">
-        {/* Sidebar des joueurs */}
+        {/* Players sidebar */}
         <div className="br-sidebar">
           <div className="br-sidebar-header">🏆 JOUEURS</div>
           <div className="br-sidebar-players">
@@ -612,7 +715,7 @@ export default function BattleRoyale() {
           </div>
         </div>
         
-        {/* Zone principale */}
+        {/* Main area */}
         <div className="br-main">
           <div className="br-game-header">
             <div className="br-room-code-header-slot">
@@ -720,7 +823,7 @@ export default function BattleRoyale() {
             </div>
           )}
           
-          {/* ACTIVE ROUND - AFFICHAGE COMPLET COMME DANS HIGHLOWGAME */}
+          {/* ACTIVE ROUND - FULL DISPLAY LIKE HIGHLOWGAME */}
           {gameState === "playing" && currentOffer && !roundResults && (
             <div className="br-offer-card">
               <div className="gp-cardGlow" />
@@ -736,7 +839,7 @@ export default function BattleRoyale() {
                 <div className="br-offer-sub">{currentOffer.appellationlibelle}</div>
               )}
               
-              {/* Badges complets comme dans HighLowGame */}
+              {/* Full badges like in HighLowGame */}
               <div className="badgesContainer">
                 <div className="gp-badgeGroup gp-badgePrimary">
                   {currentOffer.entreprise?.nom && <span className="gp-badge gp-badgeCompany">🏢 {currentOffer.entreprise.nom}</span>}

@@ -75,3 +75,14 @@ REACT_APP_API_URL=http://localhost:8000
 - On Linux : Run start.sh
 
 Open http://localhost:3000
+
+## 📚 Documentation
+
+To generate the frontend JSDoc documentation, run:
+
+```bash
+cd frontend
+npm run docs
+```
+
+The documentation will be generated in `frontend/docs/jsdoc/index.html`.

@@ -9,6 +9,16 @@ import {
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
 
+/**
+ * @module Pages/HighLowGame
+ */
+
+/**
+ * Higher / Lower game mode component.
+ * Players compare two job offers and guess which one pays higher.
+ * @component
+ * @returns {JSX.Element}
+ */
 export default function HighLowGame() {
   const navigate = useNavigate();
   const { play } = useSound();
@@ -22,16 +32,31 @@ export default function HighLowGame() {
   const [isWaiting, setIsWaiting] = useState(false);
   const [animationState, setAnimationState] = useState("idle");
 
+/**
+   * Load a batch of jobs for the high/low game.
+   * @memberof module:Pages/HighLowGame
+   * @returns {Promise<void>}
+   */
   const loadJobs = async () => {
     const newJobs = await fetchMultipleJobs(5);
     setJobs(newJobs);
   };
 
+/**
+   * Fetch an additional job and append it to the job queue.
+   * @memberof module:Pages/HighLowGame
+   * @returns {Promise<void>}
+   */
   const addNewJob = async () => {
     const newJob = await fetchJob();
     setJobs(prev => [...prev, newJob]);
   };
 
+/**
+   * Initialize game state and load the first jobs.
+   * @memberof module:Pages/HighLowGame
+   * @returns {Promise<void>}
+   */
   const startGame = async () => {
     setLoading(true);
     setScore(0);
@@ -45,6 +70,11 @@ export default function HighLowGame() {
     setLoading(false);
   };
 
+/**
+   * Transition to the next round with a brief animation.
+   * @memberof module:Pages/HighLowGame
+   * @returns {void}
+   */
   const nextRound = () => {
     setAnimationState("fadingOut");
     
@@ -63,6 +93,12 @@ export default function HighLowGame() {
     }, 300);
   };
 
+/**
+   * Process the user's higher/lower answer and update game state.
+   * @memberof module:Pages/HighLowGame
+   * @param {string} guess
+   * @returns {Promise<void>}
+   */
   const handleGuess = async (guess) => {
     if (isWaiting || showSalary) return;
 
@@ -92,6 +128,11 @@ export default function HighLowGame() {
     }
   };
 
+/**
+   * Restart the high/low game from the beginning.
+   * @memberof module:Pages/HighLowGame
+   * @returns {void}
+   */
   const resetGame = () => {
     startGame();
   };
@@ -173,7 +214,7 @@ export default function HighLowGame() {
 
       <div className={`hl-carousel ${animationState === "fadingOut" ? "hl-fade-out" : ""} ${animationState === "fadingIn" ? "hl-fade-in" : ""}`}>
   
-      {/* Carte 1 - Salaire affiché */}
+      {/* Card 1 - Known salary */}
       <div className="hl-card">
         <div className="gp-cardGlow" />
         <div className="gp-cardShine"></div>
@@ -216,7 +257,7 @@ export default function HighLowGame() {
         </div>
       </div>
 
-      {/* Carte 2 - À deviner */}
+      {/* Card 2 - To guess */}
       <div className="hl-card">
         <div className="gp-cardGlow" />
         <div className="gp-cardShine"></div>
@@ -267,7 +308,7 @@ export default function HighLowGame() {
         </div>
       </div>
 
-      {/* Flèches */}
+      {/* Arrows */}
       <div className="hl-arrows">
         <button
           className={`hl-arrow-up ${guessResult === "correct" ? "hl-correct" : ""} ${guessResult === "wrong" ? "hl-wrong" : ""}`}
@@ -291,7 +332,7 @@ export default function HighLowGame() {
         </button>
       </div>
 
-        {/* Carte 3 - Prochaine offre */}
+        {/* Card 3 - Next offer */}
         <div className="hl-card hl-card-next">
           <div className="gp-cardGlow" />
           <div className="gp-cardShine"></div>

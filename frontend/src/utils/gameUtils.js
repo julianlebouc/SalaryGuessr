@@ -3,6 +3,15 @@ const API_URL = process.env.REACT_APP_API_URL;
 // ==========================================================
 // TEXT PROCESSING
 // ==========================================================
+/**
+ * @module Utils/gameUtils
+ */
+
+/**
+ * Replace salary numbers in text with masked dots while preserving surrounding context.
+ * @param {string} text
+ * @returns {string}
+ */
 export function hideSalaryInText(text) {
   if (!text) return text;
   
@@ -30,6 +39,11 @@ export function hideSalaryInText(text) {
 // ==========================================================
 // JOB NORMALIZATION
 // ==========================================================
+/**
+ * Normalize raw job data into the frontend job model.
+ * @param {object} raw
+ * @returns {object|null}
+ */
 export function normalizeJob(raw) {
   if (!raw?.id) return null;
 
@@ -89,10 +103,19 @@ export function normalizeJob(raw) {
 // ==========================================================
 // JOB VALIDATION & FETCHING
 // ==========================================================
+/**
+ * Check whether a normalized job has a valid salary value.
+ * @param {object} job
+ * @returns {boolean}
+ */
 export function hasValidSalary(job) {
   return job?.salary != null && job.salary > 0;
 }
 
+/**
+ * Fetch a single normalized job from the API.
+ * @returns {Promise<object>}
+ */
 export async function fetchJob() {
   const res = await fetch(`${API_URL}/job`, { cache: "no-store" });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -100,6 +123,11 @@ export async function fetchJob() {
   return normalizeJob(data);
 }
 
+/**
+ * Fetch multiple jobs concurrently and return only successful results.
+ * @param {number} count
+ * @returns {Promise<object[]>}
+ */
 export async function fetchMultipleJobs(count) {
   const promises = Array.from({ length: count }, () => fetchJob().catch(() => null));
   const results = await Promise.all(promises);
@@ -109,6 +137,12 @@ export async function fetchMultipleJobs(count) {
 // ==========================================================
 // SCORING
 // ==========================================================
+/**
+ * Calculate a score based on the user's estimate versus the real salary.
+ * @param {number} estimated
+ * @param {number} real
+ * @returns {{score:number,error:number,errorRatio:number}}
+ */
 export function calculateScore(estimated, real) {
   if (!Number.isFinite(real) || real <= 0 || !Number.isFinite(estimated) || estimated <= 0) {
     return 0;
@@ -132,6 +166,11 @@ export function calculateScore(estimated, real) {
 // ==========================================================
 // DATE FORMATTING
 // ==========================================================
+/**
+ * Format an ISO date string using French locale formatting.
+ * @param {string} dateStr
+ * @returns {string|null}
+ */
 export function formatDate(dateStr) {
   if (!dateStr) return null;
   return new Date(dateStr).toLocaleDateString("fr-FR", {
@@ -142,8 +181,14 @@ export function formatDate(dateStr) {
 }
 
 // ==========================================================
-// HIGH/LOW GAME SPECIFIC (Comparaison de salaires)
+// HIGH/LOW GAME SPECIFIC (Salary comparison)
 // ==========================================================
+/**
+ * Compare two salary values and return relative comparison results.
+ * @param {number} leftSalary
+ * @param {number} rightSalary
+ * @returns {{isEqual:boolean,isHigher:boolean,isLower:boolean}}
+ */
 export function compareSalaries(leftSalary, rightSalary) {
   const isEqual = Math.abs(rightSalary - leftSalary) < 1;
   const isHigher = rightSalary > leftSalary;
@@ -151,6 +196,13 @@ export function compareSalaries(leftSalary, rightSalary) {
   return { isEqual, isHigher, isLower: !isHigher };
 }
 
+/**
+ * Evaluate a higher/lower guess for two job offers.
+ * @param {object} leftJob
+ * @param {object} rightJob
+ * @param {string} guess
+ * @returns {boolean}
+ */
 export function evaluateHigherLowerGuess(leftJob, rightJob, guess) {
   if (!leftJob || !rightJob) return false;
   

@@ -13,14 +13,23 @@
     "react-router-dom": "^7.14.2",
     "react-scripts": "5.0.1",
     "recharts": "^3.8.1",
-    "socket.io-client": "^4.5.4",
+    "socket.io-client": "^4.8.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "docs": "jsdoc -c jsdoc.json"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-react": "^7.28.5",
+    "@jsdoc/salty": "^0.2.12",
+    "better-docs": "^2.7.3",
+    "jsdoc": "^4.0.4",
+    "jsdoc-babel": "^0.5.0"
   },
   "eslintConfig": {
     "extends": [
