@@ -14,7 +14,6 @@ export default function HomePage() {
   const discordId = "321002968218337289";
 
   useEffect(() => {
-    // Animation de bienvenue
     const timer = setTimeout(() => setBounceAnimation(true), 500);
     return () => clearTimeout(timer);
   }, []);
@@ -28,7 +27,6 @@ export default function HomePage() {
 
   const contactDiscord = () => {
     navigator.clipboard.writeText(discordId);
-    // Animation de feedback
     const btn = document.querySelector('.hp-discordButton');
     btn.style.transform = 'scale(0.95)';
     setTimeout(() => {
@@ -72,20 +70,19 @@ export default function HomePage() {
           <div className="hp-heroContent">
             <div className="hp-titleWrapper">
               <h1 className="hp-title">
-                <span className="hp-title-word">Salary</span>
-                <span className="hp-title-word hp-title-guessr">Guessr</span>
-                <img src="/logo512.svg" alt="SalaryGuessr" className="hp-title-emoji" />
+                <span className="hp-title-word">Salary Guessr</span>
+                <span className="hp-title-logo">
+                  <img src="/logo512.svg" alt="" className="hp-title-emoji" />
+                </span>
               </h1>
             </div>
             
             <div className="hp-subtitles">
               <p className="hp-subtitle hp-subtitle-main">
-                <span className="hp-subtitle-icon">🔥</span>
                 Teste ton instinct ! Deviens un pro de l'estimation salariale
               </p>
               
               <p className="hp-subtitle hp-subtitle-secondary">
-                <span className="hp-subtitle-icon">🎯</span>
                 À chaque manche, découvre une offre d'emploi réelle. Devine le salaire 
                 le plus précisément possible. Chaque point compte !
               </p>

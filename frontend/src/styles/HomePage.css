@@ -177,43 +177,91 @@
   
 }
 
-.hp-titleWrapper {
-  margin-bottom: 20px;
-}
-
 .hp-title {
-  font-size: clamp(48px, 8vw, 76px);
   margin: 0;
+  box-sizing: border-box;
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
+  gap: 0.35em;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  line-height: 1;
+  background: transparent;
+  font-size: clamp(1.5rem, 5.5vw + 0.75rem, 4.5rem);
 }
 
 .hp-title-word {
-  background: linear-gradient(135deg, #fff, #ffeaa7);
+  line-height: 1.4;
+  padding: 0;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(
+    -120deg, 
+    #ffd93d 0%,
+    #ffd93d 30%,
+    #ff8a65 45%,
+    #ff6b6b 50%,
+    #ff8a65 55%,
+    #ffd93d 70%,
+    #ffd93d 100%
+  );
+  background-size: 300% 100%;
+  background-position: 100% 50%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 4px 4px 0 rgba(0,0,0,0.1);
-  animation: hp-titlePop 0.5s ease-out;
-  line-height: 1;
-  padding: 0 0 12px 0;
+  text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.08);
+  animation: hp-titleSheen 6s ease-in-out infinite;
 }
 
-.hp-title-guessr {
-  background: linear-gradient(135deg, #ffd93d, #ff6b6b);
-  -webkit-background-clip: text;
-  background-clip: text;
+@keyframes hp-titleSheen {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-title-word {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+.hp-title-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1.2em;
+  height: 1.2em;
+  transform: translateY(0.07em);
 }
 
 .hp-title-emoji {
-  width: 1.2em;
-  height: 1.2em;
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
   object-fit: contain;
-  display: inline-block;
-  vertical-align: middle;
+  object-position: 50% 48%;
+  display: block;
+}
+
+.hp-titleWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+  padding-inline: 12px;
+  box-sizing: border-box;
 }
 
 .hp-subtitles {
@@ -246,20 +294,8 @@
 
 .hp-subtitle-secondary {
   font-size: 1rem;
-  opacity: 0.9;
   text-align: center;
   padding: 0 10px;
-}
-
-.hp-subtitle-icon {
-  font-size: 1.2rem;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-}
-
-@keyframes hp-titlePop {
-  0% { transform: scale(0.8); opacity: 0; }
-  80% { transform: scale(1.1); }
-  100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes hp-emojiBounce {
@@ -726,10 +762,6 @@
 }
 
 @media (max-width: 640px) {
-  .hp-title {
-    font-size: clamp(40px, 8vw, 48px);
-  }
-
   .hp-card {
     padding: 24px;
   }
