@@ -670,7 +670,7 @@ export default function BattleRoyale() {
               </div>
               
               <div className="br-real-salary">
-                💰 Salaire réel: 
+                💰 Salaire réel : 
                 <span>
                   <strong> {roundResults.real_salary?.toLocaleString()} €</strong>
                 </span>
