@@ -2,8 +2,8 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 
 const SoundContext = createContext({
   volume: 0.5,
-  setVolume: () => {},
-  play: () => {},
+  setVolume: () => { },
+  play: () => { },
 });
 
 const SOUND_VOLUME_STORAGE_KEY = "salaryguessr_sound_volume";
@@ -40,7 +40,7 @@ const SOUND_VOLUME_STORAGE_KEY = "salaryguessr_sound_volume";
 function createEnvelopeGain(audioCtx, volume = 1, duration = 0.08, startTime = null) {
   const gainNode = audioCtx.createGain();
   const now = startTime !== null ? startTime : audioCtx.currentTime;
-  
+
   gainNode.gain.setValueAtTime(0.0001, now);
   gainNode.gain.exponentialRampToValueAtTime(volume, now + 0.01);
   gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration);
@@ -57,7 +57,7 @@ function createEnvelopeGain(audioCtx, volume = 1, duration = 0.08, startTime = n
 function playTone(audioCtx, { frequency, volume = 1, duration = 0.08, type = "sine", delay = 0 }) {
   const osc = audioCtx.createOscillator();
   const startAt = audioCtx.currentTime + delay;
-  
+
   const gain = createEnvelopeGain(audioCtx, volume, duration, startAt);
 
   osc.type = type;
@@ -83,11 +83,11 @@ export function SoundProvider({ children }) {
   });
   const audioCtxRef = useRef(null);
 
-/**
-   * Create or resume a web audio context for sound playback.
-   * @memberof module:Sound/SoundProvider
-   * @returns {Promise<AudioContext|null>}
-   */
+  /**
+     * Create or resume a web audio context for sound playback.
+     * @memberof module:Sound/SoundProvider
+     * @returns {Promise<AudioContext|null>}
+     */
   const ensureAudioContext = useCallback(async () => {
     if (!audioCtxRef.current) {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -104,18 +104,18 @@ export function SoundProvider({ children }) {
     return audioCtxRef.current;
   }, []);
 
-/**
-   * Play a sound effect by kind if audio is enabled.
-   * @memberof module:Sound/SoundProvider
-   * @param {string} [kind="click"]
-   * @returns {Promise<void>}
-   */
+  /**
+     * Play a sound effect by kind if audio is enabled.
+     * @memberof module:Sound/SoundProvider
+     * @param {string} [kind="click"]
+     * @returns {Promise<void>}
+     */
   const play = useCallback(
     async (kind = "click") => {
       if (volume <= 0) return;
       const audioCtx = await ensureAudioContext();
       if (!audioCtx) return;
-  
+
       switch (kind) {
         case "roundEnd1":
           playTone(audioCtx, { frequency: 293.66, volume: 0.7 * volume, duration: 0.12, type: "triangle" });
@@ -193,11 +193,14 @@ export function SoundProvider({ children }) {
           playTone(audioCtx, { frequency: 1567.98, volume: 0.85 * volume, duration: 0.1, type: "sine", delay: 0.14 });
           playTone(audioCtx, { frequency: 2093.00, volume: 0.9 * volume, duration: 0.15, type: "sine", delay: 0.24 });
           break;
-          
+
         case "error":
-          playTone(audioCtx, { frequency: 130.81, volume: 0.5 * volume, duration: 0.3, type: "sawtooth"});
+          playTone(audioCtx, { frequency: 130, volume: 0.5 * volume, duration: 0.2, type: "triangle" });
+          playTone(audioCtx, { frequency: 130, volume: 0.1 * volume, duration: 0.2, type: "sawtooth" });
+          playTone(audioCtx, { frequency: 130, volume: 0.5 * volume, duration: 0.2, type: "triangle", delay: 0.1 });
+          playTone(audioCtx, { frequency: 130, volume: 0.1 * volume, duration: 0.2, type: "sawtooth", delay: 0.1 });
           break;
-          
+
         case "click":
         default:
           playTone(audioCtx, { frequency: 480, volume: 0.45 * volume, duration: 0.04, type: "sine" });
@@ -207,11 +210,11 @@ export function SoundProvider({ children }) {
     [volume, ensureAudioContext]
   );
 
-/**
-   * Update the sound volume and persist it in local storage.
-   * @memberof module:Sound/SoundProvider
-   * @param {number} nextVolume
-   */
+  /**
+     * Update the sound volume and persist it in local storage.
+     * @memberof module:Sound/SoundProvider
+     * @param {number} nextVolume
+     */
   const setVolume = useCallback((nextVolume) => {
     const safeVolume = Math.min(1, Math.max(0, nextVolume));
     setVolumeState(safeVolume);
