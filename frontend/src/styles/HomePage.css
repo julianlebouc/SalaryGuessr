@@ -558,6 +558,19 @@
 
 .hp-playButton:hover .hp-playButton-arrow {
   transform: translateX(5px);
+  animation: hp-playButtonArrowTranslate 1s ease-in-out infinite;
+}
+
+@keyframes hp-playButtonArrowTranslate {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(10px);
+  }
 }
 
 .hp-playButton.loading {
