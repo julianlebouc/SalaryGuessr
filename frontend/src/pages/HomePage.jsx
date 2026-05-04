@@ -28,11 +28,11 @@ export default function HomePage() {
     return () => clearTimeout(timer);
   }, []);
 
-/**
-   * Navigate to the mode selection screen.
-   * @memberof module:Pages/HomePage
-   * @returns {void}
-   */
+  /**
+     * Navigate to the mode selection screen.
+     * @memberof module:Pages/HomePage
+     * @returns {void}
+     */
   const goToModeSelect = () => {
     setLoading(true);
     setTimeout(() => {
@@ -40,11 +40,11 @@ export default function HomePage() {
     }, 1);
   };
 
-/**
-   * Copy Discord ID and open the Discord profile in a new tab.
-   * @memberof module:Pages/HomePage
-   * @returns {void}
-   */
+  /**
+     * Copy Discord ID and open the Discord profile in a new tab.
+     * @memberof module:Pages/HomePage
+     * @returns {void}
+     */
   const contactDiscord = () => {
     navigator.clipboard.writeText(discordId);
     const btn = document.querySelector('.hp-discordButton');
@@ -63,7 +63,7 @@ export default function HomePage() {
       <div className="hp-bubble hp-bubble-3">⚡</div>
       <div className="hp-bubble hp-bubble-4">🎮</div>
       <div className="hp-bubble hp-bubble-5">💵</div>
-      
+
       {/* Background orbs */}
       <div className="hp-bgOrb hp-orb1" />
       <div className="hp-bgOrb hp-orb2" />
@@ -96,14 +96,14 @@ export default function HomePage() {
                 </span>
               </h1>
             </div>
-            
+
             <div className="hp-subtitles">
               <p className="hp-subtitle hp-subtitle-main">
                 Teste ton instinct ! Deviens un pro de l'estimation salariale
               </p>
-              
+
               <p className="hp-subtitle hp-subtitle-secondary">
-                À chaque manche, découvre une offre d'emploi réelle. Devine le salaire 
+                À chaque manche, découvre une offre d'emploi réelle. Devine le salaire
                 le plus précisément possible. Chaque point compte !
               </p>
             </div>
@@ -114,7 +114,7 @@ export default function HomePage() {
                 { value: "3", label: "Modes de jeu", icon: "🎮", color: "#ec4899" },
                 { value: "100%", label: "GRATUIT", icon: "🎁", color: "#10b981" }
               ].map((stat, idx) => (
-                <div 
+                <div
                   key={idx}
                   className={`hp-statCard ${hoveredStat === idx ? 'hovered' : ''}`}
                   onMouseEnter={() => setHoveredStat(idx)}
@@ -142,13 +142,13 @@ export default function HomePage() {
 
             <div className="hp-contactSection">
               <div className="hp-buttonsRow">
-                <button className="hp-discordButton" onClick={contactDiscord}>
-                  <DiscordIcon className="hp-discordIcon" />
-                  Discord
-                </button>
                 <button className="hp-githubButton" onClick={() => window.open('https://github.com/julianlebouc/SalaryGuessr', '_blank', 'noopener,noreferrer')}>
                   <GithubIcon className="hp-githubIcon" />
                   GitHub
+                </button>
+                <button className="hp-discordButton" onClick={contactDiscord}>
+                  <DiscordIcon className="hp-discordIcon" />
+                  Discord
                 </button>
                 <button className="hp-linkedinButton" onClick={() => window.open('https://www.linkedin.com/in/julian-lebouc-851619134/', '_blank', 'noopener,noreferrer')}>
                   <LinkedinIcon className="hp-linkedinIcon" />
