@@ -33,8 +33,8 @@ def parse_salary(text):
         raw_value = sum(vals) / len(vals)
     
     # Detect period
-    is_annual = 'annuel' in text_lower or ' an ' in f" {text_lower} " or '/an' in text_lower
-    is_monthly = 'mensuel' in text_lower or '/mois' in text_lower or 'par mois' in text_lower
+    is_annual = 'annuel' in text_lower or ' an ' in f" {text_lower} " or '/an' in text_lower or 'par an' in text_lower
+    is_monthly = 'mensuel' in text_lower or ' mois ' in text_lower or '/mois' in text_lower or 'par mois' in text_lower
     
     if is_annual and not is_monthly:
         return raw_value / 12
