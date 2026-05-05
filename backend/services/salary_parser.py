@@ -21,7 +21,7 @@ def parse_salary(text):
     vals = [float(n.replace(",", ".")) for n in nums]
     
     # Filter for realistic salary ranges (e.g., 500 to 50000)
-    vals = [v for v in vals if 500 <= v <= 50000]
+    vals = [v for v in vals if 400 <= v <= 50000]
     
     if not vals:
         return None
