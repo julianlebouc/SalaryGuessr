@@ -42,8 +42,12 @@ if [ -d "frontend/node_modules" ]; then
 fi
 
 cd frontend
-echo "Installation des packages Node..."
+echo "Installation des packages Node (avec serve et cross-env)..."
 npm install --legacy-peer-deps
+
+# Installer serve globalement (optionnel mais pratique)
+echo "Installation de serve globalement..."
+npm install -g serve
 
 echo ""
 echo "Frontend installe avec succes !"

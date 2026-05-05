@@ -43,8 +43,12 @@ if exist "frontend\node_modules" (
 )
 
 cd frontend
-echo Installation des packages Node...
+echo Installation des packages Node (avec serve et cross-env)...
 call npm install --legacy-peer-deps
+
+REM Installer serve globalement (optionnel mais pratique)
+echo Installation de serve globalement...
+call npm install -g serve
 
 echo.
 echo Frontend installe avec succes !
