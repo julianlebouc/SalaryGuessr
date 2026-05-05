@@ -5,7 +5,7 @@ Players guess salaries, and the furthest guesser (or non-answerers) are eliminat
 
 from typing import Dict, Any, Tuple, Optional, List
 from backend.config import BR_MIN_PLAYERS, BR_MAX_PLAYERS, BR_ROUND_DURATION, BR_PAUSE_BETWEEN_ROUNDS
-from backend.services.offer_pool import get_normalized_job
+from backend.services.offer_pool import get_normalized_job, strip_sensitive_info
 from backend.multiplayer.base import BaseGame, GameRoom, GameState, Player
 
 
@@ -53,7 +53,7 @@ class BattleRoyaleGame(BaseGame):
         print(f"[BATTLE] Game started with offer: {room.game_data['current_offer'].get('intitule')}")
         print(f"[BATTLE] Real salary: {room.game_data['current_offer'].get('salary_real')} EUR")
         return {
-            "offer": room.game_data["current_offer"],
+            "offer": strip_sensitive_info(room.game_data["current_offer"]),
             "round": room.game_data["round"]
         }
     
@@ -65,7 +65,7 @@ class BattleRoyaleGame(BaseGame):
         return {
             "duration": self.round_duration,
             "round": room.game_data.get("round", 1),
-            "offer": room.game_data.get("current_offer")
+            "offer": strip_sensitive_info(room.game_data.get("current_offer"))
         }
     
     def on_player_action(self, room: GameRoom, player_id: str, action: str, data: Any) -> Tuple[bool, Optional[Dict]]:
@@ -189,6 +189,6 @@ class BattleRoyaleGame(BaseGame):
         """Return public state of the room."""
         return {
             "round": room.game_data.get("round", 0),
-            "current_offer": room.game_data.get("current_offer"),
+            "current_offer": strip_sensitive_info(room.game_data.get("current_offer")) if room.game_data.get("current_offer") else None,
             "round_duration": self.round_duration
         }

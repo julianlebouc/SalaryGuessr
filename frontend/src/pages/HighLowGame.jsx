@@ -5,7 +5,9 @@ import {
   fetchJob, 
   fetchMultipleJobs, 
   evaluateHigherLowerGuess,
-  formatDate 
+  formatDate,
+  validateGuess,
+  validateComparison
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
 
@@ -66,7 +68,19 @@ export default function HighLowGame() {
     setGuessResult(null);
     setIsWaiting(false);
     setAnimationState("idle");
-    await loadJobs();
+    const newJobs = await fetchMultipleJobs(5);
+    
+    // ANTI-CHEAT: Reveal the salary of the first job only
+    if (newJobs.length > 0) {
+      try {
+        const reveal = await validateGuess(newJobs[0].id);
+        newJobs[0].salary = reveal.real_salary;
+      } catch (err) {
+        console.error("Failed to reveal first job salary:", err);
+      }
+    }
+    
+    setJobs(newJobs);
     setLoading(false);
   };
 
@@ -107,7 +121,19 @@ export default function HighLowGame() {
     
     if (!leftJob || !rightJob) return;
 
-    const isCorrect = evaluateHigherLowerGuess(leftJob, rightJob, guess);
+    const isCorrect = await (async () => {
+      try {
+        const response = await validateComparison(rightJob.id, leftJob.id, guess);
+        // Update the right job with its real salary now that it's guessed
+        const updatedJobs = [...jobs];
+        updatedJobs[currentIndex + 1].salary = response.real_salary;
+        setJobs(updatedJobs);
+        return response.correct;
+      } catch (err) {
+        console.error("Validation error:", err);
+        return false;
+      }
+    })();
 
     setShowSalary(true);
     

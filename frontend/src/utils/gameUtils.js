@@ -109,7 +109,9 @@ export function normalizeJob(raw) {
  * @returns {boolean}
  */
 export function hasValidSalary(job) {
-  return job?.salary != null && job.salary > 0;
+  // Since salary is hidden for anti-cheat, we trust the backend 
+  // only sends jobs that have a valid (but hidden) salary.
+  return job?.id != null;
 }
 
 /**
@@ -132,6 +134,43 @@ export async function fetchMultipleJobs(count) {
   const promises = Array.from({ length: count }, () => fetchJob().catch(() => null));
   const results = await Promise.all(promises);
   return results.filter(Boolean);
+}
+
+/**
+ * Validate a salary guess with the backend (Anti-Cheat).
+ * @param {string} jobId 
+ * @param {number} guess 
+ * @returns {Promise<object>}
+ */
+export async function validateGuess(jobId, guess) {
+  const res = await fetch(`${API_URL}/validate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ job_id: jobId, guess: Number(guess) }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
+}
+
+/**
+ * Validate a higher/lower comparison between two jobs (Anti-Cheat).
+ * @param {string} jobIdToGuess 
+ * @param {string} knownJobId 
+ * @param {string} guess "higher" or "lower"
+ * @returns {Promise<object>}
+ */
+export async function validateComparison(jobIdToGuess, knownJobId, guess) {
+  const res = await fetch(`${API_URL}/validate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      job_id: jobIdToGuess, 
+      other_job_id: knownJobId, 
+      guess 
+    }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
 }
 
 // ==========================================================

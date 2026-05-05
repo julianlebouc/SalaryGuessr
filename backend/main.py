@@ -14,10 +14,10 @@ from fastapi.middleware.cors import CORSMiddleware
 import socketio
 
 from .config import ENVIRONMENT, DEBUG, BACKEND_PORT, CORS_ORIGINS, POOL_TARGET_SIZE
-from .services.offer_pool import get_random_job, get_pool_size, build_offer_pool
+from .services.offer_pool import get_random_job, get_pool_size, build_offer_pool, get_job_salary_data, get_job_salary
 from .services.salary_parser import parse_salary
 from .utils.memory import get_played_count, clear_played
-from .services.offer_pool import OFFER_POOL, refill_in_progress
+from .services.offer_pool import OFFER_POOL, refill_in_progress, get_normalized_job, strip_sensitive_info
 
 # Import multiplayer system
 from .multiplayer import get_room_manager, BattleRoyaleGame
@@ -77,30 +77,91 @@ def root():
 @app.get("/job")
 def job():
     """
-    Fetch a random job offer from the pool and parse its salary.
-    
-    Returns:
-        dict: Job offer details with parsed real salary and pool statistics.
-    
-    Raises:
-        HTTPException: If an error occurs during fetching or parsing.
+    Fetch a random job offer without the real salary (Anti-Cheat).
     """
     try:
-        job = get_random_job()
-        salaire = job.get("salaire", {})
-        salary_text = salaire.get("libelle", "") or salaire.get("commentaire", "")
-        salary_value = parse_salary(salary_text)
-        
-        result = dict(job)
-        result["description"] = job.get("description", "")
-        result["salary_text"] = salary_text
-        result["salary_real"] = salary_value
-        result["already_played_pool_size"] = get_played_count()
-        result["pool_remaining"] = get_pool_size()
-        return result
+        # include_salary=False ensures salary_real is NOT sent to the browser
+        return get_normalized_job(include_salary=False)
     except Exception as e:
         print(f"[ERROR] {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@app.post("/validate")
+def validate(data: dict):
+    """
+    Validate a user's guess (numeric or comparison) against server-side data.
+    """
+    job_id = data.get("job_id")
+    guess = data.get("guess")
+    other_job_id = data.get("other_job_id") # For High/Low mode
+    
+    if not job_id:
+        raise HTTPException(status_code=400, detail="Missing job_id")
+        
+    salary_data = get_job_salary_data(job_id)
+    if not salary_data:
+        raise HTTPException(status_code=404, detail="Job salary not found in cache")
+        
+    real_salary = salary_data.get("value")
+    original_salaire = salary_data.get("original_salaire")
+
+    # CASE 1: Higher/Lower comparison
+    if other_job_id:
+        other_data = get_job_salary_data(other_job_id)
+        if not other_data:
+            raise HTTPException(status_code=404, detail="Comparison job salary not found")
+        
+        other_salary = other_data.get("value")
+        
+        # Real comparison result
+        is_equal = abs(real_salary - other_salary) < 1
+        is_higher = real_salary > other_salary
+        
+        correct = False
+        if is_equal:
+            correct = True
+        elif guess == "higher":
+            correct = is_higher
+        elif guess == "lower":
+            correct = not is_higher
+            
+        return {
+            "correct": correct,
+            "real_salary": real_salary,
+            "other_salary": other_salary,
+            "comparison": "higher" if is_higher else ("equal" if is_equal else "lower"),
+            "salaire": original_salaire # Reveal unmasked
+        }
+
+    # CASE 2: Just reveal salary (if guess is None)
+    if guess is None:
+        return {
+            "real_salary": real_salary,
+            "salaire": original_salaire # Reveal unmasked
+        }
+
+    # CASE 3: Numeric guess
+    try:
+        guess_val = float(guess)
+        real_val = float(real_salary)
+        
+        error_ratio = abs(guess_val - real_val) / real_val
+        score = 0
+        if error_ratio <= 0.5:
+            x = error_ratio / 0.5
+            score = 100 * ((1 - x) ** 2)
+            
+        return {
+            "job_id": job_id,
+            "real_salary": real_val,
+            "guess": guess_val,
+            "score": score,
+            "error_percent": error_ratio * 100,
+            "salaire": original_salaire, # Reveal unmasked
+            "salary_text": original_salaire.get("libelle") or original_salaire.get("commentaire") # Reveal unmasked text
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid guess or salary data")
 
 @app.get("/stats")
 def stats():

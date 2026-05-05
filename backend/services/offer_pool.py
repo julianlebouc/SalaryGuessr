@@ -12,11 +12,18 @@ from ..utils.memory import is_played, add_played_offer, get_played_count
 from .france_travail import fetch_offers_from_page
 from .salary_parser import parse_salary
 from .text_cleaner import clean_html
+import re
 
 # Global pool of job offers
 OFFER_POOL = deque(maxlen=POOL_TARGET_SIZE)
 pool_lock = threading.Lock()
 refill_in_progress = False
+
+# SECURITY: Cache to store salaries of jobs sent to clients
+# Allows verification without sending the answer to the browser
+SALARY_CACHE = {} 
+cache_lock = threading.Lock()
+MAX_CACHE_SIZE = 2000
 
 def build_offer_pool(target_size=POOL_TARGET_SIZE):
     """
@@ -167,6 +174,13 @@ def get_random_job():
     
     return job
 
+def mask_salary_text(text):
+    """Mask numbers in text to prevent salary leaks."""
+    if not text:
+        return text
+    # Replace sequences of digits (with optional decimals/commas) with dots
+    return re.sub(r'\d+(?:[.,\s]\d+)*', '•••', text)
+
 def get_pool_size():
     """
     Get the current number of offers in the pool.
@@ -177,11 +191,13 @@ def get_pool_size():
     with pool_lock:
         return len(OFFER_POOL)
 
-def get_normalized_job():
+def get_normalized_job(include_salary=True):
     """
-    Fetch a random job and return it with normalized fields for the frontend.
-    Includes salary parsing and description cleaning.
+    Fetch a random job and return it with normalized fields.
     
+    Args:
+        include_salary (bool): If True, salary_real is included in the dict.
+        
     Returns:
         dict: Normalized job object.
     """
@@ -197,9 +213,66 @@ def get_normalized_job():
     
     result = dict(job)
     result["description"] = clean_html(job.get("description", ""))
-    result["salary_text"] = salary_text
-    result["salary_real"] = salary_value
+    
+    # Store in cache for verification
+    job_id = job.get("id")
+    with cache_lock:
+        # Store both the numeric value and the original salaire object for reveal
+        SALARY_CACHE[job_id] = {
+            "value": salary_value,
+            "original_salaire": salaire
+        }
+        # Cleanup cache if too large
+        if len(SALARY_CACHE) > MAX_CACHE_SIZE:
+            keys = list(SALARY_CACHE.keys())
+            for k in keys[:500]:
+                del SALARY_CACHE[k]
+
+    if include_salary:
+        result["salary_real"] = salary_value
+        result["salary_text"] = salary_text
+        result["salaire"] = salaire
+    else:
+        # Mask salary text for public transmission
+        result["salary_text"] = mask_salary_text(salary_text)
+        
+        # Also mask the original 'salaire' object fields
+        if "salaire" in result:
+            masked_salaire = dict(result["salaire"])
+            if "libelle" in masked_salaire:
+                masked_salaire["libelle"] = mask_salary_text(masked_salaire["libelle"])
+            if "commentaire" in masked_salaire:
+                masked_salaire["commentaire"] = mask_salary_text(masked_salaire["commentaire"])
+            result["salaire"] = masked_salaire
+    
     result["already_played_pool_size"] = get_played_count()
     result["pool_remaining"] = get_pool_size()
     
     return result
+
+def get_job_salary_data(job_id):
+    """Retrieve salary data (value and original object) for a job from cache."""
+    with cache_lock:
+        return SALARY_CACHE.get(job_id)
+
+def get_job_salary(job_id):
+    """Retrieve ONLY numeric salary for a job from cache."""
+    data = get_job_salary_data(job_id)
+    return data.get("value") if data else None
+
+def strip_sensitive_info(job_dict):
+    """Remove salary_real and mask salaire fields from a job dictionary for public transmission."""
+    if not job_dict:
+        return job_dict
+    public_job = dict(job_dict)
+    public_job.pop("salary_real", None)
+    
+    if "salaire" in public_job:
+        masked_salaire = dict(public_job["salaire"])
+        if "libelle" in masked_salaire:
+            masked_salaire["libelle"] = mask_salary_text(masked_salaire["libelle"])
+        if "commentaire" in masked_salaire:
+            masked_salaire["commentaire"] = mask_salary_text(masked_salaire["commentaire"])
+        public_job["salaire"] = masked_salaire
+        
+    return public_job

@@ -15,7 +15,8 @@ import {
   fetchMultipleJobs,
   hasValidSalary, 
   formatDate, 
-  calculateScore 
+  calculateScore,
+  validateGuess
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
 
@@ -217,44 +218,53 @@ export default function GamePage() {
    * @memberof module:Pages/GamePage
    * @returns {void}
    */
-  const validate = () => {
+  const validate = async () => {
     if (!currentJob) return;
 
-    const real = Number(currentJob.salary);
     const user = Number(guess);
 
-    if (!Number.isFinite(real) || real <= 0 || !Number.isFinite(user) || user <= 0) {
+    if (!Number.isFinite(user) || user <= 0) {
       play("error");
       setShakeAnimation(true);
       setTimeout(() => setShakeAnimation(false), 500);
       return;
     }
 
-    const { score: roundScore, error } = calculateScore(user, real);
+    setLoadingJob(true);
+    try {
+      const response = await validateGuess(currentJob.id, user);
+      const { real_salary: real, score: roundScore, error_percent: error } = response;
 
-    setScore((prev) => prev + roundScore);
+      setScore((prev) => prev + roundScore);
 
-    setHistory((prev) => [
-      ...prev,
-      {
-        round: round + 1,
-        title: currentJob.title,
-        estimated: user,
+      setHistory((prev) => [
+        ...prev,
+        {
+          round: round + 1,
+          title: currentJob.title,
+          estimated: user,
+          real,
+        },
+      ]);
+
+      setResult({
+        user,
         real,
-      },
-    ]);
+        error: error.toFixed(1),
+        roundScore: roundScore.toFixed(1),
+        salary_text: response.salary_text // ANTI-CHEAT: Use the unmasked text from server
+      });
 
-    setResult({
-      user,
-      real,
-      error: error.toFixed(1),
-      roundScore: roundScore.toFixed(1),
-    });
+      setShowResult(true);
+      play(getRoundEndSound(roundScore));
 
-    setShowResult(true);
-    play(getRoundEndSound(roundScore));
-
-    void refillBuffer(BUFFER_TARGET);
+      void refillBuffer(BUFFER_TARGET);
+    } catch (err) {
+      console.error("Erreur de validation:", err);
+      play("error");
+    } finally {
+      setLoadingJob(false);
+    }
   };
 
 /**
@@ -701,10 +711,10 @@ export default function GamePage() {
                 <strong className="gp-statValue">{result.roundScore} pts</strong>
               </div>
             </div>
-            {job.salary_text && (
+            {result.salary_text && (
               <div className="gp-salaryRaw">
                 <span>📋</span>
-                <em>Libellé original : {job.salary_text}</em>
+                <em>Libellé original : {result.salary_text}</em>
               </div>
             )}
             {job.offerUrl && (
