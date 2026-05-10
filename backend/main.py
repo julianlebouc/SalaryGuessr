@@ -19,6 +19,7 @@ from .services.salary_parser import parse_salary
 from .utils.memory import get_played_count, clear_played
 from .services.offer_pool import OFFER_POOL, refill_in_progress, get_normalized_job, strip_sensitive_info
 from .utils.logger import logger, access_logger, frontend_logger
+from .utils.stats_parser import get_global_stats
 import time
 
 # Import multiplayer system
@@ -208,6 +209,27 @@ async def client_log(data: dict):
         frontend_logger.info(message, extra=log_data)
         
     return {"status": "ok"}
+
+# Simple in-memory cache for stats
+stats_cache = {"data": None, "expiry": 0}
+
+@app.get("/api/stats/global")
+async def global_stats():
+    """
+    Retrieve aggregated global statistics from logs.
+    """
+    now = time.time()
+    if stats_cache["data"] and now < stats_cache["expiry"]:
+        return stats_cache["data"]
+    
+    try:
+        data = get_global_stats()
+        stats_cache["data"] = data
+        stats_cache["expiry"] = now + 60 # 1 minute cache
+        return data
+    except Exception as e:
+        logger.error(f"Error generating global stats: {str(e)}")
+        raise HTTPException(status_code=500, detail="Could not generate stats")
 
 @app.get("/stats")
 def stats():

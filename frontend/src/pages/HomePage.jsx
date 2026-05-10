@@ -129,16 +129,26 @@ export default function HomePage() {
               ))}
             </div>
 
-            <button
-              className={`hp-playButton ${loading ? "loading" : ""}`}
-              onClick={goToModeSelect}
-              disabled={loading}
-            >
-              <span className="hp-playButton-text">
-                {loading ? "⏳ CHARGEMENT..." : "🚀 JOUER"}
-              </span>
-              {!loading && <span className="hp-playButton-arrow">→</span>}
-            </button>
+            <div className="hp-actions">
+              <button
+                className={`hp-playButton ${loading ? "loading" : ""}`}
+                onClick={goToModeSelect}
+                disabled={loading}
+              >
+                <span className="hp-playButton-text">
+                  {loading ? "⏳ CHARGEMENT..." : "🚀 JOUER"}
+                </span>
+                {!loading && <span className="hp-playButton-arrow">→</span>}
+              </button>
+
+              <button
+                className="hp-statsButton"
+                onClick={() => navigate("/stats")}
+              >
+                <span className="hp-statsButton-icon">📊</span>
+                <span>STATISTIQUES</span>
+              </button>
+            </div>
 
             <div className="hp-contactSection">
               <div className="hp-buttonsRow">
