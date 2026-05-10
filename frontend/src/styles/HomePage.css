@@ -552,7 +552,7 @@
 .hp-statsButton {
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.2);
-  padding: 18px;
+  padding: 0px 10px 0px 10px;
   border-radius: 60px;
   cursor: pointer;
   flex: 1;
@@ -568,11 +568,11 @@
 
 .hp-statsButton:hover {
   background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-4px);
+  transform: scale(1.05);
 }
 
 .hp-statsButton-icon {
-  font-size: 1.4rem;
+  font-size: 1rem;
 }
 
 .hp-statsButton span:not(.hp-statsButton-icon) {
@@ -1052,7 +1052,6 @@
 
   .hp-statsRow {
     gap: 10px;
-    margin-bottom: 20px;
   }
 
   .hp-statCard {
