@@ -160,10 +160,10 @@ export default function HomePage() {
                   <DiscordIcon className="hp-discordIcon" />
                   Discord
                 </button>
-                <button className="hp-linkedinButton" onClick={() => window.open('https://www.linkedin.com/in/julian-lebouc-851619134/', '_blank', 'noopener,noreferrer')}>
+                {/*<button className="hp-linkedinButton" onClick={() => window.open('https://www.linkedin.com/in/julian-lebouc-851619134/', '_blank', 'noopener,noreferrer')}>
                   <LinkedinIcon className="hp-linkedinIcon" />
                   LinkedIn
-                </button>
+                </button>*/}
               </div>
               <p className="hp-discordHint">Discord ID: {discordId}</p>
             </div>

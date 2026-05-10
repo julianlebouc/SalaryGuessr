@@ -10,7 +10,7 @@ import {
   CartesianGrid
 } from "recharts";
 import "../styles/GamePage.css"; // Reuse existing styles
-import "./StatsPage.css"; // We'll create some specific styles
+import "../styles/StatsPage.css"; // We'll create some specific styles
 
 const API_URL = process.env.REACT_APP_API_URL || "";
 
