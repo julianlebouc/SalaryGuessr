@@ -526,6 +526,8 @@
 
 .hp-actions {
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 16px;
   width: 100%;
   margin-bottom: 32px;
@@ -550,20 +552,20 @@
 }
 
 .hp-statsButton {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  padding: 0px 10px 0px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  padding: 12px 24px;
   border-radius: 60px;
   cursor: pointer;
   flex: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  transition: all 0.3s ease;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   color: white;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  min-height: 72px;
 }
 
 .hp-statsButton:hover {
@@ -572,13 +574,40 @@
 }
 
 .hp-statsButton-icon {
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
-.hp-statsButton span:not(.hp-statsButton-icon) {
-  font-size: 0.7rem;
-  font-weight: bold;
-  letter-spacing: 1px;
+.hp-statsButton-text {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1024px) {
+  .hp-statsButton {
+    flex: 0 0 auto;
+    width: 72px;
+    height: 72px;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  .hp-statsButton-text {
+    display: none;
+  }
+
+  .hp-statsButton-icon {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .hp-statsButton {
+    width: 58px;
+    height: 58px;
+    min-height: 58px;
+  }
 }
 
 .hp-playButton:hover {

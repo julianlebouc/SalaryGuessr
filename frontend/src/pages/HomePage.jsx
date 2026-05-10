@@ -144,9 +144,10 @@ export default function HomePage() {
               <button
                 className="hp-statsButton"
                 onClick={() => navigate("/stats")}
+                title="Voir les statistiques globales"
               >
                 <span className="hp-statsButton-icon">📊</span>
-                <span>STATISTIQUES</span>
+                <span className="hp-statsButton-text">STATISTIQUES</span>
               </button>
             </div>
 
