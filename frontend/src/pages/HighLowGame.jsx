@@ -25,6 +25,7 @@ import logger from "../utils/logger";
 export default function HighLowGame() {
   const navigate = useNavigate();
   const { play } = useSound();
+  const gameIdRef = React.useRef(null);
   const [jobs, setJobs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -83,7 +84,11 @@ export default function HighLowGame() {
     
     setJobs(newJobs);
     setLoading(false);
-    logger.info("High/Low game started");
+    
+    const newGameId = Math.random().toString(36).substring(2, 11);
+    gameIdRef.current = newGameId;
+    
+    logger.info("High/Low game started", { gameId: newGameId });
   };
 
 /**
@@ -152,7 +157,10 @@ export default function HighLowGame() {
       setGuessResult("wrong");
       setTimeout(() => {
         setGameOver(true);
-        logger.info("High/Low game over", { finalScore: score });
+        logger.info("High/Low game over", { 
+          finalScore: score, 
+          gameId: gameIdRef.current 
+        });
       }, 1500);
     }
   };

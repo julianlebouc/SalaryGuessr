@@ -198,6 +198,7 @@ export default function BattleRoyale() {
   const playerIdRef = useRef(null);
   const playerNameRef = useRef("");
   const roomCodeRef = useRef("");
+  const gameIdRef = useRef(null);
   const playRef = useRef(play);
 
   useEffect(() => {
@@ -286,7 +287,15 @@ export default function BattleRoyale() {
       setWinner(null);
       setIsWaitingNextRound(false);
       setView("playing");
-      logger.info("Battle Royale game started", { roomCode: roomCodeRef.current, playerName: playerNameRef.current });
+
+      const newGameId = Math.random().toString(36).substring(2, 11);
+      gameIdRef.current = newGameId;
+
+      logger.info("Battle Royale game started", { 
+        roomCode: roomCodeRef.current, 
+        playerName: playerNameRef.current,
+        gameId: newGameId
+      });
     });
 
     socket.on("round_start", (data) => {
@@ -352,7 +361,11 @@ export default function BattleRoyale() {
       setGameState("game_over");
       setIsWaitingNextRound(false);
       setNextRoundTimer(null);
-      logger.info("Battle Royale game over", { roomCode: roomCodeRef.current, winner: data.winner });
+      logger.info("Battle Royale game over", { 
+        roomCode: roomCodeRef.current, 
+        winner: data.winner,
+        gameId: gameIdRef.current
+      });
     });
 
     socket.on("action_confirmed", (data) => {

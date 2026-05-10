@@ -18,7 +18,8 @@ from .services.offer_pool import get_random_job, get_pool_size, build_offer_pool
 from .services.salary_parser import parse_salary
 from .utils.memory import get_played_count, clear_played
 from .services.offer_pool import OFFER_POOL, refill_in_progress, get_normalized_job, strip_sensitive_info
-from .utils.logger import logger
+from .utils.logger import logger, access_logger, frontend_logger
+import time
 
 # Import multiplayer system
 from .multiplayer import get_room_manager, BattleRoyaleGame
@@ -50,11 +51,25 @@ app.add_middleware(
 
 @app.middleware("http")
 async def log_requests(request, call_next):
-    """Log every incoming request."""
-    client_ip = request.client.host
-    logger.info(f"Incoming request: {request.method} {request.url.path} from {client_ip}")
+    """Log every incoming request to access.log."""
+    start_time = time.time()
     response = await call_next(request)
-    logger.info(f"Response: {response.status_code} for {request.url.path}")
+    process_time = (time.time() - start_time) * 1000
+    
+    # Don't log heartbeat/stats if you want even cleaner logs
+    # if request.url.path in ["/stats", "/"]: return response
+
+    log_data = {
+        "extra_data": {
+            "method": request.method,
+            "path": request.url.path,
+            "status": response.status_code,
+            "ip": request.client.host,
+            "duration_ms": round(process_time, 2),
+            "user_agent": request.headers.get("user-agent"),
+        }
+    }
+    access_logger.info(f"{request.method} {request.url.path} - {response.status_code}", extra=log_data)
     return response
 
 logger.info(f"Allowed origins: {CORS_ORIGINS}")
@@ -177,20 +192,20 @@ def validate(data: dict):
 @app.post("/log")
 async def client_log(data: dict):
     """
-    Endpoint for frontend logs.
+    Endpoint for frontend logs. Writes to frontend.log.
     """
     level = data.get("level", "info").lower()
     message = data.get("message", "No message")
     context = data.get("context", {})
     
-    log_msg = f"[CLIENT] {message} - Context: {context}"
+    log_data = {"extra_data": context}
     
     if level == "error":
-        logger.error(log_msg)
+        frontend_logger.error(message, extra=log_data)
     elif level == "warning":
-        logger.warning(log_msg)
+        frontend_logger.warning(message, extra=log_data)
     else:
-        logger.info(log_msg)
+        frontend_logger.info(message, extra=log_data)
         
     return {"status": "ok"}
 

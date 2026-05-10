@@ -63,6 +63,7 @@ export default function GamePage() {
   const refillPromiseRef = useRef(null);
   const seenIdsRef = useRef(new Set());
   const lastJobIdRef = useRef(null);
+  const gameIdRef = useRef(null);
 
 /**
    * Fetch a normalized job with a valid salary, retrying until one is obtained.
@@ -190,7 +191,10 @@ export default function GamePage() {
     setLoadingStart(true);
     resetGameState();
     
-    logger.info("Classic game started", { maxRounds });
+    const newGameId = Math.random().toString(36).substring(2, 11);
+    gameIdRef.current = newGameId;
+    
+    logger.info("Classic game started", { maxRounds, gameId: newGameId });
 
     const firstJob = await fetchNormalizedJobWithSalary();
     lastJobIdRef.current = firstJob.id;
@@ -295,7 +299,12 @@ export default function GamePage() {
         totalScorePercent >= 40 ? "PAS MAL" :
         totalScorePercent >= 20 ? "PEUX MIEUX FAIRE" :
         "ENCORE UN EFFORT";
-      logger.info("Classic game finished", { score, maxRounds, level });
+      logger.info("Classic game finished", { 
+        score, 
+        maxRounds, 
+        level, 
+        gameId: gameIdRef.current 
+      });
       return;
     }
 

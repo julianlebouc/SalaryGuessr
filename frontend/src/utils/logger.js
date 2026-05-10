@@ -4,6 +4,9 @@
 
 const API_URL = process.env.REACT_APP_API_URL || '';
 
+// Simple session ID to track unique users without persistence
+const sessionId = Math.random().toString(36).substring(2, 15);
+
 /**
  * Sends a log message to the backend server.
  * @param {string} message - The message to log.
@@ -23,6 +26,7 @@ export const logToServer = async (message, level = 'info', context = {}) => {
         level,
         context: {
           ...context,
+          sessionId,
           url: window.location.href,
           userAgent: navigator.userAgent,
           timestamp: new Date().toISOString(),
