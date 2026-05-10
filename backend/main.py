@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 import socketio
 
 from .config import ENVIRONMENT, DEBUG, BACKEND_PORT, CORS_ORIGINS, POOL_TARGET_SIZE
@@ -35,11 +36,26 @@ room_manager = get_room_manager()
 room_manager.register_game(BattleRoyaleGame())
 
 # ==========================================================
+# LIFESPAN
+# ==========================================================
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Execute startup tasks: build the initial offer pool.
+    """
+    logger.info("SalaryGuessr API Starting...")
+    logger.info("Rate limiting: 9 req/sec")
+    build_offer_pool(POOL_TARGET_SIZE)
+    logger.info("Server ready")
+    yield
+
+# ==========================================================
 # FASTAPI APP
 # ==========================================================
 app = FastAPI(
     title="SalaryGuessr API",
-    description="Backend API for SalaryGuessr providing job offers and multiplayer features."
+    description="Backend API for SalaryGuessr providing job offers and multiplayer features.",
+    lifespan=lifespan
 )
 
 app.add_middleware(
@@ -260,19 +276,7 @@ def reset():
     build_offer_pool(POOL_TARGET_SIZE)
     return {"message": "Full reset complete"}
 
-# ==========================================================
-# STARTUP LOGIC
-# ==========================================================
-
-@app.on_event("startup")
-async def startup_event():
-    """
-    Execute startup tasks: build the initial offer pool.
-    """
-    logger.info("SalaryGuessr API Starting...")
-    logger.info("Rate limiting: 9 req/sec")
-    build_offer_pool(POOL_TARGET_SIZE)
-    logger.info("Server ready")
+# Startup logic moved to lifespan
 
 if __name__ == "__main__":
     import uvicorn

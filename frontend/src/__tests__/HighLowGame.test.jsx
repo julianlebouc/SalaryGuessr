@@ -20,6 +20,7 @@ describe('HighLowGame Component', () => {
   beforeEach(() => {
     vi.spyOn(gameUtils, 'fetchMultipleJobs').mockResolvedValue(mockJobs);
     vi.spyOn(gameUtils, 'fetchJob').mockResolvedValue({ id: '6', title: 'Job F', salary: 5000 });
+    vi.spyOn(gameUtils, 'validateComparison').mockResolvedValue({ correct: true, real_salary: 3000 });
   });
 
   test('starts game and shows jobs', async () => {
@@ -38,7 +39,7 @@ describe('HighLowGame Component', () => {
   });
 
   test('correct guess increments score and moves to next round', async () => {
-    vi.spyOn(gameUtils, 'evaluateHigherLowerGuess').mockReturnValue(true);
+    vi.spyOn(gameUtils, 'validateComparison').mockResolvedValue({ correct: true, real_salary: 3000 });
 
     await act(async () => {
       render(
@@ -62,7 +63,7 @@ describe('HighLowGame Component', () => {
   });
 
   test('wrong guess ends the game', async () => {
-    vi.spyOn(gameUtils, 'evaluateHigherLowerGuess').mockReturnValue(false);
+    vi.spyOn(gameUtils, 'validateComparison').mockResolvedValue({ correct: false, real_salary: 1000 });
 
     await act(async () => {
       render(
