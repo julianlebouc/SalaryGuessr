@@ -45,3 +45,7 @@ yarn-error.log*
 .pnpm-debug.log*
 frontend/build/
 frontend/dist/
+
+# Logs
+frontend/logs/
+logs/

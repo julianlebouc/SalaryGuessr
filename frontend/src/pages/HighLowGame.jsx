@@ -10,6 +10,7 @@ import {
   validateComparison
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
+import logger from "../utils/logger";
 
 /**
  * @module Pages/HighLowGame
@@ -82,6 +83,7 @@ export default function HighLowGame() {
     
     setJobs(newJobs);
     setLoading(false);
+    logger.info("High/Low game started");
   };
 
 /**
@@ -150,6 +152,7 @@ export default function HighLowGame() {
       setGuessResult("wrong");
       setTimeout(() => {
         setGameOver(true);
+        logger.info("High/Low game over", { finalScore: score });
       }, 1500);
     }
   };

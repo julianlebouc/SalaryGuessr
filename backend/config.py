@@ -39,5 +39,12 @@ POOL_TARGET_SIZE = 500
 POOL_MIN_SIZE = 400
 PLAYED_IDS_MAXLEN = 1000
 
+# ==========================================================
+# LOGGING CONFIGURATION
+# ==========================================================
+LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "logs")
+LOG_RETENTION_DAYS = int(os.getenv("LOG_RETENTION_DAYS", 30))
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+
 if not FRANCE_TRAVAIL_CLIENT_ID or not FRANCE_TRAVAIL_CLIENT_SECRET:
     raise ValueError("FRANCE_TRAVAIL_CLIENT_ID et FRANCE_TRAVAIL_CLIENT_SECRET requis")

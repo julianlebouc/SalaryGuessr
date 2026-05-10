@@ -19,6 +19,7 @@ import {
   validateGuess
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
+import logger from "../utils/logger";
 
 const BUFFER_TARGET = 3;
 const REFILL_THRESHOLD = 1;
@@ -188,6 +189,8 @@ export default function GamePage() {
     play("gamestart");
     setLoadingStart(true);
     resetGameState();
+    
+    logger.info("Classic game started", { maxRounds });
 
     const firstJob = await fetchNormalizedJobWithSalary();
     lastJobIdRef.current = firstJob.id;
@@ -285,6 +288,14 @@ export default function GamePage() {
         play("gameEnd3");
       }
       setPage("result");
+      const totalScorePercent = (score / (maxRounds * 100)) * 100;
+      const level = 
+        totalScorePercent >= 80 ? "LEGENDAIRE" :
+        totalScorePercent >= 60 ? "EXCELLENT" :
+        totalScorePercent >= 40 ? "PAS MAL" :
+        totalScorePercent >= 20 ? "PEUX MIEUX FAIRE" :
+        "ENCORE UN EFFORT";
+      logger.info("Classic game finished", { score, maxRounds, level });
       return;
     }
 

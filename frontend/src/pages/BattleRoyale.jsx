@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import "../styles/BattleRoyale.css";
 import { useSound } from "../sound/SoundProvider";
+import logger from "../utils/logger";
 
 /**
  * @typedef {Object} Notice
@@ -196,6 +197,7 @@ export default function BattleRoyale() {
   const socketRef = useRef(null);
   const playerIdRef = useRef(null);
   const playerNameRef = useRef("");
+  const roomCodeRef = useRef("");
   const playRef = useRef(play);
 
   useEffect(() => {
@@ -209,6 +211,10 @@ export default function BattleRoyale() {
   useEffect(() => {
     playRef.current = play;
   }, [play]);
+
+  useEffect(() => {
+    roomCodeRef.current = roomCode;
+  }, [roomCode]);
 
   useEffect(() => {
     if (!notice) return;
@@ -234,6 +240,7 @@ export default function BattleRoyale() {
       setPlayerId(data.player_id);
       setHostId(data.player_id);
       setIsHost(true);
+      logger.info("Battle Royale room created", { roomCode: data.code, playerName: playerNameRef.current });
     });
 
     socket.on("joined", (data) => {
@@ -241,6 +248,7 @@ export default function BattleRoyale() {
       setNotice(null);
       setRoomCodeRevealed(false);
       setPlayerId(data.player_id);
+      logger.info("Joined Battle Royale room", { roomCode: data.code, playerName: playerNameRef.current });
     });
 
     socket.on("room_state", (data) => {
@@ -278,6 +286,7 @@ export default function BattleRoyale() {
       setWinner(null);
       setIsWaitingNextRound(false);
       setView("playing");
+      logger.info("Battle Royale game started", { roomCode: roomCodeRef.current, playerName: playerNameRef.current });
     });
 
     socket.on("round_start", (data) => {
@@ -343,6 +352,7 @@ export default function BattleRoyale() {
       setGameState("game_over");
       setIsWaitingNextRound(false);
       setNextRoundTimer(null);
+      logger.info("Battle Royale game over", { roomCode: roomCodeRef.current, winner: data.winner });
     });
 
     socket.on("action_confirmed", (data) => {

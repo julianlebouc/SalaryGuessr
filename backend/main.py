@@ -18,6 +18,7 @@ from .services.offer_pool import get_random_job, get_pool_size, build_offer_pool
 from .services.salary_parser import parse_salary
 from .utils.memory import get_played_count, clear_played
 from .services.offer_pool import OFFER_POOL, refill_in_progress, get_normalized_job, strip_sensitive_info
+from .utils.logger import logger
 
 # Import multiplayer system
 from .multiplayer import get_room_manager, BattleRoyaleGame
@@ -47,8 +48,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-print(f"[CORS] Allowed origins: {CORS_ORIGINS}")
-print(f"[CONFIG] Environment: {ENVIRONMENT}")
+@app.middleware("http")
+async def log_requests(request, call_next):
+    """Log every incoming request."""
+    client_ip = request.client.host
+    logger.info(f"Incoming request: {request.method} {request.url.path} from {client_ip}")
+    response = await call_next(request)
+    logger.info(f"Response: {response.status_code} for {request.url.path}")
+    return response
+
+logger.info(f"Allowed origins: {CORS_ORIGINS}")
+logger.info(f"Environment: {ENVIRONMENT}")
 
 # ==========================================================
 # SOCKET.IO
@@ -83,7 +93,7 @@ def job():
         # include_salary=False ensures salary_real is NOT sent to the browser
         return get_normalized_job(include_salary=False)
     except Exception as e:
-        print(f"[ERROR] {str(e)}")
+        logger.error(f"Error fetching job: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @app.post("/validate")
@@ -161,7 +171,28 @@ def validate(data: dict):
             "salary_text": original_salaire.get("libelle") or original_salaire.get("commentaire") # Reveal unmasked text
         }
     except Exception as e:
+        logger.warning(f"Invalid guess attempt: {str(e)}")
         raise HTTPException(status_code=400, detail="Invalid guess or salary data")
+
+@app.post("/log")
+async def client_log(data: dict):
+    """
+    Endpoint for frontend logs.
+    """
+    level = data.get("level", "info").lower()
+    message = data.get("message", "No message")
+    context = data.get("context", {})
+    
+    log_msg = f"[CLIENT] {message} - Context: {context}"
+    
+    if level == "error":
+        logger.error(log_msg)
+    elif level == "warning":
+        logger.warning(log_msg)
+    else:
+        logger.info(log_msg)
+        
+    return {"status": "ok"}
 
 @app.get("/stats")
 def stats():
@@ -201,10 +232,10 @@ async def startup_event():
     """
     Execute startup tasks: build the initial offer pool.
     """
-    print("SalaryGuessr API Starting...")
-    print("Rate limiting: 9 req/sec")
+    logger.info("SalaryGuessr API Starting...")
+    logger.info("Rate limiting: 9 req/sec")
     build_offer_pool(POOL_TARGET_SIZE)
-    print("Server ready")
+    logger.info("Server ready")
 
 if __name__ == "__main__":
     import uvicorn
