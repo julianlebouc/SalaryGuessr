@@ -600,6 +600,7 @@
   .hp-statsButton-icon {
     font-size: 1.4rem;
   }
+
 }
 
 @media (max-width: 640px) {
@@ -607,6 +608,10 @@
     width: 58px;
     height: 58px;
     min-height: 58px;
+  }
+
+  .hp-actions {
+    gap: 8px;
   }
 }
 
