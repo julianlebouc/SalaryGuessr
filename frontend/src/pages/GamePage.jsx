@@ -293,6 +293,7 @@ export default function GamePage() {
       }
       setPage("result");
       const totalScorePercent = (score / (maxRounds * 100)) * 100;
+      const normalizedScore = score / maxRounds;
       const level = 
         totalScorePercent >= 80 ? "LEGENDAIRE" :
         totalScorePercent >= 60 ? "EXCELLENT" :
@@ -300,9 +301,10 @@ export default function GamePage() {
         totalScorePercent >= 20 ? "PEUX MIEUX FAIRE" :
         "ENCORE UN EFFORT";
       logger.info("Classic game finished", { 
-        score, 
+        score: normalizedScore, 
+        rawScore: score,
         maxRounds, 
-        level, 
+        performanceLevel: level, 
         gameId: gameIdRef.current 
       });
       return;
@@ -468,8 +470,8 @@ export default function GamePage() {
           </div>
 
           <div className="gp-scoreCard">
-            <div className="gp-scoreValue">{score.toFixed(0)}</div>
-            <div className="gp-scoreMax">/ {maxRounds * 100}</div>
+            <div className="gp-scoreValue">{(score / maxRounds).toFixed(2)}</div>
+            <div className="gp-scoreMax">/ 100</div>
             <div className="roundBadge">{performanceLevel}</div>
           </div>
 
@@ -481,10 +483,12 @@ export default function GamePage() {
 
           <div className="gp-statsGrid">
             <div className="gp-statCard">
-              <div className="gp-statIcon">🎯</div>
+              <div className="gp-statIcon">💸</div>
               <div className="gp-statInfo">
-                <div className="gp-statLabel">Précision moyenne</div>
-                <div className="gp-statValue">{(totalScore).toFixed(1)}%</div>
+                <div className="gp-statLabel">Erreur moyenne</div>
+                <div className="gp-statValue">
+                  {(history.reduce((acc, h) => acc + Math.abs(h.estimated - h.real), 0) / history.length).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €
+                </div>
               </div>
             </div>
             <div className="gp-statCard">
@@ -604,7 +608,7 @@ export default function GamePage() {
             </div>
             <div className="roundBadge">
               <span>⭐</span>
-              <span>{score.toFixed(0)} pts</span>
+              <span>{(score / maxRounds).toFixed(2)} pts</span>
             </div>
           </div>
           <div className="gp-progressTrack">

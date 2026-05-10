@@ -524,6 +524,13 @@
   opacity: 1;
 }
 
+.hp-actions {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
 .hp-playButton {
   background: linear-gradient(135deg, #ffd93d, #ff6b6b);
   border: none;
@@ -532,7 +539,7 @@
   font-weight: bold;
   border-radius: 60px;
   cursor: pointer;
-  width: 100%;
+  flex: 3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -540,6 +547,38 @@
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   color: #1a1a2e;
+}
+
+.hp-statsButton {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  padding: 18px;
+  border-radius: 60px;
+  cursor: pointer;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+  color: white;
+  backdrop-filter: blur(8px);
+}
+
+.hp-statsButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+}
+
+.hp-statsButton-icon {
+  font-size: 1.4rem;
+}
+
+.hp-statsButton span:not(.hp-statsButton-icon) {
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
 .hp-playButton:hover {

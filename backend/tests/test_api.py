@@ -11,7 +11,7 @@ def test_read_root():
     assert response.status_code == 200
     assert response.json()["message"] == "SalaryGuessr API running"
 
-@patch("backend.main.get_random_job")
+@patch("backend.main.get_normalized_job")
 @patch("backend.main.get_pool_size")
 @patch("backend.main.get_played_count")
 def test_get_job(mock_get_played, mock_get_pool, mock_get_job):
@@ -19,9 +19,11 @@ def test_get_job(mock_get_played, mock_get_pool, mock_get_job):
     # Setup mocks
     mock_get_job.return_value = {
         "id": "123",
-        "intitule": "Développeur Python",
-        "salaire": {"libelle": "3500 EUR par mois"},
-        "description": "Job description"
+        "title": "Développeur Python",
+        "salary_real": 3500.0,
+        "description": "Job description",
+        "pool_remaining": 10,
+        "already_played_pool_size": 5
     }
     mock_get_pool.return_value = 10
     mock_get_played.return_value = 5
