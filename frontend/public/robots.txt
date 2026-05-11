@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://salaryguessr.qzz.io/sitemap.xml
+Sitemap: https://salaryguessr.win/sitemap.xml
