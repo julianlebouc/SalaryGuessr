@@ -3,7 +3,7 @@
 .hp-container {
   padding: 24px;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .hp-bubble-1 {
@@ -1181,4 +1181,49 @@
   .hp-statLabel {
     font-size: 0.75rem;
   }
+}
+
+.hp-footer {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@media (max-width: 980px) {
+  .hp-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .hp-footer {
+    position: relative;
+    bottom: 0;
+    margin-top: 2rem;
+    padding-bottom: 1rem;
+  }
+}
+
+.hp-footer a {
+  pointer-events: auto;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hp-footer a:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
