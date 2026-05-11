@@ -13,6 +13,8 @@
 
 SalaryGuessr is an interactive web game where you test your knowledge of salaries in the French job market. You'll be presented with real job offers from France Travail (formerly Pôle Emploi), and your mission is to estimate the monthly salary as accurately as possible. The closer you are, the more points you earn!
 
+Now live at https://salaryguessr.win/
+
 ## 🎮 Game Modes
 
 ### Classic Mode
