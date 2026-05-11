@@ -5,6 +5,7 @@ import HighLowGame from "./HighLowGame";
 import ModeSelectPage from "./ModeSelectPage";
 import BattleRoyale from "./BattleRoyale";
 import StatsPage from "./StatsPage";
+import MentionsLegales from "./MentionsLegales";
 import { SoundProvider } from "../sound/SoundProvider";
 import SoundToggleSlider from "../sound/SoundToggleSlider";
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/highlow" element={<HighLowGame />} />
           <Route path="/battleroyale" element={<BattleRoyale />} />
           <Route path="/stats" element={<StatsPage />} />
+          <Route path="/mentions-legales" element={<MentionsLegales />} />
         </Routes>
       </Router>
     </SoundProvider>
