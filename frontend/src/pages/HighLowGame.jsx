@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import "../styles/HighLowGame.css";
-import { 
-  fetchJob, 
-  fetchMultipleJobs, 
+import {
+  fetchJob,
+  fetchMultipleJobs,
   validateGuess,
   validateComparison
 } from "../utils/gameUtils";
@@ -14,7 +14,7 @@ import logger from "../utils/logger";
 export default function HighLowGame() {
   const navigate = useNavigate();
   const { play } = useSound();
-  
+
   const [jobs, setJobs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -25,6 +25,7 @@ export default function HighLowGame() {
   const [isWaiting, setIsWaiting] = useState(false);
 
   const startGame = async () => {
+    logger.info("High/Low game started");
     setLoading(true);
     setScore(0);
     setGameOver(false);
@@ -32,7 +33,7 @@ export default function HighLowGame() {
     setShowSalary(false);
     setGuessResult(null);
     setIsWaiting(false);
-    
+
     try {
       const newJobs = await fetchMultipleJobs(5);
       if (newJobs.length > 0) {
@@ -49,33 +50,33 @@ export default function HighLowGame() {
 
   const handleGuess = async (guess) => {
     if (isWaiting || showSalary || !jobs[currentIndex] || !jobs[currentIndex + 1]) return;
-    
+
     const leftJob = jobs[currentIndex];
     const rightJob = jobs[currentIndex + 1];
-    
+
     try {
       const response = await validateComparison(rightJob.id, leftJob.id, guess);
-      
+
       const updatedJobs = [...jobs];
       updatedJobs[currentIndex + 1].salary = response.real_salary;
       setJobs(updatedJobs);
-      
+
       setShowSalary(true);
-      
+
       if (response.correct) {
         play("success");
         setGuessResult("correct");
         setScore(s => s + 1);
         setIsWaiting(true);
-        
+
         setTimeout(async () => {
           if (gameOver) return;
-          
+
           setCurrentIndex(c => c + 1);
           setShowSalary(false);
           setGuessResult(null);
           setIsWaiting(false);
-          
+
           try {
             const nextJob = await fetchJob();
             setJobs(prev => [...prev, nextJob]);
@@ -86,6 +87,7 @@ export default function HighLowGame() {
       } else {
         play("gameEnd");
         setGuessResult("wrong");
+        logger.info("High/Low game over", { finalScore: score });
         setTimeout(() => setGameOver(true), 1500);
       }
     } catch (err) {
@@ -124,11 +126,11 @@ export default function HighLowGame() {
 
           <div className="hl-main-grid">
             <AnimatePresence mode="wait">
-              <motion.div 
-                key={jobs[currentIndex]?.id} 
-                className="hl-job-item" 
-                initial={{ x: -100, opacity: 0 }} 
-                animate={{ x: 0, opacity: 1 }} 
+              <motion.div
+                key={jobs[currentIndex]?.id}
+                className="hl-job-item"
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
                 exit={{ x: 100, opacity: 0 }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
@@ -143,21 +145,21 @@ export default function HighLowGame() {
             </AnimatePresence>
 
             <div className="hl-vs-zone">
-              <motion.button 
-                whileHover={{ scale: 1.1 }} 
-                whileTap={{ scale: 0.9 }} 
-                className="hl-vs-btn up" 
-                onClick={() => handleGuess("higher")} 
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="hl-vs-btn up"
+                onClick={() => handleGuess("higher")}
                 disabled={showSalary}
               >
                 PLUS
               </motion.button>
               <div className="hl-vs-text">VS</div>
-              <motion.button 
-                whileHover={{ scale: 1.1 }} 
-                whileTap={{ scale: 0.9 }} 
-                className="hl-vs-btn down" 
-                onClick={() => handleGuess("lower")} 
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="hl-vs-btn down"
+                onClick={() => handleGuess("lower")}
                 disabled={showSalary}
               >
                 MOINS
@@ -165,28 +167,28 @@ export default function HighLowGame() {
             </div>
 
             <AnimatePresence mode="wait">
-              <motion.div 
-                key={jobs[currentIndex+1]?.id} 
-                className="hl-job-item" 
-                initial={{ x: 100, opacity: 0 }} 
-                animate={{ x: 0, opacity: 1 }} 
+              <motion.div
+                key={jobs[currentIndex + 1]?.id}
+                className="hl-job-item"
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -100, opacity: 0 }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
                 <span className="hl-tag">EST-CE PLUS OU MOINS ?</span>
-                <h2 className="hl-job-title">{jobs[currentIndex+1]?.title}</h2>
+                <h2 className="hl-job-title">{jobs[currentIndex + 1]?.title}</h2>
                 <div className="gp-badgeGroup">
-                  <span className="gp-badge">{jobs[currentIndex+1]?.company || "Confidentiel"}</span>
-                  <span className="gp-badge">{jobs[currentIndex+1]?.location || "France"}</span>
+                  <span className="gp-badge">{jobs[currentIndex + 1]?.company || "Confidentiel"}</span>
+                  <span className="gp-badge">{jobs[currentIndex + 1]?.location || "France"}</span>
                 </div>
                 <div className="hl-salary-display">
                   {showSalary ? (
-                    <motion.span 
-                      initial={{ scale: 1.5, opacity: 0 }} 
-                      animate={{ scale: 1, opacity: 1 }} 
+                    <motion.span
+                      initial={{ scale: 1.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
                       style={{ color: guessResult === "correct" ? "var(--accent-cyan)" : "#ff6b6b" }}
                     >
-                      {jobs[currentIndex+1]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
+                      {jobs[currentIndex + 1]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
                     </motion.span>
                   ) : (
                     <span className="hl-salary-placeholder">??? €</span>

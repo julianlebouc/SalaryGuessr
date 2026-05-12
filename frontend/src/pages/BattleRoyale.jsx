@@ -152,6 +152,7 @@ export default function BattleRoyale() {
       setWinner(null);
       setIsWaitingNextRound(false);
       setView("playing");
+      logger.info("Battle Royale game started");
       playRef.current("gamestart");
     });
 

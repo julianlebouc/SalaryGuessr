@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ReactComponent as DiscordIcon } from '../assets/discord.svg';
 import { ReactComponent as GithubIcon } from '../assets/github.svg';
 import { ReactComponent as LinkedinIcon } from '../assets/linkedin.svg';
+import logger from "../utils/logger";
 import "../styles/HomePage.css";
 
 /**
@@ -12,6 +13,10 @@ import "../styles/HomePage.css";
  */
 export default function HomePage() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    logger.info("Landing page visit");
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },

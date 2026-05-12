@@ -105,6 +105,7 @@ export default function GamePage() {
 
   const startGame = async () => {
     play("gamestart");
+    logger.info("Classic game started");
     setLoadingStart(true);
     setRound(0);
     setScore(0);
@@ -159,6 +160,7 @@ export default function GamePage() {
     if (round + 1 >= maxRounds) {
       setPage("result");
       play("gameEnd3");
+      logger.info("Classic game finished", { score: score / maxRounds });
       return;
     }
 
