@@ -10,12 +10,23 @@
 .ml-content {
   max-width: 800px;
   width: 100%;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 32px;
-  padding: 3rem;
-  box-shadow: var(--glass-shadow);
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--ui-radius);
+  padding: 4rem 3rem;
+  box-shadow: 15px 15px 0px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.ml-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--grad-purple);
 }
 
 .ml-header {
@@ -24,12 +35,12 @@
 }
 
 .ml-title {
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: -2px;
+  color: #fff;
   margin-bottom: 0.5rem;
-  background: linear-gradient(to right, #fff, var(--primary-purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .ml-header p {
@@ -42,12 +53,14 @@
 }
 
 .ml-section h2 {
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1rem;
+  font-weight: 850;
   color: var(--primary-purple);
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.5rem;
 }
 
 .ml-section p, .ml-section li {

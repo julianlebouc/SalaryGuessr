@@ -300,11 +300,11 @@ export default function GamePage() {
                     <div className="gp-comparison">
                       <div className="gp-comp-item">
                         <span>VOTRE ESTIMATION</span>
-                        <strong>{result.user.toLocaleString()} €</strong>
+                        <strong>{result.user.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</strong>
                       </div>
                       <div className="gp-comp-item highlight">
                         <span>SALAIRE RÉEL</span>
-                        <strong className="accent">{result.real.toLocaleString()} €</strong>
+                        <strong className="accent">{result.real.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</strong>
                       </div>
                     </div>
                     <div className="gp-points-wrap">

@@ -264,12 +264,70 @@ export default function BattleRoyale() {
       <h1 className="gp-titleMain">Battle Royale</h1>
       <div className="br-setup-form">
         <div className="br-tabs">
-          <button className={activeTab === "create" ? "active" : ""} onClick={() => setActiveTab("create")}>CRÉER</button>
-          <button className={activeTab === "join" ? "active" : ""} onClick={() => setActiveTab("join")}>REJOINDRE</button>
+          <button 
+            className={activeTab === "create" ? "active" : ""} 
+            onClick={() => setActiveTab("create")}
+          >
+            CRÉER
+            {activeTab === "create" && (
+              <motion.div layoutId="br-tab-bg" className="br-tab-indicator" />
+            )}
+          </button>
+          <button 
+            className={activeTab === "join" ? "active" : ""} 
+            onClick={() => setActiveTab("join")}
+          >
+            REJOINDRE
+            {activeTab === "join" && (
+              <motion.div layoutId="br-tab-bg" className="br-tab-indicator" />
+            )}
+          </button>
         </div>
-        <input className="br-input-field" placeholder="Votre Pseudo" value={playerName} onChange={e => setPlayerName(e.target.value)} maxLength={20} />
-        {activeTab === "join" && <input className="br-input-field" placeholder="Code Salle" value={roomCode} onChange={e => setRoomCode(e.target.value.toUpperCase())} maxLength={6} />}
-        <button className="hp-btn-primary" onClick={activeTab === "create" ? createRoom : joinRoom} disabled={!playerName || (activeTab === "join" && !roomCode)}>
+
+        <input 
+          className="br-input-field" 
+          placeholder="Votre Pseudo" 
+          value={playerName} 
+          onChange={e => setPlayerName(e.target.value)} 
+          maxLength={20} 
+        />
+
+        <div className="br-tab-content-wrap">
+          <AnimatePresence mode="wait">
+            {activeTab === "join" ? (
+              <motion.div
+                key="join-input"
+                initial={{ x: 20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -20, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ width: '100%' }}
+              >
+                <input 
+                  className="br-input-field" 
+                  placeholder="Code Salle" 
+                  value={roomCode} 
+                  onChange={e => setRoomCode(e.target.value.toUpperCase())} 
+                  maxLength={6} 
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="create-spacer"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="br-tab-spacer"
+              />
+            )}
+          </AnimatePresence>
+        </div>
+
+        <button 
+          className="hp-btn-primary" 
+          onClick={activeTab === "create" ? createRoom : joinRoom} 
+          disabled={!playerName || (activeTab === "join" && !roomCode)}
+        >
           {activeTab === "create" ? "Ouvrir l'Arène" : "Entrer dans l'Arène"}
         </button>
       </div>
@@ -348,7 +406,7 @@ export default function BattleRoyale() {
             )}
 
             <div className="br-real-salary">
-              {roundResults.real_salary?.toLocaleString()} €
+              {roundResults.real_salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
               <span className="br-real-label">Salaire Réel</span>
             </div>
 
@@ -382,7 +440,7 @@ export default function BattleRoyale() {
                       <span className="br-rank-pos">#{i + 1}</span>
                       <span className="br-rank-name">{r.name}</span>
                       <div className="br-rank-data">
-                        <span className="br-rank-guess">{r.guess?.toLocaleString() || "???"} €</span>
+                        <span className="br-rank-guess">{r.guess?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || "???"} €</span>
                         <span className="br-rank-error">{Math.abs(r.error || 0).toFixed(0)}€ d'écart</span>
                       </div>
                       {isPlayerElim && <span className="br-elim-tag">ÉLIMINÉ</span>}

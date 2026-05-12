@@ -57,12 +57,11 @@
 
 .hp-title {
   font-size: clamp(3.5rem, 8vw, 6rem);
-  font-weight: 900;
-  line-height: 0.9;
-  background: linear-gradient(135deg, #fff 30%, var(--primary-purple) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -2px;
+  font-weight: 950;
+  line-height: 0.85;
+  color: #fff;
+  letter-spacing: -4px;
+  text-transform: uppercase;
 }
 
 @media (max-width: 480px) {
@@ -112,13 +111,13 @@
 
 /* Preview Section */
 .hp-preview {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--ui-radius);
   padding: 3rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.2);
 }
 
 .hp-preview::before {
@@ -127,8 +126,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 100% 0%, rgba(157, 80, 187, 0.05) 0%, transparent 70%);
+  height: 2px;
+  background: var(--grad-purple);
 }
 
 .hp-preview-header {
@@ -146,8 +145,10 @@
 }
 
 .hp-preview-title {
-  font-size: 2rem;
-  font-weight: 900;
+  font-size: 1.8rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: -1px;
 }
 
 .hp-preview-meta {
@@ -157,9 +158,9 @@
 }
 
 .hp-preview-bar {
-  height: 8px;
+  height: 4px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 100px;
+  border-radius: 0;
   margin-bottom: 2rem;
   overflow: hidden;
 }
@@ -203,7 +204,8 @@
   display: flex;
   justify-content: space-around;
   padding: 3rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
 }
 
 @media (max-width: 968px) {
@@ -237,11 +239,11 @@
 }
 
 .hp-stat-lab {
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 800;
   color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
 }
 
 /* Footer Nav */
@@ -250,7 +252,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 2rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 @media (max-width: 640px) {

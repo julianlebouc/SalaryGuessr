@@ -35,6 +35,7 @@
     text-align: center;
     gap: 0.5rem;
   }
+
   .hl-vs-zone {
     flex-direction: row !important;
     padding: 0.5rem 0 !important;
@@ -42,26 +43,32 @@
     justify-content: center !important;
     width: 100%;
   }
+
   .hl-job-item {
     padding: 1rem !important;
     gap: 0.25rem !important;
     border-radius: 16px !important;
   }
+
   .hl-job-title {
     font-size: 1.5rem !important;
   }
+
   .hl-salary-display {
     font-size: 3rem !important;
   }
+
   .hl-tag {
     font-size: 0.8rem !important;
     letter-spacing: 2px !important;
   }
+
   .hl-vs-btn {
     padding: 1rem 2rem !important;
     font-size: 1rem !important;
     border-radius: 12px !important;
   }
+
   .hl-vs-text {
     font-size: 1.5rem !important;
   }
@@ -72,9 +79,22 @@
   flex-direction: column;
   gap: 1.5rem;
   padding: 3rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--ui-radius);
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.hl-job-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .hl-tag {
@@ -93,7 +113,8 @@
 .hl-salary-display {
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 950;
-  letter-spacing: -2px;
+  letter-spacing: -3px;
+  font-family: var(--font-mono);
 }
 
 .hl-salary-placeholder {
@@ -108,18 +129,21 @@
 }
 
 .hl-vs-text {
-  font-size: 2rem;
-  font-weight: 900;
-  opacity: 0.2;
+  font-size: 1.5rem;
+  font-weight: 950;
+  opacity: 0.1;
+  letter-spacing: 5px;
 }
 
 .hl-vs-btn {
-  padding: 1.5rem 3rem;
-  border-radius: 20px;
+  padding: 1.2rem 3rem;
+  border-radius: var(--ui-radius);
   font-weight: 900;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: white;
-  transition: var(--trans-smooth);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.2s ease;
 }
 
 .hl-vs-btn.up {
@@ -130,7 +154,8 @@
 .hl-vs-btn.up:hover {
   background: var(--accent-cyan);
   color: black;
-  box-shadow: 0 0 30px var(--accent-cyan);
+  box-shadow: 0 4px 0px rgba(0, 242, 254, 0.5);
+  transform: translateY(-2px);
 }
 
 .hl-vs-btn.down {
@@ -140,7 +165,8 @@
 
 .hl-vs-btn.down:hover {
   background: var(--primary-purple);
-  box-shadow: 0 0 30px var(--primary-purple-glow);
+  box-shadow: 0 4px 0px rgba(157, 80, 187, 0.5);
+  transform: translateY(-2px);
 }
 
 .hl-gameover-view {
@@ -162,15 +188,16 @@
   display: flex;
   flex-direction: column;
   font-size: clamp(4rem, 15vw, 6.5rem);
-  font-weight: 900;
-  line-height: 1;
-  margin-bottom: 1rem;
+  font-weight: 950;
+  line-height: 0.8;
+  margin-bottom: 2rem;
+  font-family: var(--font-mono);
 }
 
 .hl-final-score span {
   font-size: 1rem;
   color: var(--text-secondary);
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .hl-result-actions {

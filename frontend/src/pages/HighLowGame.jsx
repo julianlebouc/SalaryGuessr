@@ -138,7 +138,7 @@ export default function HighLowGame() {
                   <span className="gp-badge">{jobs[currentIndex]?.company || "Confidentiel"}</span>
                   <span className="gp-badge">{jobs[currentIndex]?.location || "France"}</span>
                 </div>
-                <div className="hl-salary-display">{jobs[currentIndex]?.salary?.toLocaleString()} €</div>
+                <div className="hl-salary-display">{jobs[currentIndex]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</div>
               </motion.div>
             </AnimatePresence>
 
@@ -186,7 +186,7 @@ export default function HighLowGame() {
                       animate={{ scale: 1, opacity: 1 }} 
                       style={{ color: guessResult === "correct" ? "var(--accent-cyan)" : "#ff6b6b" }}
                     >
-                      {jobs[currentIndex+1]?.salary?.toLocaleString()} €
+                      {jobs[currentIndex+1]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
                     </motion.span>
                   ) : (
                     <span className="hl-salary-placeholder">??? €</span>

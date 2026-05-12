@@ -30,19 +30,21 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 2.5rem 1.5rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 32px;
-  transition: var(--trans-smooth);
+  padding: 3rem 2rem;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--ui-radius);
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.2);
 }
 
 .mode-card-new:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--primary-purple);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-5px);
+  box-shadow: 15px 15px 0px rgba(0, 0, 0, 0.3);
 }
 
 .mode-card-new::before {
@@ -68,9 +70,11 @@
 }
 
 .mode-card-title {
-  font-size: 1.5rem;
-  font-weight: 900;
-  margin-bottom: 0.75rem;
+  font-size: 1.6rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  margin-bottom: 1rem;
 }
 
 .mode-card-desc {
@@ -92,21 +96,21 @@
 
 .mode-enter-btn {
   width: 100%;
-  padding: 0.8rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  border-radius: 12px;
+  border-radius: var(--ui-radius);
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: var(--trans-smooth);
+  letter-spacing: 2px;
+  transition: all 0.2s ease;
 }
 
 .mode-card-new:hover .mode-enter-btn {
   background: var(--grad-purple);
-  border-color: transparent;
-  box-shadow: 0 0 20px var(--primary-purple-glow);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 0px rgba(106, 17, 203, 1);
 }
 
 @media (max-width: 968px) {

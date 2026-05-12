@@ -3,12 +3,12 @@
   top: 1.5rem;
   right: 1.5rem;
   z-index: 9999;
-  background: var(--glass-bg);
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  border-radius: 100px;
-  padding: 0.6rem 1.2rem;
+  border-radius: var(--ui-radius);
+  padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -18,9 +18,8 @@
 
 .sg-sound-slider-wrap:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: var(--primary-purple);
-  transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(157, 80, 187, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
 .sg-sound-icon-btn {
@@ -46,9 +45,9 @@
   -webkit-appearance: none !important;
   appearance: none !important;
   width: 80px;
-  height: 4px;
+  height: 2px;
   background: rgba(255, 255, 255, 0.1) !important;
-  border-radius: 100px !important;
+  border-radius: 0 !important;
   outline: none;
   cursor: pointer;
   transition: var(--trans-smooth);
@@ -58,14 +57,13 @@
 .sg-sound-slider::-webkit-slider-thumb {
   -webkit-appearance: none !important;
   appearance: none !important;
-  height: 14px;
-  width: 14px;
-  border-radius: 50% !important;
+  height: 12px;
+  width: 12px;
+  border-radius: 0 !important;
   background: white !important;
   cursor: pointer;
-  border: 2px solid var(--primary-purple) !important;
-  box-shadow: 0 0 10px var(--primary-purple-glow) !important;
-  transition: var(--trans-smooth);
+  border: 1px solid var(--primary-purple) !important;
+  transition: all 0.2s ease;
 }
 
 .sg-sound-slider:hover::-webkit-slider-thumb {
@@ -77,22 +75,21 @@
 
 /* Firefox */
 .sg-sound-slider::-moz-range-thumb {
-  height: 14px;
-  width: 14px;
-  border-radius: 50%;
+  height: 12px;
+  width: 12px;
+  border-radius: 0;
   background: white;
   cursor: pointer;
-  border: 2px solid var(--primary-purple);
-  box-shadow: 0 0 10px var(--primary-purple-glow);
+  border: 1px solid var(--primary-purple);
 }
 
 /* Mobile: Just the icon button */
 @media (max-width: 768px) {
   .sg-sound-slider-wrap {
-    padding: 0.6rem;
+    padding: 0.5rem;
     gap: 0;
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     justify-content: center;
     top: 1.5rem;
     right: 1.5rem;
