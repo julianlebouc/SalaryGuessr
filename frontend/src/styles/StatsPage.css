@@ -32,7 +32,8 @@
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 4rem;
-  flex-grow: 1;
+  flex: 1;
+  min-height: 0;
 }
 
 @media (max-width: 968px) {

@@ -25,7 +25,8 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 2rem;
-  flex-grow: 1;
+  flex: 1;
+  min-height: 0;
 }
 
 @media (max-width: 968px) {
@@ -47,22 +48,22 @@
     border-radius: 16px !important;
   }
   .hl-job-title {
-    font-size: 1.1rem !important;
+    font-size: 1.5rem !important;
   }
   .hl-salary-display {
-    font-size: 2rem !important;
+    font-size: 3rem !important;
   }
   .hl-tag {
-    font-size: 0.6rem !important;
-    letter-spacing: 1px !important;
+    font-size: 0.8rem !important;
+    letter-spacing: 2px !important;
   }
   .hl-vs-btn {
-    padding: 0.6rem 1.2rem !important;
-    font-size: 0.8rem !important;
-    border-radius: 10px !important;
+    padding: 1rem 2rem !important;
+    font-size: 1rem !important;
+    border-radius: 12px !important;
   }
   .hl-vs-text {
-    font-size: 1.2rem !important;
+    font-size: 1.5rem !important;
   }
 }
 
@@ -147,8 +148,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-grow: 1;
+  flex: 1;
   text-align: center;
+  min-height: 0;
 }
 
 .hl-gameover-view h1 {

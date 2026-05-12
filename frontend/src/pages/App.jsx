@@ -22,19 +22,20 @@ function GlobalNav() {
   return (
     <>
       <SoundToggleSlider />
-      <AnimatePresence>
+      <AnimatePresence mode="popLayout">
         {!isHome && (
           <motion.button
             key="home-btn"
             className="gp-homeBtn"
             onClick={() => navigate("/")}
-            initial={{ x: -50, opacity: 0 }}
+            initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -50, opacity: 0 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            exit={{ x: -20, opacity: 0, transition: { duration: 0.2 } }}
+            whileHover={{ translateY: -2, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            <span>🏠 Accueil</span>
+            <img src="/logo512.svg" alt="Logo" className="gp-home-logo" />
+            <span>Accueil</span>
           </motion.button>
         )}
       </AnimatePresence>

@@ -66,12 +66,14 @@
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
+
   .gp-progress-bar {
     grid-column: span 2;
   }
 }
 
-.gp-round-badge, .gp-score-badge {
+.gp-round-badge,
+.gp-score-badge {
   font-weight: 800;
   font-size: 0.8rem;
   letter-spacing: 1px;
@@ -112,50 +114,56 @@
     grid-template-columns: 1fr;
     gap: 0.75rem;
   }
+
   .gp-game-header {
     margin-bottom: 0.75rem;
   }
+
   .gp-job-side {
-    gap: 0.25rem !important;
+    gap: 0.75rem !important;
+    justify-content: center;
   }
+
   .gp-job-title {
-    font-size: 1.3rem !important;
-    margin-bottom: 0.1rem !important;
-  }
-  .badgesContainer {
-    gap: 0.2rem !important;
+    font-size: 1.75rem !important;
     margin-bottom: 0.5rem !important;
   }
-  .gp-badgeGroup {
-    gap: 0.2rem !important;
+
+  .badgesContainer {
+    gap: 0.5rem !important;
+    margin-bottom: 1rem !important;
   }
+
   .gp-badge {
-    padding: 0.2rem 0.4rem !important;
-    font-size: 0.6rem !important;
+    padding: 0.4rem 0.8rem !important;
+    font-size: 0.75rem !important;
   }
-  .gp-dateInfo {
-    margin-bottom: 0.25rem !important;
-    font-size: 0.65rem !important;
-  }
+
   .gp-job-desc {
-    max-height: 60px !important;
-    font-size: 0.8rem !important;
-    line-height: 1.2 !important;
-    -webkit-line-clamp: 2 !important;
+    max-height: 25vh !important;
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+    overflow-y: auto !important;
+    display: block !important;
   }
-  .gp-input-area, .gp-result-area {
+
+  .gp-input-area,
+  .gp-result-area {
     padding: 0.75rem !important;
     border-radius: 12px !important;
     gap: 0.5rem !important;
   }
+
   .gp-input-wrap input {
     font-size: 1.2rem !important;
     padding: 0.6rem !important;
   }
+
   .gp-currency {
     font-size: 1.2rem !important;
     right: 1rem !important;
   }
+
   .gp-input-label {
     font-size: 0.7rem !important;
   }
@@ -164,7 +172,9 @@
 .gp-job-side {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: clamp(0.5rem, 3vh, 1.5rem);
+  flex: 1;
+  min-height: 0;
 }
 
 .gp-job-title {
@@ -179,8 +189,9 @@
 
 .badgesContainer {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   margin-bottom: 1rem;
 }
 
@@ -226,13 +237,6 @@
 .gp-romeCode {
   opacity: 0.6;
   font-size: 0.6rem;
-}
-
-.gp-dateInfo {
-  margin-bottom: 1rem;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  opacity: 0.8;
 }
 
 .gp-job-desc {

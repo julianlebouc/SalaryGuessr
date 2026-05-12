@@ -10,9 +10,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import "../styles/GamePage.css";
-import { 
-  fetchJob, 
-  hasValidSalary, 
+import {
+  fetchJob,
+  hasValidSalary,
   validateGuess
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
@@ -48,7 +48,7 @@ export default function GamePage() {
   const [loadingJob, setLoadingJob] = useState(false);
 
   const [history, setHistory] = useState([]);
-  
+
   const jobBufferRef = useRef([]);
   const refillPromiseRef = useRef(null);
   const seenIdsRef = useRef(new Set());
@@ -72,7 +72,7 @@ export default function GamePage() {
 
   const refillBuffer = useCallback(async (targetSize = BUFFER_TARGET) => {
     if (refillPromiseRef.current) return refillPromiseRef.current;
-    
+
     refillPromiseRef.current = (async () => {
       let currentBuf = [...jobBufferRef.current];
       while (currentBuf.length < targetSize) {
@@ -94,7 +94,7 @@ export default function GamePage() {
       }
       return currentBuf;
     })().finally(() => { refillPromiseRef.current = null; });
-    
+
     return refillPromiseRef.current;
   }, []);
 
@@ -109,7 +109,7 @@ export default function GamePage() {
     setScore(0);
     setHistory([]);
     seenIdsRef.current.clear();
-    
+
     try {
       const firstJob = await fetchNormalizedJobWithSalary();
       seenIdsRef.current.add(firstJob.id);
@@ -130,11 +130,11 @@ export default function GamePage() {
     try {
       const response = await validateGuess(currentJob.id, user);
       setScore(s => s + response.score);
-      setHistory(h => [...h, { 
-        round: round + 1, 
-        title: currentJob.title, 
-        estimated: user, 
-        real: response.real_salary 
+      setHistory(h => [...h, {
+        round: round + 1,
+        title: currentJob.title,
+        estimated: user,
+        real: response.real_salary
       }]);
       setResult({ user, real: response.real_salary, score: response.score });
       setShowResult(true);
@@ -187,13 +187,13 @@ export default function GamePage() {
             <h1 className="gp-titleMain">Configuration</h1>
             <div className="gp-config-box">
               <label className="gp-config-label">Nombre de manches : <strong>{maxRounds}</strong></label>
-              <input 
-                type="range" 
-                min="5" 
-                max="50" 
-                step="5" 
-                value={maxRounds} 
-                onChange={e => setMaxRounds(Number(e.target.value))} 
+              <input
+                type="range"
+                min="5"
+                max="50"
+                step="5"
+                value={maxRounds}
+                onChange={e => setMaxRounds(Number(e.target.value))}
                 className="gp-range-input"
               />
               <button className="hp-btn-primary" onClick={startGame} disabled={loadingStart}>
@@ -209,10 +209,10 @@ export default function GamePage() {
               <div className="gp-round-badge">MANCHE {round + 1} / {maxRounds}</div>
               <div className="gp-score-badge">{score.toFixed(0)} PTS</div>
               <div className="gp-progress-bar">
-                <motion.div 
-                  className="gp-progress-fill" 
+                <motion.div
+                  className="gp-progress-fill"
                   initial={{ width: 0 }}
-                  animate={{ width: `${((round) / maxRounds) * 100}%` }} 
+                  animate={{ width: `${((round) / maxRounds) * 100}%` }}
                 />
               </div>
             </div>
@@ -228,44 +228,34 @@ export default function GamePage() {
                     transition={{ duration: 0.3 }}
                   >
                     <h2 className="gp-job-title">{currentJob?.title}</h2>
-                    
-                    <div className="badgesContainer">
-                      <div className="gp-badgeGroup gp-badgePrimary">
-                        {currentJob?.company && <span className="gp-badge gp-badgeCompany">🏢 {currentJob.company}</span>}
-                        <span className="gp-badge gp-badgeLocation">📍 {currentJob?.location}</span>
-                        {currentJob?.postalCode && <span className="gp-badge">📮 {currentJob.postalCode}</span>}
-                      </div>
-                      
-                      <div className="gp-badgeGroup">
-                        {currentJob?.contractType && <span className="gp-badge">📄 {currentJob.contractType}</span>}
-                        {currentJob?.contractHours && <span className="gp-badge">⏱️ {currentJob.contractHours}</span>}
-                        {currentJob?.travailType && <span className="gp-badge">💼 {currentJob.travailType}</span>}
-                        {currentJob?.experience && <span className="gp-badge">🎓 {currentJob.experience}</span>}
-                        {currentJob?.qualification && <span className="gp-badge">📊 {currentJob.qualification}</span>}
-                        {currentJob?.nombrePostes > 1 && <span className="gp-badge">👥 {currentJob.nombrePostes} postes</span>}
-                      </div>
-                      
-                      <div className="gp-badgeGroup">
-                        {currentJob?.deplacement && currentJob.deplacement !== "Jamais" && <span className="gp-badge">🚗 {currentJob.deplacement}</span>}
-                        {currentJob?.permis && <span className="gp-badge">🚗 Permis: {currentJob.permis}</span>}
-                        {currentJob?.alternance && <span className="gp-badge gp-badgeSpecial">🔄 Alternance</span>}
-                        {currentJob?.accessibleTH && <span className="gp-badge gp-badgeSpecial">♿ Accessible TH</span>}
-                        {currentJob?.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">🤝 Handi-Engagé</span>}
-                      </div>
-                      
-                      <div className="gp-badgeGroup">
-                        {currentJob?.romeLabel && (
-                          <span className="gp-badge gp-badgeRome">
-                            🏷️ {currentJob.romeLabel}
-                            {currentJob.romeCode && <span className="gp-romeCode"> · {currentJob.romeCode}</span>}
-                          </span>
-                        )}
-                        {currentJob?.sector && !currentJob.romeLabel && <span className="gp-badge">🏭 {currentJob.sector}</span>}
-                      </div>
-                    </div>
 
-                    <div className="gp-dateInfo">
-                      {currentJob?.created && <span className="gp-dateText">📅 Publié le {formatDate(currentJob.created)}</span>}
+                    <div className="badgesContainer">
+                      {currentJob?.company && <span className="gp-badge gp-badgeCompany">🏢 {currentJob.company}</span>}
+                      <span className="gp-badge gp-badgeLocation">📍 {currentJob?.location}</span>
+                      {currentJob?.postalCode && <span className="gp-badge">📮 {currentJob.postalCode}</span>}
+                      {currentJob?.contractType && <span className="gp-badge">📄 {currentJob.contractType}</span>}
+                      {currentJob?.contractHours && <span className="gp-badge">⏱️ {currentJob.contractHours}</span>}
+                      {currentJob?.travailType && <span className="gp-badge">💼 {currentJob.travailType}</span>}
+                      {currentJob?.experience && <span className="gp-badge">🎓 {currentJob.experience}</span>}
+                      {currentJob?.qualification && <span className="gp-badge">📊 {currentJob.qualification}</span>}
+                      {currentJob?.nombrePostes > 1 && <span className="gp-badge">👥 {currentJob.nombrePostes} postes</span>}
+                      {currentJob?.deplacement && currentJob.deplacement !== "Jamais" && <span className="gp-badge">🚗 {currentJob.deplacement}</span>}
+                      {currentJob?.permis && <span className="gp-badge">🚗 Permis: {currentJob.permis}</span>}
+                      {currentJob?.alternance && <span className="gp-badge gp-badgeSpecial">🔄 Alternance</span>}
+                      {currentJob?.accessibleTH && <span className="gp-badge gp-badgeSpecial">♿ Accessible TH</span>}
+                      {currentJob?.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">🤝 Handi-Engagé</span>}
+                      {currentJob?.romeLabel && (
+                        <span className="gp-badge gp-badgeRome">
+                          🏷️ {currentJob.romeLabel}
+                          {currentJob.romeCode && <span className="gp-romeCode"> · {currentJob.romeCode}</span>}
+                        </span>
+                      )}
+                      {currentJob?.sector && !currentJob.romeLabel && <span className="gp-badge">🏭 {currentJob.sector}</span>}
+                      {currentJob?.created && (
+                        <span className="gp-badge gp-badgeDate">
+                          📅 {formatDate(currentJob.created)}
+                        </span>
+                      )}
                     </div>
 
                     <div className="gp-job-desc">{currentJob?.description}</div>
@@ -278,13 +268,13 @@ export default function GamePage() {
                   <div className="gp-input-area">
                     <span className="gp-input-label">ESTIMEZ LE SALAIRE MENSUEL BRUT</span>
                     <div className="gp-input-wrap">
-                      <input 
-                        type="number" 
-                        value={guess} 
-                        onChange={e => setGuess(e.target.value)} 
-                        onKeyDown={e => e.key === "Enter" && validate()} 
-                        placeholder="Ex: 3500" 
-                        autoFocus 
+                      <input
+                        type="number"
+                        value={guess}
+                        onChange={e => setGuess(e.target.value)}
+                        onKeyDown={e => e.key === "Enter" && validate()}
+                        placeholder="Ex: 3500"
+                        autoFocus
                       />
                       <span className="gp-currency">€</span>
                     </div>
@@ -293,9 +283,9 @@ export default function GamePage() {
                     </button>
                   </div>
                 ) : (
-                  <motion.div 
-                    className="gp-result-area" 
-                    initial={{ scale: 0.9, opacity: 0 }} 
+                  <motion.div
+                    className="gp-result-area"
+                    initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                   >
                     <div className="gp-comparison">
@@ -332,13 +322,13 @@ export default function GamePage() {
               </div>
               <p className="gp-final-text">Précision Moyenne</p>
             </div>
-            
+
             <div className="gp-chart-container">
               <h3 className="gp-chart-title">Écart par Manche</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={history}>
                   <XAxis dataKey="round" stroke="rgba(255,255,255,0.3)" />
-                  <Tooltip 
+                  <Tooltip
                     contentStyle={{ background: "#1a103d", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }}
                     itemStyle={{ color: "#fff" }}
                   />

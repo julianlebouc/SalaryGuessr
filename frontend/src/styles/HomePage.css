@@ -9,6 +9,7 @@
   align-items: center;
   gap: 6rem;
   flex-grow: 1;
+  min-height: 0;
 }
 
 @media (max-width: 1200px) {
@@ -74,7 +75,7 @@
   font-size: clamp(1.1rem, 2vw, 1.4rem);
   line-height: 1.6;
   color: var(--text-secondary);
-  margin-bottom: 3rem;
+  margin-bottom: clamp(1rem, 5vh, 3rem);
   max-width: 600px;
 }
 

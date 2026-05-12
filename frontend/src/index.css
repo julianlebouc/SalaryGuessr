@@ -68,7 +68,7 @@ button {
 }
 
 .hp-btn-primary:hover {
-  transform: translateY(-4px) scale(1.02);
+  transform: translateY(-4px) scale(1.05);
   box-shadow: 0 15px 35px rgba(106, 17, 203, 0.5);
   border-color: rgba(255, 255, 255, 0.4);
 }
@@ -80,7 +80,7 @@ button {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
@@ -122,7 +122,9 @@ button {
 }
 
 @media (max-width: 480px) {
-  .hp-btn-primary, .hp-btn-secondary {
+
+  .hp-btn-primary,
+  .hp-btn-secondary {
     padding: 0.8rem 1.8rem;
     font-size: 0.9rem;
   }
@@ -130,19 +132,24 @@ button {
 
 /* --- LAYOUT SYSTEM --- */
 .page-wrapper {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 100px 5vw 5vw;
+  padding: 80px 5vw 2vw;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 @media (max-width: 820px) {
   .page-wrapper {
-    padding: 80px 1rem 1rem;
+    padding: 100px 1rem 1.5rem;
+    gap: 1.5rem;
+    height: auto;
+    min-height: 100vh;
   }
 }
 
@@ -161,14 +168,23 @@ button {
   align-items: center;
   gap: 0.8rem;
   color: white;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.gp-home-logo {
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(0 0 5px var(--primary-purple-glow));
+}
+
+.gp-homeBtn {
   cursor: pointer;
   box-shadow: var(--glass-shadow);
   transition: var(--trans-smooth);
 }
 
 .gp-homeBtn:hover {
-  transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.1);
   border-color: var(--primary-purple);
   box-shadow: 0 0 20px rgba(157, 80, 187, 0.3);
@@ -205,11 +221,6 @@ button {
 @media (max-width: 480px) {
   .gp-homeBtn span {
     display: none;
-  }
-
-  .gp-homeBtn::after {
-    content: "🏠";
-    font-size: 1.2rem;
   }
 }
 
