@@ -103,8 +103,8 @@ export default function HomePage() {
         <div className="hp-stats-row">
           {[
             { label: "Offres Réelles", value: "∞" },
-            { label: "Modes de Jeu", value: "3" },
-            { label: "Gratuit", value: "100%" }
+            { label: "Gratuit", value: "100%" },
+            { label: "Modes de Jeu", value: "3" }
           ].map((stat, i) => (
             <motion.div
               key={i}

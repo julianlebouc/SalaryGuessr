@@ -1,5 +1,4 @@
 .br-page {
-  /* Layout handled by page-wrapper */
 }
 
 /* Setup View */
@@ -213,6 +212,9 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .br-top-bar {
@@ -409,7 +411,7 @@
   background: #ff4757;
   color: white;
   padding: 0.2rem 0.6rem;
-  border-radius: 100px;
+  border-radius: var(--ui-radius);
   font-size: 0.6rem;
   font-weight: 900;
   margin-left: 1rem;
@@ -432,7 +434,7 @@
 .br-waiting-card {
   background: var(--glass-bg);
   padding: 2.5rem;
-  border-radius: 24px;
+  border-radius: var(--ui-radius);
   border: 1px solid var(--glass-border);
   text-align: center;
   flex: 1;
@@ -445,12 +447,12 @@
 /* Notice System */
 .br-notice {
   position: fixed;
-  top: 6rem;
+  top: 8rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10000;
   padding: 0.8rem 1.5rem;
-  border-radius: 12px;
+  border-radius: var(--ui-radius);
   display: flex;
   align-items: center;
   gap: 1.5rem;

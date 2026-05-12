@@ -253,12 +253,6 @@ export default function GamePage() {
                       {currentJob?.alternance && <span className="gp-badge gp-badgeSpecial">Alternance</span>}
                       {currentJob?.accessibleTH && <span className="gp-badge gp-badgeSpecial">Accessible TH</span>}
                       {currentJob?.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">Handi-Engagé</span>}
-                      {currentJob?.romeLabel && (
-                        <span className="gp-badge gp-badgeRome">
-                          {currentJob.romeLabel}
-                          {currentJob.romeCode && <span className="gp-romeCode"> · {currentJob.romeCode}</span>}
-                        </span>
-                      )}
                       {currentJob?.sector && !currentJob.romeLabel && <span className="gp-badge">{currentJob.sector}</span>}
                       {currentJob?.created && (
                         <span className="gp-badge gp-badgeDate">
@@ -343,11 +337,11 @@ export default function GamePage() {
                     contentStyle={{ background: "#1a103d", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }}
                     itemStyle={{ color: "#fff" }}
                   />
-                  <Legend 
-                    verticalAlign="top" 
-                    align="right" 
+                  <Legend
+                    verticalAlign="top"
+                    align="right"
                     iconType="circle"
-                    wrapperStyle={{ top: -35, right: 0, fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px' }} 
+                    wrapperStyle={{ top: -35, right: 0, fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px' }}
                   />
                   <Bar dataKey="real" name="Réel" fill="var(--primary-purple)" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="estimated" name="Estimé" fill="rgba(255,255,255,0.15)" radius={[4, 4, 0, 0]} />

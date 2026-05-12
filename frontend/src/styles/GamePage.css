@@ -82,6 +82,9 @@
   flex-direction: column;
   height: 100%;
   flex-grow: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .gp-game-header {
@@ -169,8 +172,8 @@
   }
 
   .gp-badge {
-    padding: 0.4rem 0.8rem !important;
-    font-size: 0.75rem !important;
+    padding: 0.3rem 0.6rem !important;
+    font-size: 0.65rem !important;
   }
 
   .gp-job-desc {
@@ -212,12 +215,12 @@
 }
 
 .gp-job-title {
-  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-size: clamp(1.2rem, 4vw, 2.2rem);
   font-weight: 950;
-  line-height: 1;
-  color: #fff;
+  line-height: 1.1;
   text-transform: uppercase;
-  letter-spacing: -2px;
+  color: #fff;
+  letter-spacing: -1px;
   margin-bottom: 0.5rem;
 }
 
@@ -238,15 +241,15 @@
 .gp-badge {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.3rem 0.8rem;
+  padding: 0.2rem 0.6rem;
   border-radius: var(--ui-radius);
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 750;
   color: var(--text-secondary);
   transition: all 0.2s ease;
   white-space: nowrap;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .gp-badgePrimary .gp-badge {
@@ -265,23 +268,14 @@
   border-color: rgba(0, 242, 254, 0.3);
 }
 
-.gp-badgeRome {
-  background: rgba(157, 80, 187, 0.1);
-  border-color: rgba(157, 80, 187, 0.3);
-}
-
-.gp-romeCode {
-  opacity: 0.6;
-  font-size: 0.6rem;
-}
-
 .gp-job-desc {
-  font-size: 1.05rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.5;
   color: var(--text-secondary);
-  max-height: 300px;
+  max-height: 250px;
   overflow-y: auto;
   padding-right: 1rem;
+  max-width: 100%;
 }
 
 .gp-job-desc::-webkit-scrollbar {

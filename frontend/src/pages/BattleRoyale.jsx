@@ -264,8 +264,8 @@ export default function BattleRoyale() {
       <h1 className="gp-titleMain">Battle Royale</h1>
       <div className="br-setup-form">
         <div className="br-tabs">
-          <button 
-            className={activeTab === "create" ? "active" : ""} 
+          <button
+            className={activeTab === "create" ? "active" : ""}
             onClick={() => setActiveTab("create")}
           >
             CRÉER
@@ -273,8 +273,8 @@ export default function BattleRoyale() {
               <motion.div layoutId="br-tab-bg" className="br-tab-indicator" />
             )}
           </button>
-          <button 
-            className={activeTab === "join" ? "active" : ""} 
+          <button
+            className={activeTab === "join" ? "active" : ""}
             onClick={() => setActiveTab("join")}
           >
             REJOINDRE
@@ -284,31 +284,31 @@ export default function BattleRoyale() {
           </button>
         </div>
 
-        <input 
-          className="br-input-field" 
-          placeholder="Votre Pseudo" 
-          value={playerName} 
-          onChange={e => setPlayerName(e.target.value)} 
-          maxLength={20} 
+        <input
+          className="br-input-field"
+          placeholder="Votre Pseudo"
+          value={playerName}
+          onChange={e => setPlayerName(e.target.value)}
+          maxLength={20}
         />
 
         <div className="br-tab-content-wrap">
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             {activeTab === "join" ? (
               <motion.div
                 key="join-input"
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -20, opacity: 0 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
                 style={{ width: '100%' }}
               >
-                <input 
-                  className="br-input-field" 
-                  placeholder="Code Salle" 
-                  value={roomCode} 
-                  onChange={e => setRoomCode(e.target.value.toUpperCase())} 
-                  maxLength={6} 
+                <input
+                  className="br-input-field"
+                  placeholder="Code Salle"
+                  value={roomCode}
+                  onChange={e => setRoomCode(e.target.value.toUpperCase())}
+                  maxLength={6}
                 />
               </motion.div>
             ) : (
@@ -323,9 +323,9 @@ export default function BattleRoyale() {
           </AnimatePresence>
         </div>
 
-        <button 
-          className="hp-btn-primary" 
-          onClick={activeTab === "create" ? createRoom : joinRoom} 
+        <button
+          className="hp-btn-primary"
+          onClick={activeTab === "create" ? createRoom : joinRoom}
           disabled={!playerName || (activeTab === "join" && !roomCode)}
         >
           {activeTab === "create" ? "Ouvrir l'Arène" : "Entrer dans l'Arène"}
@@ -363,10 +363,10 @@ export default function BattleRoyale() {
   const renderPlaying = () => {
     const elimArray = roundResults?.eliminated_ids || (roundResults?.eliminated_id ? [roundResults.eliminated_id] : []);
     const eliminatedIds = new Set(elimArray.map(id => String(id)));
-    
+
     const elimNames = roundResults?.eliminated_names || (roundResults?.eliminated_name ? [roundResults.eliminated_name] : []);
     const rankings = roundResults?.results || roundResults?.rankings || [];
-    
+
     const currentPlayer = players.find(p => String(p.id) === String(playerId));
     const isAlive = currentPlayer ? currentPlayer.is_alive !== false : true;
     const isEliminated = !isAlive || eliminatedIds.has(String(playerId));
@@ -460,7 +460,6 @@ export default function BattleRoyale() {
                 {currentOffer?.typeContratLibelle && <span className="gp-badge">{currentOffer.typeContratLibelle}</span>}
                 {currentOffer?.dureeTravailLibelle && <span className="gp-badge">{currentOffer.dureeTravailLibelle}</span>}
                 {currentOffer?.experienceLibelle && <span className="gp-badge">{currentOffer.experienceLibelle}</span>}
-                {currentOffer?.romeLibelle && <span className="gp-badge gp-badgeRome">{currentOffer.romeLibelle}</span>}
               </div>
               <div className="gp-job-desc">{currentOffer?.description}</div>
             </div>

@@ -7,10 +7,11 @@
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
   align-items: center;
+  align-content: center;
   gap: 6rem;
   flex-grow: 1;
-  min-height: 0;
 }
 
 @media (max-width: 1200px) {
@@ -22,6 +23,8 @@
 @media (max-width: 968px) {
   .hp-grid {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    align-content: center;
     text-align: center;
     gap: 2rem;
   }
@@ -207,7 +210,7 @@
   justify-content: space-around;
   padding: 3rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.02), transparent);
 }
 
 @media (max-width: 968px) {
@@ -255,6 +258,7 @@
   align-items: center;
   padding: 2rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 @media (max-width: 640px) {

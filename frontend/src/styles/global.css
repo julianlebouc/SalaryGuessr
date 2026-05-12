@@ -407,7 +407,6 @@ body {
   }
 }
 
-/* Narrow or short viewports: reserve space under fixed home + volume (see per-page padding-top) */
 /* Small screen adjustments for fixed elements */
 @media (max-width: 820px) {
 
@@ -443,7 +442,6 @@ body {
   }
 }
 
-/* Tighter glass cards on phones — more content, still readable */
 @media (max-width: 640px) {
 
   .gp-card,
