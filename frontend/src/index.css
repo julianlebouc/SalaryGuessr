@@ -9,7 +9,7 @@
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  
+
   --grad-purple: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   --grad-midnight: radial-gradient(circle at center, #1a103d 0%, #0b0a1a 100%);
   --grad-dark: linear-gradient(180deg, rgba(26, 16, 61, 0.8) 0%, rgba(11, 10, 26, 0.95) 100%);
@@ -27,7 +27,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-html, body {
+html,
+body {
   background-color: transparent;
   color: var(--text-main);
   overflow-x: hidden;
@@ -41,6 +42,90 @@ button {
   background: none;
   font-family: inherit;
   transition: var(--trans-smooth);
+}
+
+/* --- BUTTON SYSTEM --- */
+.hp-btn-primary {
+  position: relative;
+  padding: 1.1rem 2.8rem;
+  background: var(--grad-purple);
+  color: white;
+  border-radius: 100px;
+  font-weight: 850;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(106, 17, 203, 0.4);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  overflow: hidden;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.hp-btn-primary:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(106, 17, 203, 0.5);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.hp-btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.hp-btn-primary:hover::after {
+  opacity: 1;
+}
+
+.hp-btn-secondary {
+  padding: 1.1rem 2.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  backdrop-filter: blur(10px);
+  transition: var(--trans-smooth);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  white-space: nowrap;
+}
+
+.hp-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.hp-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 480px) {
+  .hp-btn-primary, .hp-btn-secondary {
+    padding: 0.8rem 1.8rem;
+    font-size: 0.9rem;
+  }
 }
 
 /* --- LAYOUT SYSTEM --- */
@@ -91,13 +176,25 @@ button {
 
 /* --- ANIMATIONS --- */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .animate-fade-in {
@@ -109,8 +206,20 @@ button {
   .gp-homeBtn span {
     display: none;
   }
+
   .gp-homeBtn::after {
     content: "🏠";
     font-size: 1.2rem;
   }
+}
+
+.gp-titleMain {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -2px;
+  background: linear-gradient(to bottom, #fff, var(--text-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
 }

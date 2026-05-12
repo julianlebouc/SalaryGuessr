@@ -19,24 +19,24 @@
 .gp-config-box {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   width: 100%;
-  max-width: 400px;
-  margin-top: 2rem;
-  padding: 2rem;
+  max-width: 350px;
+  margin-top: 1rem;
+  padding: 1.5rem;
   background: rgba(255, 255, 255, 0.02);
   border-radius: 24px;
   border: 1px solid var(--glass-border);
 }
 
 .gp-config-label {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--text-secondary);
 }
 
 .gp-config-label strong {
   color: var(--primary-purple);
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .gp-range-input {
@@ -56,15 +56,15 @@
   display: grid;
   grid-template-columns: auto auto 1fr;
   align-items: center;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 @media (max-width: 640px) {
   .gp-game-header {
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
   .gp-progress-bar {
     grid-column: span 2;
@@ -73,11 +73,11 @@
 
 .gp-round-badge, .gp-score-badge {
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   letter-spacing: 1px;
   background: rgba(255, 255, 255, 0.05);
-  padding: 0.6rem 1.2rem;
-  border-radius: 12px;
+  padding: 0.4rem 1rem;
+  border-radius: 10px;
 }
 
 .gp-score-badge {
@@ -86,7 +86,7 @@
 }
 
 .gp-progress-bar {
-  height: 8px;
+  height: 6px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 100px;
   overflow: hidden;
@@ -97,13 +97,12 @@
   height: 100%;
   background: var(--grad-purple);
   box-shadow: 0 0 15px var(--primary-purple-glow);
-  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .gp-game-grid {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
-  gap: 4rem;
+  gap: 3rem;
   flex-grow: 1;
   align-items: start;
 }
@@ -111,53 +110,61 @@
 @media (max-width: 1100px) {
   .gp-game-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.75rem;
   }
   .gp-game-header {
-    margin-bottom: 1.5rem;
-  }
-  .gp-job-side {
-    gap: 0.5rem;
-  }
-  .gp-job-title {
-    font-size: 1.5rem;
-  }
-  .badgesContainer {
-    gap: 0.4rem;
     margin-bottom: 0.75rem;
   }
+  .gp-job-side {
+    gap: 0.25rem !important;
+  }
+  .gp-job-title {
+    font-size: 1.3rem !important;
+    margin-bottom: 0.1rem !important;
+  }
+  .badgesContainer {
+    gap: 0.2rem !important;
+    margin-bottom: 0.5rem !important;
+  }
   .gp-badgeGroup {
-    gap: 0.3rem;
+    gap: 0.2rem !important;
   }
   .gp-badge {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem !important;
+    font-size: 0.6rem !important;
   }
   .gp-dateInfo {
-    margin-bottom: 0.5rem;
-    font-size: 0.75rem;
+    margin-bottom: 0.25rem !important;
+    font-size: 0.65rem !important;
   }
   .gp-job-desc {
-    max-height: 80px;
-    font-size: 0.85rem;
-    line-height: 1.3;
-    -webkit-line-clamp: 3;
+    max-height: 60px !important;
+    font-size: 0.8rem !important;
+    line-height: 1.2 !important;
+    -webkit-line-clamp: 2 !important;
   }
   .gp-input-area, .gp-result-area {
-    padding: 1rem;
-    border-radius: 16px;
-    gap: 1rem;
+    padding: 0.75rem !important;
+    border-radius: 12px !important;
+    gap: 0.5rem !important;
   }
   .gp-input-wrap input {
-    font-size: 1.5rem;
-    padding: 0.8rem;
+    font-size: 1.2rem !important;
+    padding: 0.6rem !important;
+  }
+  .gp-currency {
+    font-size: 1.2rem !important;
+    right: 1rem !important;
+  }
+  .gp-input-label {
+    font-size: 0.7rem !important;
   }
 }
 
 .gp-job-side {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .gp-job-title {
@@ -173,25 +180,26 @@
 .badgesContainer {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .gp-badgeGroup {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.4rem;
   flex-wrap: wrap;
 }
 
 .gp-badge {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--glass-border);
-  padding: 0.35rem 0.7rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 100px;
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-secondary);
   transition: var(--trans-smooth);
+  white-space: nowrap;
 }
 
 .gp-badgePrimary .gp-badge {
@@ -217,27 +225,27 @@
 
 .gp-romeCode {
   opacity: 0.6;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
 }
 
 .gp-dateInfo {
-  margin-bottom: 1.5rem;
-  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   opacity: 0.8;
 }
 
 .gp-job-desc {
-  font-size: 1.15rem;
-  line-height: 1.7;
+  font-size: 1.05rem;
+  line-height: 1.6;
   color: var(--text-secondary);
-  max-height: 350px;
+  max-height: 300px;
   overflow-y: auto;
-  padding-right: 1.5rem;
+  padding-right: 1rem;
 }
 
 .gp-job-desc::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .gp-job-desc::-webkit-scrollbar-thumb {
@@ -248,22 +256,20 @@
 .gp-action-side {
   display: flex;
   flex-direction: column;
-  position: sticky;
-  top: 100px;
 }
 
 .gp-input-area {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 2.5rem;
+  gap: 1.5rem;
+  padding: 2rem;
   background: rgba(255, 255, 255, 0.02);
-  border-radius: 32px;
+  border-radius: 24px;
   border: 1px solid var(--glass-border);
 }
 
 .gp-input-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 2px;
   color: var(--primary-purple);
@@ -280,26 +286,24 @@
   width: 100%;
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid var(--glass-border);
-  padding: 1.8rem;
-  border-radius: 20px;
+  padding: 1.5rem;
+  border-radius: 16px;
   color: white;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 900;
   text-align: center;
   outline: none;
-  transition: var(--trans-smooth);
 }
 
 .gp-input-wrap input:focus {
   border-color: var(--primary-purple);
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 30px rgba(157, 80, 187, 0.2);
 }
 
 .gp-currency {
   position: absolute;
-  right: 2rem;
-  font-size: 2rem;
+  right: 1.5rem;
+  font-size: 1.5rem;
   font-weight: 900;
   opacity: 0.3;
 }
@@ -308,28 +312,27 @@
 .gp-result-area {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 2rem;
   text-align: center;
-  padding: 2.5rem;
+  padding: 2rem;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 32px;
+  border-radius: 24px;
   border: 1px solid var(--primary-purple);
-  box-shadow: 0 0 40px rgba(157, 80, 187, 0.1);
 }
 
 .gp-comparison {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .gp-comp-item {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 1.5rem;
+  gap: 0.4rem;
+  padding: 1rem;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 20px;
+  border-radius: 16px;
 }
 
 .gp-comp-item.highlight {
@@ -338,14 +341,14 @@
 }
 
 .gp-comp-item span {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   color: var(--text-secondary);
 }
 
 .gp-comp-item strong {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 900;
 }
 
@@ -356,17 +359,17 @@
 .gp-points-wrap {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
 .gp-points-label {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 800;
   color: var(--primary-purple);
 }
 
 .gp-points-val {
-  font-size: 4rem;
+  font-size: 3rem;
   font-weight: 950;
   line-height: 1;
   color: var(--primary-purple);
@@ -380,7 +383,7 @@
   justify-content: center;
   flex-grow: 1;
   text-align: center;
-  gap: 3rem;
+  gap: 2rem;
 }
 
 .gp-final-box {
@@ -390,7 +393,7 @@
 }
 
 .gp-final-score {
-  font-size: clamp(6rem, 15vw, 10rem);
+  font-size: clamp(5rem, 12vw, 8rem);
   font-weight: 950;
   line-height: 0.9;
   background: linear-gradient(to bottom, #fff, var(--primary-purple));
@@ -399,39 +402,39 @@
 }
 
 .gp-final-unit {
-  font-size: 2rem;
+  font-size: 1.5rem;
   opacity: 0.3;
   -webkit-text-fill-color: white;
 }
 
 .gp-final-text {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
 }
 
 .gp-chart-container {
   width: 100%;
-  max-width: 900px;
+  max-width: 800px;
   background: rgba(255, 255, 255, 0.02);
-  padding: 2rem;
-  border-radius: 24px;
+  padding: 1.5rem;
+  border-radius: 20px;
   border: 1px solid var(--glass-border);
 }
 
 .gp-chart-title {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 800;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   text-align: left;
   opacity: 0.5;
 }
 
 .gp-result-actions {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 @media (max-width: 640px) {

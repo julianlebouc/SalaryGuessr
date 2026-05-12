@@ -34,7 +34,7 @@ export default function HomePage() {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="page-wrapper hp-page"
       initial="hidden"
       animate="visible"
@@ -48,9 +48,9 @@ export default function HomePage() {
               Salary<br />Guessr
             </h1>
           </motion.div>
-          
+
           <motion.p className="hp-subtitle" variants={itemVariants}>
-            Testez votre instinct sur le marché du travail. 
+            Testez votre instinct sur le marché du travail.
             Estimez les salaires d'offres réelles et grimpez au sommet du classement.
           </motion.p>
 
@@ -64,7 +64,7 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        <motion.div 
+        <motion.div
           className="hp-preview"
           variants={itemVariants}
         >
@@ -72,7 +72,7 @@ export default function HomePage() {
             <span className="hp-preview-tag">MANCHE 1</span>
             <h3 className="hp-preview-title">Product Designer (H/F)</h3>
           </div>
-          
+
           <div className="hp-preview-meta">
             <span className="gp-badge">🏢 Tech Studio</span>
             <span className="gp-badge">📍 Remote</span>
@@ -80,7 +80,7 @@ export default function HomePage() {
           </div>
 
           <div className="hp-preview-bar">
-            <motion.div 
+            <motion.div
               className="hp-preview-fill"
               initial={{ width: 0 }}
               animate={{ width: "75%" }}
@@ -106,8 +106,8 @@ export default function HomePage() {
             { label: "Modes de Jeu", value: "3" },
             { label: "Gratuit", value: "100%" }
           ].map((stat, i) => (
-            <motion.div 
-              key={i} 
+            <motion.div
+              key={i}
               className="hp-stat-box"
               variants={itemVariants}
             >
