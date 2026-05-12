@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import HomePage from "./HomePage";
 import GamePage from "./GamePage";
 import HighLowGame from "./HighLowGame";
@@ -8,21 +9,48 @@ import StatsPage from "./StatsPage";
 import MentionsLegales from "./MentionsLegales";
 import { SoundProvider } from "../sound/SoundProvider";
 import SoundToggleSlider from "../sound/SoundToggleSlider";
+import TwilightBackground from "../components/TwilightBackground";
 
 /**
- * @module Pages/App
+ * Global Navigation component that handles the persistent Home button and Sound slider.
  */
+function GlobalNav() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHome = location.pathname === "/";
+
+  return (
+    <>
+      <SoundToggleSlider />
+      <AnimatePresence>
+        {!isHome && (
+          <motion.button
+            key="home-btn"
+            className="gp-homeBtn"
+            onClick={() => navigate("/")}
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -50, opacity: 0 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span>🏠 Accueil</span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
 
 /**
  * Root application component with routing and audio context.
- * @component
- * @returns {JSX.Element}
  */
 function App() {
   return (
     <SoundProvider>
+      <TwilightBackground />
       <Router>
-        <SoundToggleSlider />
+        <GlobalNav />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/mode-select" element={<ModeSelectPage />} />

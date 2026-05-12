@@ -1,251 +1,139 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { ReactComponent as DiscordIcon } from '../assets/discord.svg';
 import { ReactComponent as GithubIcon } from '../assets/github.svg';
 import { ReactComponent as LinkedinIcon } from '../assets/linkedin.svg';
 import "../styles/HomePage.css";
 
 /**
- * @module Pages/HomePage
- */
-
-/**
- * Home page for SalaryGuessr.
- * Displays the app landing experience and navigates to game mode selection.
- * @component
- * @returns {JSX.Element}
+ * Redesigned Home page for SalaryGuessr.
+ * Seamless, full-page layout with logo and space-filling grid.
  */
 export default function HomePage() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [hoveredStat, setHoveredStat] = useState(null);
-  const [bounceAnimation, setBounceAnimation] = useState(false);
 
-  const discordId = "321002968218337289";
-
-  useEffect(() => {
-    const timer = setTimeout(() => setBounceAnimation(true), 500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  /**
-     * Navigate to the mode selection screen.
-     * @memberof module:Pages/HomePage
-     * @returns {void}
-     */
-  const goToModeSelect = () => {
-    setLoading(true);
-    setTimeout(() => {
-      navigate("/mode-select");
-    }, 1);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1
+      }
+    }
   };
 
-  /**
-     * Copy Discord ID and open the Discord profile in a new tab.
-     * @memberof module:Pages/HomePage
-     * @returns {void}
-     */
-  const contactDiscord = () => {
-    navigator.clipboard.writeText(discordId);
-    const btn = document.querySelector('.hp-discordButton');
-    btn.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-      btn.style.transform = '';
-    }, 200);
-    window.open(`https://discordapp.com/users/${discordId}`, "_blank", "noopener,noreferrer");
+  const itemVariants = {
+    hidden: { y: 15, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
   };
 
   return (
-    <div className="hp-container">
-      {/* Floating cartoon bubbles */}
-      <div className="hp-bubble hp-bubble-1">💰</div>
-      <div className="hp-bubble hp-bubble-2">🎯</div>
-      <div className="hp-bubble hp-bubble-3">⚡</div>
-      <div className="hp-bubble hp-bubble-4">🎮</div>
-      <div className="hp-bubble hp-bubble-5">💵</div>
+    <motion.div 
+      className="page-wrapper hp-page"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <div className="hp-grid">
+        <div className="hp-hero">
+          <motion.div className="hp-title-wrap" variants={itemVariants}>
+            <img src="/logo512.svg" alt="SalaryGuessr Logo" className="hp-logo-img" />
+            <h1 className="hp-title">
+              Salary<br />Guessr
+            </h1>
+          </motion.div>
+          
+          <motion.p className="hp-subtitle" variants={itemVariants}>
+            Testez votre instinct sur le marché du travail. 
+            Estimez les salaires d'offres réelles et grimpez au sommet du classement.
+          </motion.p>
 
-      {/* Background orbs */}
-      <div className="hp-bgOrb hp-orb1" />
-      <div className="hp-bgOrb hp-orb2" />
-      <div className="hp-bgOrb hp-orb3" />
-
-      {/* Cartoon character */}
-      <div className="hp-character">
-        <div className="hp-character-face">
-          <div className="hp-eye hp-eye-left">
-            <div className="hp-pupil"></div>
-          </div>
-          <div className="hp-eye hp-eye-right">
-            <div className="hp-pupil"></div>
-          </div>
-          <div className={`hp-mouth ${bounceAnimation ? 'hp-mouth-smile' : ''}`}></div>
+          <motion.div className="hp-actions" variants={itemVariants}>
+            <button className="hp-btn-primary" onClick={() => navigate("/mode-select")}>
+              🚀 Jouer Maintenant
+            </button>
+            <button className="hp-btn-secondary" onClick={() => navigate("/stats")}>
+              📊 Statistiques
+            </button>
+          </motion.div>
         </div>
-        <div className="hp-character-body"></div>
-        <div className="hp-character-arm hp-arm-left"></div>
-        <div className="hp-character-arm hp-arm-right"></div>
-      </div>
 
-      <div className="hp-card hp-heroCard">
-        <div className="hp-heroGrid">
-          <div className="hp-heroContent">
-            <div className="hp-titleWrapper">
-              <h1 className="hp-title">
-                <span className="hp-title-word">Salary Guessr</span>
-                <span className="hp-title-logo">
-                  <img src="/logo512.svg" alt="Salary Guessr Logo" className="hp-title-emoji" />
-                </span>
-              </h1>
-            </div>
-
-            <div className="hp-subtitles">
-              <p className="hp-subtitle hp-subtitle-main">
-                Teste ton instinct ! Deviens un pro de l'estimation salariale
-              </p>
-
-              <p className="hp-subtitle hp-subtitle-secondary">
-                À chaque manche, découvre une offre d'emploi réelle. Devine le salaire
-                le plus précisément possible. Chaque point compte !
-              </p>
-            </div>
-
-            <div className="hp-statsRow">
-              {[
-                { value: "∞", label: "Offres Réelles", icon: "📊", color: "#4f46e5" },
-                { value: "3", label: "Modes de jeu", icon: "🎮", color: "#ec4899" },
-                { value: "100%", label: "GRATUIT", icon: "🎁", color: "#10b981" }
-              ].map((stat, idx) => (
-                <div
-                  key={idx}
-                  className={`hp-statCard ${hoveredStat === idx ? 'hovered' : ''}`}
-                  onMouseEnter={() => setHoveredStat(idx)}
-                  onMouseLeave={() => setHoveredStat(null)}
-                  style={{ '--stat-color': stat.color }}
-                >
-                  <div className="hp-statIcon">{stat.icon}</div>
-                  <div className="hp-statValue">{stat.value}</div>
-                  <div className="hp-statLabel">{stat.label}</div>
-                  <div className="hp-statGlow"></div>
-                </div>
-              ))}
-            </div>
-
-            <div className="hp-actions">
-              <button
-                className={`hp-playButton ${loading ? "loading" : ""}`}
-                onClick={goToModeSelect}
-                disabled={loading}
-              >
-                <span className="hp-playButton-text">
-                  {loading ? "⏳ CHARGEMENT..." : "🚀 JOUER"}
-                </span>
-                {!loading && <span className="hp-playButton-arrow">→</span>}
-              </button>
-
-              <button
-                className="hp-statsButton"
-                onClick={() => navigate("/stats")}
-                title="Voir les statistiques globales"
-              >
-                <span className="hp-statsButton-icon">📊</span>
-                <span className="hp-statsButton-text">STATISTIQUES</span>
-              </button>
-            </div>
-
-            <div className="hp-contactSection">
-              <div className="hp-buttonsRow">
-                <button className="hp-githubButton" onClick={() => window.open('https://github.com/julianlebouc/SalaryGuessr', '_blank', 'noopener,noreferrer')}>
-                  <GithubIcon className="hp-githubIcon" />
-                  GitHub
-                </button>
-                <button className="hp-discordButton" onClick={contactDiscord}>
-                  <DiscordIcon className="hp-discordIcon" />
-                  Discord
-                </button>
-                <button className="hp-linkedinButton" onClick={() => window.open('https://www.linkedin.com/in/julian-lebouc-851619134/', '_blank', 'noopener,noreferrer')}>
-                  <LinkedinIcon className="hp-linkedinIcon" />
-                  LinkedIn
-                </button>
-              </div>
-              <p className="hp-discordHint">Discord ID: {discordId}</p>
-            </div>
+        <motion.div 
+          className="hp-preview"
+          variants={itemVariants}
+        >
+          <div className="hp-preview-header">
+            <span className="hp-preview-tag">MANCHE 1</span>
+            <h3 className="hp-preview-title">Product Designer (H/F)</h3>
+          </div>
+          
+          <div className="hp-preview-meta">
+            <span className="gp-badge">🏢 Tech Studio</span>
+            <span className="gp-badge">📍 Remote</span>
+            <span className="gp-badge">📄 CDI</span>
           </div>
 
-          <div className="hp-previewPanel">
-            <div className="hp-previewHeader">
-              <div className="hp-windowControls">
-                <span className="hp-windowControl hp-control-red"></span>
-                <span className="hp-windowControl hp-control-yellow"></span>
-                <span className="hp-windowControl hp-control-green"></span>
-              </div>
-              <div className="hp-previewBadge">🎮 APERÇU</div>
+          <div className="hp-preview-bar">
+            <motion.div 
+              className="hp-preview-fill"
+              initial={{ width: 0 }}
+              animate={{ width: "75%" }}
+              transition={{ duration: 1.5, delay: 1 }}
+            />
+          </div>
+
+          <div className="hp-preview-result">
+            <div className="hp-preview-stat">
+              <span className="hp-label">VOTRE ESTIMATION</span>
+              <span className="hp-val">45k €</span>
             </div>
-
-            <div className="hp-previewBody">
-              <div className="hp-previewTag">
-                <span className="hp-tagPulse"></span>
-                MANCHE 1
-              </div>
-              <h3 className="hp-previewTitle">Senior Frontend Developer</h3>
-
-              <div className="hp-previewMeta">
-                <span className="hp-metaItem">
-                  <span className="hp-metaIcon">🏢</span> TechNova
-                </span>
-                <span className="hp-metaItem">
-                  <span className="hp-metaIcon">📍</span> Paris
-                </span>
-                <span className="hp-metaItem">
-                  <span className="hp-metaIcon">📄</span> CDI
-                </span>
-              </div>
-
-              <div className="hp-salarySection">
-                <div className="hp-salaryLabel">
-                  <span>📊 TA PROXIMITÉ</span>
-                  <span className="hp-salaryPercent">0% → 100%</span>
-                </div>
-                <div className="hp-salaryBar">
-                  <div className="hp-salaryBarFill">
-                    <div className="hp-salaryBarGlow"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="hp-previewSalary">
-                <div className="hp-estimateBox">
-                  <span className="hp-estimateLabel">💡 TON ESTIMATION</span>
-                  <strong className="hp-estimateValue">4 200 €</strong>
-                </div>
-                <div className="hp-arrowIcon">↓</div>
-                <div className="hp-realBox">
-                  <span className="hp-realLabel">🎯 SALAIRE RÉEL</span>
-                  <strong className="hp-realValue">4 850 €</strong>
-                </div>
-              </div>
-
-              <div className="hp-previewReveal">
-                <div className="hp-revealScore">
-                  <span>🏆</span>
-                  <span className="hp-subtitle">SCORE: 86 pts</span>
-                </div>
-                <div className="hp-revealBadge">+13% de précision</div>
-              </div>
-            </div>
-
-            <div className="hp-previewFooter">
-              <div className="hp-loadingDots">
-                <span></span><span></span><span></span>
-              </div>
-              <span>Prochaine offre en préparation...</span>
+            <div className="hp-preview-stat right">
+              <span className="hp-label">SALAIRE RÉEL</span>
+              <span className="hp-val accent">52k €</span>
             </div>
           </div>
+        </motion.div>
+
+        <div className="hp-stats-row">
+          {[
+            { label: "Offres Réelles", value: "∞" },
+            { label: "Modes de Jeu", value: "3" },
+            { label: "Gratuit", value: "100%" }
+          ].map((stat, i) => (
+            <motion.div 
+              key={i} 
+              className="hp-stat-box"
+              variants={itemVariants}
+            >
+              <span className="hp-stat-val">{stat.value}</span>
+              <span className="hp-stat-lab">{stat.label}</span>
+            </motion.div>
+          ))}
         </div>
       </div>
-      <footer className="hp-footer">
-        <a href="/mentions-legales" onClick={(e) => { e.preventDefault(); navigate('/mentions-legales'); }}>
-          Mentions Légales
+
+      <div className="hp-footer-nav">
+        <div className="hp-socials">
+          <a href="https://github.com/julianlebouc/SalaryGuessr" target="_blank" rel="noopener noreferrer">
+            <GithubIcon width="20" height="20" />
+          </a>
+          <a href="https://discordapp.com/users/321002968218337289" target="_blank" rel="noopener noreferrer">
+            <DiscordIcon width="20" height="20" />
+          </a>
+          <a href="https://www.linkedin.com/in/julian-lebouc-851619134/" target="_blank" rel="noopener noreferrer">
+            <LinkedinIcon width="20" height="20" />
+          </a>
+        </div>
+        <a href="/mentions-legales" className="hp-legal" onClick={(e) => { e.preventDefault(); navigate('/mentions-legales'); }}>
+          Mentions Légales • © 2026 SalaryGuessr
         </a>
-      </footer>
-    </div>
+      </div>
+    </motion.div>
   );
 }

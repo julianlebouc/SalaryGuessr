@@ -1,24 +1,20 @@
 import React, { useRef } from "react";
+import { motion } from "framer-motion";
 import { useSound } from "./SoundProvider";
+import "./SoundToggleSlider.css";
 
 /**
  * @module Sound/SoundToggleSlider
  */
 
 /**
- * Volume control slider with mute toggle button.
+ * Polished Volume control slider with mute toggle.
  * @component
- * @returns {JSX.Element}
  */
 export default function SoundToggleSlider() {
   const { volume, setVolume } = useSound();
   const volumeBeforeMuteRef = useRef(volume > 0 ? volume : 0.5);
 
-/**
-   * Toggle mute state while preserving the previous volume level.
-   * @memberof module:Sound/SoundToggleSlider
-   * @returns {void}
-   */
   const toggleMute = () => {
     if (volume <= 0) {
       const restore = volumeBeforeMuteRef.current > 0 ? volumeBeforeMuteRef.current : 0.5;
@@ -31,17 +27,17 @@ export default function SoundToggleSlider() {
 
   return (
     <div className="sg-sound-slider-wrap">
-      <button
+      <motion.button
+        whileTap={{ scale: 0.9 }}
         type="button"
         className="sg-sound-icon-btn"
         onClick={toggleMute}
-        aria-label={volume <= 0 ? "Réactiver le son" : "Couper le son"}
         title={volume <= 0 ? "Réactiver le son" : "Couper le son"}
       >
-        <span className="sg-sound-icon" aria-hidden="true">
+        <span>
           {volume <= 0 ? "🔇" : volume < 0.5 ? "🔉" : "🔊"}
         </span>
-      </button>
+      </motion.button>
       <input
         className="sg-sound-slider"
         type="range"
@@ -54,7 +50,6 @@ export default function SoundToggleSlider() {
           if (v > 0) volumeBeforeMuteRef.current = v;
           setVolume(v);
         }}
-        aria-label="Volume"
       />
     </div>
   );

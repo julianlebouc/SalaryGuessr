@@ -1,0 +1,93 @@
+.sg-sound-slider-wrap {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  background: rgba(11, 10, 26, 0.6);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.sg-sound-slider-wrap:hover {
+  background: rgba(11, 10, 26, 0.8);
+  border-color: var(--primary-purple);
+  transform: translateY(-2px);
+}
+
+.sg-sound-icon-btn {
+  background: transparent !important;
+  border: none !important;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: transform 0.2s;
+}
+
+.sg-sound-icon-btn:hover {
+  transform: scale(1.1);
+}
+
+.sg-sound-slider {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 100px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Webkit (Chrome, Safari, Edge) */
+.sg-sound-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 10px;
+}
+
+.sg-sound-slider::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  height: 18px;
+  width: 18px;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  cursor: pointer;
+  margin-top: -6px;
+  border: 3px solid #9d50bb !important;
+  box-shadow: 0 0 15px rgba(157, 80, 187, 0.6) !important;
+}
+
+/* Firefox */
+.sg-sound-slider::-moz-range-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.sg-sound-slider::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: 3px solid #9d50bb;
+  box-shadow: 0 0 15px rgba(157, 80, 187, 0.6);
+}
