@@ -243,6 +243,12 @@
   font-size: 0.95rem;
 }
 
+.br-summary-box.alive .br-next-timer {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
 .br-summary-box.alive .count {
   font-size: 1.5rem;
   font-weight: 950;
@@ -416,19 +422,58 @@
 .br-notice--warning { background: rgba(255, 165, 2, 0.9); color: #1a103d; border: 1px solid rgba(255, 165, 2, 0.3); }
 .br-notice--success { background: rgba(46, 213, 115, 0.9); color: white; border: 1px solid rgba(46, 213, 115, 0.3); }
 
-/* Victory */
+/* Victory Screen */
 .br-victory-screen {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  gap: 3rem;
+  padding: 2rem;
+  animation: fadeIn 1s ease-out;
 }
 
-.br-victory-crown { font-size: 5rem; margin-bottom: 1rem; }
-.br-winner-name { font-size: 3rem; font-weight: 950; color: var(--accent-cyan); margin-bottom: 2rem; }
+.br-winner-podium {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
 
-/* Mobile */
-@media (max-width: 480px) {
-  .br-round-summary { grid-template-columns: 1fr; }
+.br-winner-tag {
+  color: var(--accent-cyan);
+  font-weight: 800;
+  letter-spacing: 5px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.br-victory-actions {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 820px) {
+  .br-playing-view {
+    padding: 1rem;
+  }
+  
+  .br-round-summary {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .br-victory-screen {
+    gap: 2rem;
+  }
+
+  .br-winner-tag {
+    font-size: 0.8rem;
+  }
 }

@@ -324,9 +324,14 @@ export default function BattleRoyale() {
 
         {gameState === "game_over" ? (
           <div className="br-victory-screen">
-            <h1 className="gp-titleMain">VICTOIRE</h1>
-            <div className="br-winner-name">{winner}</div>
-            <button className="hp-btn-primary" onClick={() => window.location.reload()}>Quitter</button>
+            <div className="br-winner-podium">
+              <span className="br-winner-tag">VAINQUEUR</span>
+              <h1 className="gp-titleMain">Victoire de {winner}</h1>
+            </div>
+            <div className="br-victory-actions">
+              <button className="hp-btn-primary" onClick={() => navigate("/")}>Retour à l'Accueil</button>
+              <button className="hp-btn-secondary" onClick={() => window.location.reload()}>Rejouer</button>
+            </div>
           </div>
         ) : gameState === "round_end" && roundResults ? (
           <div className="br-results-screen">
