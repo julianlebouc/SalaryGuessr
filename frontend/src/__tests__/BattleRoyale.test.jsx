@@ -43,7 +43,7 @@ describe('BattleRoyale Component', () => {
     
     const input = screen.getByPlaceholderText(/pseudo/i);
     fireEvent.change(input, { target: { value: 'Tester' } });
-    fireEvent.click(screen.getByText(/CRÉER UNE PARTIE/i));
+    fireEvent.click(screen.getByText(/Ouvrir l'Arène/i));
     
     expect(mockSocket.emit).toHaveBeenCalledWith('create_room', expect.any(Object));
   });

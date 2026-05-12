@@ -1,30 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import io from "socket.io-client";
 import "../styles/BattleRoyale.css";
 import { useSound } from "../sound/SoundProvider";
 import logger from "../utils/logger";
-
-/**
- * @typedef {Object} Notice
- * @property {string} [variant]
- * @property {string} message
- */
-
-/**
- * @typedef {Object} BrNoticeProps
- * @property {Notice|null} notice
- * @property {function(): void} onDismiss
- */
-
-/**
- * @typedef {Object} BrRoomCodeToolbarProps
- * @property {string} roomCode
- * @property {boolean} revealed
- * @property {function(): void} onToggleReveal
- * @property {function(): void} onCopy
- * @property {boolean} compact
- */
 
 const SOCKET_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
@@ -33,142 +13,70 @@ const SOCKET_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
  */
 
 /**
- * Displays a notice banner with an optional dismiss button.
- * @memberof module:Pages/BattleRoyale
+ * Display a notice banner for game notifications or errors.
+ * 
  * @component
- * @param {BrNoticeProps} props
- * @returns {JSX.Element|null}
+ * @param {Object} props
+ * @param {Object} props.notice - The notice object { message, variant }.
+ * @param {function(): void} props.onDismiss - Callback to clear the notice.
  */
 function BrNotice({ notice, onDismiss }) {
   if (!notice) return null;
   const variant = notice.variant || "error";
   return (
-    <div className={`br-notice br-notice--${variant}`} role="alert">
+    <div className={`br-notice br-notice--${variant}`}>
       <span className="br-notice-text">{notice.message}</span>
-      <button type="button" className="br-notice-dismiss" onClick={onDismiss} aria-label="Close notice">
-        ×
-      </button>
+      <button onClick={onDismiss} className="br-notice-dismiss">×</button>
     </div>
   );
 }
 
 /**
- * Icon for copying the room code.
- * @memberof module:Pages/BattleRoyale
+ * Toolbar for room code display and management.
+ * 
  * @component
- * @returns {JSX.Element}
- */
-function IconCopy() {
-  return (
-    <svg className="br-room-code-svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
-      />
-    </svg>
-  );
-}
-
-/**
- * Icon used to show the room code.
- * @memberof module:Pages/BattleRoyale
- * @component
- * @returns {JSX.Element}
- */
-function IconEye() {
-  return (
-    <svg className="br-room-code-svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none">
-      <path
-        d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  );
-}
-
-/**
- * Icon used to hide the room code.
- * @memberof module:Pages/BattleRoyale
- * @component
- * @returns {JSX.Element}
- */
-function IconEyeOff() {
-  return (
-    <svg className="br-room-code-svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none">
-      <path
-        d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a21.77 21.77 0 015.06-7.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a21.53 21.53 0 01-4.94 8M14.12 14.12a3 3 0 11-4.24-4.24"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path d="M1 1l22 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-/**
- * Toolbar for copying and toggling visibility of the room code.
- * @memberof module:Pages/BattleRoyale
- * @component
- * @param {BrRoomCodeToolbarProps} props
- * @returns {JSX.Element|null}
+ * @param {Object} props
+ * @param {string} props.roomCode - The room identification code.
+ * @param {boolean} props.revealed - Whether the code is visible.
+ * @param {function(): void} props.onToggleReveal - Toggle visibility.
+ * @param {function(): void} props.onCopy - Copy code to clipboard.
+ * @param {boolean} [props.compact] - Compact layout flag.
  */
 function BrRoomCodeToolbar({ roomCode, revealed, onToggleReveal, onCopy, compact }) {
   if (!roomCode) return null;
-  const chipClass =
-    compact
-      ? "br-room-code-chip br-room-code-chip--compact"
-      : "br-room-code-chip";
   return (
-    <div className={`br-room-code-toolbar${compact ? " br-room-code-toolbar--compact" : ""}`}>
-      <button
-        type="button"
-        className="br-room-code-icon-btn"
-        onClick={onCopy}
-        aria-label="Copier le code de la salle"
-        title="Copier le code"
-      >
-        <IconCopy />
+    <div className={`br-room-code-toolbar ${compact ? "compact" : ""}`}>
+      <button onClick={onCopy} className="br-icon-btn" title="Copier">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
       </button>
-      <strong
-        className={`${chipClass}${revealed ? "" : " br-room-code-chip--masked"}`}
-        aria-label={revealed ? `Code ${roomCode}` : "Code masqué"}
-      >
+      <span className={`br-code-text ${!revealed ? "masked" : ""}`}>
         {roomCode}
-      </strong>
-      <button
-        type="button"
-        className="br-room-code-icon-btn"
-        onClick={onToggleReveal}
-        aria-label={revealed ? "Masquer le code" : "Afficher le code"}
-        title={revealed ? "Masquer le code" : "Afficher le code"}
-      >
-        {revealed ? <IconEyeOff /> : <IconEye />}
+      </span>
+      <button onClick={onToggleReveal} className="br-icon-btn" title={revealed ? "Masquer" : "Afficher"}>
+        {revealed ? (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+        ) : (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        )}
       </button>
     </div>
   );
 }
 
 /**
- * Battle Royale multiplayer game page.
- * Manages room lifecycle, socket events, and game flow.
+ * Main Battle Royale Component.
+ * Handles socket connections, room creation/joining, and real-time multiplayer gameplay.
+ * 
  * @component
- * @returns {JSX.Element}
+ * @returns {JSX.Element} The rendered Battle Royale page.
  */
 export default function BattleRoyale() {
   const navigate = useNavigate();
   const { play } = useSound();
-  
-  // UI state
+
   const [view, setView] = useState("join");
   const [activeTab, setActiveTab] = useState("create");
-  
-  // Room state
+
   const [roomCode, setRoomCode] = useState("");
   const [playerName, setPlayerName] = useState("");
   const [playerId, setPlayerId] = useState(null);
@@ -178,8 +86,7 @@ export default function BattleRoyale() {
   const [hostName, setHostName] = useState("");
   const [minPlayers, setMinPlayers] = useState(5);
   const [maxPlayers, setMaxPlayers] = useState(50);
-  
-  // Game state
+
   const [gameState, setGameState] = useState("waiting");
   const [currentOffer, setCurrentOffer] = useState(null);
   const [timer, setTimer] = useState(0);
@@ -201,21 +108,10 @@ export default function BattleRoyale() {
   const gameIdRef = useRef(null);
   const playRef = useRef(play);
 
-  useEffect(() => {
-    playerIdRef.current = playerId;
-  }, [playerId]);
-
-  useEffect(() => {
-    playerNameRef.current = playerName;
-  }, [playerName]);
-
-  useEffect(() => {
-    playRef.current = play;
-  }, [play]);
-
-  useEffect(() => {
-    roomCodeRef.current = roomCode;
-  }, [roomCode]);
+  useEffect(() => { playerIdRef.current = playerId; }, [playerId]);
+  useEffect(() => { playerNameRef.current = playerName; }, [playerName]);
+  useEffect(() => { playRef.current = play; }, [play]);
+  useEffect(() => { roomCodeRef.current = roomCode; }, [roomCode]);
 
   useEffect(() => {
     if (!notice) return;
@@ -224,36 +120,28 @@ export default function BattleRoyale() {
   }, [notice]);
 
   useEffect(() => {
-    const socket = io(SOCKET_URL, {
-      transports: ["websocket", "polling"],
-    });
+    const socket = io(SOCKET_URL, { transports: ["websocket", "polling"] });
     socketRef.current = socket;
 
-    socket.on("connect", () => {
-      console.log("✅ Socket connectée");
-    });
-
     socket.on("room_created", (data) => {
-      console.log("🏠 Salle créée:", data.code);
       setNotice(null);
       setRoomCodeRevealed(false);
       setRoomCode(data.code);
       setPlayerId(data.player_id);
       setHostId(data.player_id);
       setIsHost(true);
-      logger.info("Battle Royale room created", { roomCode: data.code, playerName: playerNameRef.current });
+      setView("waiting");
     });
 
     socket.on("joined", (data) => {
-      console.log("📦 Rejoint la salle:", data);
       setNotice(null);
       setRoomCodeRevealed(false);
       setPlayerId(data.player_id);
-      logger.info("Joined Battle Royale room", { roomCode: data.code, playerName: playerNameRef.current });
+      setRoomCode(data.code);
+      setView("waiting");
     });
 
     socket.on("room_state", (data) => {
-      console.log("📊 État de la salle:", data);
       setPlayers(data.players);
       setGameState(data.game_state);
       setHostId(data.host_id || null);
@@ -262,7 +150,7 @@ export default function BattleRoyale() {
       setMinPlayers(data.min_players);
       setMaxPlayers(data.max_players);
       setRound(data.round || 0);
-      
+
       if (data.game_state === "playing") {
         setView("playing");
         setCurrentOffer(data.current_offer);
@@ -272,12 +160,10 @@ export default function BattleRoyale() {
     });
 
     socket.on("player_joined", (data) => {
-      console.log("👥 Joueur rejoint:", data.players);
       setPlayers(data.players);
     });
 
     socket.on("game_started", (data) => {
-      console.log("🎮 Partie démarrée");
       setIsStartingGame(false);
       setCurrentOffer(data.offer);
       setGameState("playing");
@@ -287,51 +173,32 @@ export default function BattleRoyale() {
       setWinner(null);
       setIsWaitingNextRound(false);
       setView("playing");
-
-      const newGameId = Math.random().toString(36).substring(2, 11);
-      gameIdRef.current = newGameId;
-
-      logger.info("Battle Royale game started", { 
-        roomCode: roomCodeRef.current, 
-        playerName: playerNameRef.current,
-        gameId: newGameId
-      });
+      logger.info("Battle Royale game started");
+      playRef.current("gamestart");
     });
 
     socket.on("round_start", (data) => {
-      console.log("⏰ Round start, durée:", data.duration);
       setHasGuessed(false);
       setRoundResults(null);
       setIsWaitingNextRound(false);
       setNextRoundTimer(null);
       setTimer(data.duration);
       setRound(data.round || 1);
-      if (data.offer) {
-        setCurrentOffer(data.offer);
-      }
+      if (data.offer) setCurrentOffer(data.offer);
       setGameState("playing");
     });
 
-    socket.on("start_game_pending", () => {
-      setIsStartingGame(true);
-    });
+    socket.on("start_game_pending", () => setIsStartingGame(true));
 
     socket.on("start_game_failed", (data) => {
       setIsStartingGame(false);
-      if (data?.message) {
-        setNotice({ variant: "warning", message: data.message });
-      }
+      if (data?.message) setNotice({ variant: "warning", message: data.message });
     });
 
-    socket.on("timer_update", (data) => {
-      setTimer(data.remaining);
-    });
+    socket.on("timer_update", (data) => setTimer(data.remaining));
 
     socket.on("round_end", (data) => {
-      console.log("📊 Fin du round:", data);
-      const eliminatedSet = new Set(
-        data.eliminated_ids || (data.eliminated_id ? [data.eliminated_id] : [])
-      );
+      const eliminatedSet = new Set(data.eliminated_ids || (data.eliminated_id ? [data.eliminated_id] : []));
       const pid = playerIdRef.current;
       const isCurrentPlayerEliminated = pid != null && eliminatedSet.has(pid);
       playRef.current(isCurrentPlayerEliminated ? "elimination" : "success");
@@ -340,20 +207,15 @@ export default function BattleRoyale() {
       setGameState("round_end");
       setIsWaitingNextRound(true);
       setNextRoundTimer(data.pause_duration ?? null);
-      setPlayers(prevPlayers =>
-        prevPlayers.map(p => ({
-          ...p,
-          is_alive: p.is_alive !== false && !eliminatedSet.has(p.id)
-        }))
-      );
+      setPlayers(prev => prev.map(p => ({
+        ...p,
+        is_alive: p.is_alive !== false && !eliminatedSet.has(p.id)
+      })));
     });
 
-    socket.on("between_round_update", (data) => {
-      setNextRoundTimer(data.remaining);
-    });
+    socket.on("between_round_update", (data) => setNextRoundTimer(data.remaining));
 
     socket.on("game_over", (data) => {
-      console.log("🏆 Game over, vainqueur:", data.winner);
       const normalizedWinner = String(data.winner || "").trim().toLowerCase();
       const normalizedPlayer = String(playerNameRef.current || "").trim().toLowerCase();
       playRef.current(normalizedWinner && normalizedWinner === normalizedPlayer ? "victory" : "elimination");
@@ -361,11 +223,6 @@ export default function BattleRoyale() {
       setGameState("game_over");
       setIsWaitingNextRound(false);
       setNextRoundTimer(null);
-      logger.info("Battle Royale game over", { 
-        roomCode: roomCodeRef.current, 
-        winner: data.winner,
-        gameId: gameIdRef.current
-      });
     });
 
     socket.on("action_confirmed", (data) => {
@@ -377,11 +234,7 @@ export default function BattleRoyale() {
 
     socket.on("error", (data) => {
       setIsStartingGame(false);
-      const message =
-        typeof data?.message === "string" && data.message.trim()
-          ? data.message
-          : "Une erreur est survenue.";
-      setNotice({ variant: "error", message });
+      setNotice({ variant: "error", message: data?.message || "Une erreur est survenue." });
     });
 
     return () => {
@@ -390,545 +243,289 @@ export default function BattleRoyale() {
     };
   }, []);
 
-  useEffect(() => {
-    setIsHost(Boolean(hostId && playerId && hostId === playerId));
-  }, [hostId, playerId]);
-
-/**
-   * Hide the current notice.
-   * @memberof module:Pages/BattleRoyale
-   * @returns {void}
-   */
-  const dismissNotice = () => setNotice(null);
-
   /**
-   * Copy the current room code to the clipboard.
-   * @memberof module:Pages/BattleRoyale
-   * @returns {Promise<void>}
-   */
-  const copyRoomCode = useCallback(async () => {
-    if (!roomCode) return;
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(roomCode);
-      } else {
-        const ta = document.createElement("textarea");
-        ta.value = roomCode;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-      setNotice({ variant: "success", message: "Code copié dans le presse-papiers." });
-    } catch {
-      setNotice({ variant: "error", message: "Copie automatique impossible. Copie le code à la main." });
-    }
-  }, [roomCode]);
-
-  /**
-   * Toggle whether the room code is visible.
-   * @memberof module:Pages/BattleRoyale
-   * @returns {void}
-   */
-  const toggleRoomCodeReveal = () => setRoomCodeRevealed((v) => !v);
-
-  /**
-   * Create a new multiplayer room using the socket.
-   * @memberof module:Pages/BattleRoyale
-   * @returns {void}
+   * Emits a 'create_room' event to the server.
    */
   const createRoom = () => {
-    if (!playerName.trim()) {
-      setNotice({ variant: "error", message: "Entrez un pseudo." });
-      return;
-    }
-    if (!socketRef.current) return;
-    socketRef.current.emit("create_room", { 
-      game_type: "battle_royale", 
-      name: playerName 
-    });
+    if (!playerName.trim()) return setNotice({ variant: "error", message: "Entrez un pseudo." });
+    socketRef.current.emit("create_room", { game_type: "battle_royale", name: playerName });
   };
 
-/**
-   * Join an existing multiplayer room by code.
-   * @memberof module:Pages/BattleRoyale
-   * @returns {void}
+  /**
+   * Emits a 'join_room' event to the server with the entered code.
    */
   const joinRoom = () => {
-    if (!roomCode.trim() || !playerName.trim()) {
-      setNotice({ variant: "error", message: "Entrez le code de la salle et votre pseudo." });
-      return;
-    }
-    if (!socketRef.current) return;
-    socketRef.current.emit("join_room", { 
-      code: roomCode.toUpperCase(), 
-      name: playerName 
-    });
+    if (!roomCode.trim() || !playerName.trim()) return setNotice({ variant: "error", message: "Entrez le code et votre pseudo." });
+    socketRef.current.emit("join_room", { code: roomCode.toUpperCase(), name: playerName });
   };
 
-/**
-   * Request the host to start the game when enough players are present.
-   * @memberof module:Pages/BattleRoyale
-   * @returns {void}
+  /**
+   * Starts the game for all players in the room (Host only).
    */
   const startGame = () => {
-    if (players.length < minPlayers) {
-      setNotice({
-        variant: "warning",
-        message: `Minimum ${minPlayers} joueurs requis. Actuellement : ${players.length}.`,
-      });
-      return;
-    }
-    if (!socketRef.current) return;
-    play("gamestart");
+    if (players.length < minPlayers) return setNotice({ variant: "warning", message: `Min ${minPlayers} joueurs requis.` });
     setIsStartingGame(true);
     socketRef.current.emit("start_game", { code: roomCode });
   };
 
-/**
-   * Submit the player's salary guess for the current offer.
-   * @memberof module:Pages/BattleRoyale
-   * @returns {void}
+  /**
+   * Submits a salary guess for the current round.
    */
   const submitGuess = () => {
     if (!guess || hasGuessed) return;
     const val = parseInt(guess);
-    if (isNaN(val) || val <= 0) {
-      setNotice({ variant: "error", message: "Entrez un salaire valide (nombre positif)." });
-      return;
+    if (isNaN(val) || val <= 0) return setNotice({ variant: "error", message: "Entrez un salaire valide." });
+    socketRef.current.emit("game_action", { code: roomCode, action: "submit_guess", data: { guess: val } });
+  };
+
+  const copyRoomCode = async () => {
+    try {
+      await navigator.clipboard.writeText(roomCode);
+      setNotice({ variant: "success", message: "Code copié." });
+    } catch {
+      setNotice({ variant: "error", message: "Erreur lors de la copie." });
     }
-    if (!socketRef.current) return;
-    socketRef.current.emit("game_action", {
-      code: roomCode,
-      action: "submit_guess",
-      data: { guess: val }
-    });
   };
 
-/**
-   * Ask the server to start the next round immediately.
-   * @memberof module:Pages/BattleRoyale
-   * @returns {void}
-   */
-  const startNextRoundNow = () => {
-    if (!socketRef.current) return;
-    socketRef.current.emit("start_next_round", { code: roomCode });
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    return new Date(dateStr).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
   };
 
-  // ==========================================================
-  // CREATE / JOIN SCREEN
-  // ==========================================================
-  if (view === "join") {
-    return (
-      <div className="br-container">
-        <div className="gp-bubble gp-bubble-1">⚔️</div>
-        <div className="gp-bubble gp-bubble-2">🏆</div>
-        <div className="gp-bubble gp-bubble-3">🎯</div>
-        <div className="gp-float gp-float--one" />
-        <div className="gp-float gp-float--two" />
-        <div className="gp-float gp-float--three" />
-        <button className="gp-homeBtn" onClick={() => navigate("/")}>
-          <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
-          <span>SalaryGuessr</span>
-        </button>
-
-        <BrNotice notice={notice} onDismiss={dismissNotice} />
-
-        <div className="br-card">
-          <div className="gp-cardGlow" />
-          <div className="gp-cardShine"></div>
-          
-          <div className="br-header">
-            <span className="br-icon">⚔️</span>
-            <h1 className="br-title">BATTLE ROYALE</h1>
-          </div>
-          
-          <div className="br-description">
-            <p>Affronte d'autres joueurs dans une élimination à mort !</p>
-            <p>Chaque round, tous estiment le même salaire.</p>
-            <p>Celui qui s'en éloigne le plus est <strong>ÉLIMINÉ</strong>.</p>
-            <p>Le dernier survivant remporte la partie !</p>
-          </div>
-          
-          <div className="br-tabs">
-            <button 
-              className={`br-tab ${activeTab === "create" ? "active" : ""}`} 
-              onClick={() => setActiveTab("create")}
-            >
-              🎮 CRÉER
-            </button>
-            <button 
-              className={`br-tab ${activeTab === "join" ? "active" : ""}`} 
-              onClick={() => setActiveTab("join")}
-            >
-              🚪 REJOINDRE
-            </button>
-          </div>
-          
-          <input
-            type="text"
-            placeholder="✏️ Ton pseudo"
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
-            className="br-input"
-            maxLength={20}
-          />
-          
-          {activeTab === "create" ? (
-            <button onClick={createRoom} className="br-btn-primary">
-              🎮 CRÉER UNE PARTIE
-            </button>
-          ) : (
-            <>
-              <input
-                type="text"
-                placeholder="🔑 Code de la partie"
-                value={roomCode}
-                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                className="br-input"
-                maxLength={6}
-              />
-              <button onClick={joinRoom} className="br-btn-primary">
-                🚪 REJOINDRE LA PARTIE
-              </button>
-            </>
-          )}
+  // UI RENDERERS
+  const renderSetup = () => (
+    <motion.div key="setup" className="br-setup-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+      <h1 className="gp-titleMain">Battle Royale</h1>
+      <div className="br-setup-form">
+        <div className="br-tabs">
+          <button
+            className={activeTab === "create" ? "active" : ""}
+            onClick={() => setActiveTab("create")}
+          >
+            CRÉER
+            {activeTab === "create" && (
+              <motion.div layoutId="br-tab-bg" className="br-tab-indicator" />
+            )}
+          </button>
+          <button
+            className={activeTab === "join" ? "active" : ""}
+            onClick={() => setActiveTab("join")}
+          >
+            REJOINDRE
+            {activeTab === "join" && (
+              <motion.div layoutId="br-tab-bg" className="br-tab-indicator" />
+            )}
+          </button>
         </div>
-      </div>
-    );
-  }
 
-  // ==========================================================
-  // WAITING ROOM SCREEN
-  // ==========================================================
-  if (view === "waiting") {
-    const readyToStart = isHost && players.length >= minPlayers;
-    
-    return (
-      <div className="br-container">
-        <div className="gp-bubble gp-bubble-1">⚔️</div>
-        <div className="gp-bubble gp-bubble-2">🏆</div>
-        <div className="gp-bubble gp-bubble-3">🎯</div>
-        <div className="gp-float gp-float--one" />
-        <div className="gp-float gp-float--two" />
-        <div className="gp-float gp-float--three" />
-        <button className="gp-homeBtn" onClick={() => navigate("/")}>
-          <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
-          <span>SalaryGuessr</span>
-        </button>
+        <input
+          className="br-input-field"
+          placeholder="Votre Pseudo"
+          value={playerName}
+          onChange={e => setPlayerName(e.target.value)}
+          maxLength={20}
+        />
 
-        <BrNotice notice={notice} onDismiss={dismissNotice} />
-
-        <div className="br-card">
-          <div className="gp-cardGlow" />
-          <div className="gp-cardShine"></div>
-          
-          <div className="br-room-code-display">
-            <span>CODE DE LA SALLE</span>
-            <BrRoomCodeToolbar
-              roomCode={roomCode}
-              revealed={roomCodeRevealed}
-              onToggleReveal={toggleRoomCodeReveal}
-              onCopy={copyRoomCode}
-              compact={false}
-            />
-          </div>
-          
-          <div className="br-players-list">
-            <h3>JOUEURS ({players.length} / {maxPlayers})</h3>
-            <div className="br-players-grid">
-              {players.map(p => (
-                <div key={p.id} className="br-player-card">
-                  <span>{p.name}</span>
-                  {p.id === playerId && <span className="br-badge">TOI</span>}
-                  {p.id === hostId && <span className="br-crown">👑</span>}
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {isHost ? (
-            readyToStart ? (
-              <button
-                onClick={startGame}
-                className="br-btn-primary"
-                disabled={isStartingGame}
+        <div className="br-tab-content-wrap">
+          <AnimatePresence>
+            {activeTab === "join" ? (
+              <motion.div
+                key="join-input"
+                initial={{ x: 20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -20, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                style={{ width: '100%' }}
               >
-                {isStartingGame ? "⏳ PRÉPARATION DE LA PARTIE..." : `🚀 LANCER LA PARTIE (${players.length} joueurs)`}
-              </button>
+                <input
+                  className="br-input-field"
+                  placeholder="Code Salle"
+                  value={roomCode}
+                  onChange={e => setRoomCode(e.target.value.toUpperCase())}
+                  maxLength={6}
+                />
+              </motion.div>
             ) : (
-              <div className="br-waiting-message">
-                ⏳ Attends {minPlayers - players.length} joueur(s) supplémentaire(s)...
-              </div>
-            )
-          ) : (
-            <div className="br-waiting-message">
-              ⏳ En attente que l'hôte lance la partie...
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // ==========================================================
-  // GAME SCREEN
-  // ==========================================================
-  const eliminatedIds = new Set(
-    roundResults?.eliminated_ids ||
-    (roundResults?.eliminated_id ? [roundResults.eliminated_id] : [])
-  );
-  const eliminatedNames = roundResults?.eliminated_names ||
-    (roundResults?.eliminated_name ? [roundResults.eliminated_name] : []);
-  const displayedRound = Math.max(
-    roundResults?.round ?? 0,
-    round ?? 0,
-    1
-  );
-  const currentPlayer = players.find((p) => p.id === playerId);
-  const isPlayerAlive = currentPlayer ? currentPlayer.is_alive !== false : true;
-  const isEliminated = !isPlayerAlive || eliminatedIds.has(playerId);
-  const alivePlayersCount = players.filter(p => p.is_alive !== false).length;
-  
-  return (
-    <div className="br-container">
-      <div className="gp-bubble gp-bubble-1">⚔️</div>
-      <div className="gp-bubble gp-bubble-2">🏆</div>
-      <div className="gp-bubble gp-bubble-3">🎯</div>
-      <div className="gp-float gp-float--one" />
-      <div className="gp-float gp-float--two" />
-      <div className="gp-float gp-float--three" />
-      
-      <button className="gp-homeBtn" onClick={() => navigate("/")}>
-        <img src="/logo512.svg" alt="SalaryGuessr" className="gp-homeLogo" />
-        <span>SalaryGuessr</span>
-      </button>
-
-      <BrNotice notice={notice} onDismiss={dismissNotice} />
-
-      <div className="br-game-layout">
-        {/* Players sidebar */}
-        <div className="br-sidebar">
-          <div className="br-sidebar-header">🏆 JOUEURS</div>
-          <div className="br-sidebar-players">
-            <div className="br-sidebar-section">
-              <div className="br-sidebar-title">En vie ({alivePlayersCount})</div>
-              {players.filter(p => p.is_alive !== false).map(p => (
-                <div key={p.id} className="br-sidebar-player alive">
-                  <span className="br-dot green"></span>
-                  <span>{p.name}</span>
-                  {p.id === playerId && <span className="br-badge-small">toi</span>}
-                </div>
-              ))}
-            </div>
-            {players.filter(p => p.is_alive === false).length > 0 && (
-              <div className="br-sidebar-section">
-                <div className="br-sidebar-title">Éliminés 💀</div>
-                {players.filter(p => p.is_alive === false).map(p => (
-                  <div key={p.id} className="br-sidebar-player dead">
-                    <span className="br-dot red"></span>
-                    <span>{p.name}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* Main area */}
-        <div className="br-main">
-          <div className="br-game-header">
-            <div className="br-room-code-header-slot">
-              <span className="br-room-code-header-label">Salle</span>
-              <BrRoomCodeToolbar
-                roomCode={roomCode}
-                revealed={roomCodeRevealed}
-                onToggleReveal={toggleRoomCodeReveal}
-                onCopy={copyRoomCode}
-                compact
+              <motion.div
+                key="create-spacer"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="br-tab-spacer"
               />
-            </div>
-            {gameState === "round_end" && isWaitingNextRound ? (
-              <div className="br-next-round-timer">
-                Début de la prochaine manche dans {nextRoundTimer ?? 0} s
-              </div>
-            ) : (
-              <div className={`br-timer ${timer <= 10 && timer > 0 ? "urgent" : ""}`}>⏱️ {timer}s</div>
             )}
-            <div className="br-round">Manche {displayedRound}</div>
+          </AnimatePresence>
+        </div>
+
+        <button
+          className="hp-btn-primary"
+          onClick={activeTab === "create" ? createRoom : joinRoom}
+          disabled={!playerName || (activeTab === "join" && !roomCode)}
+        >
+          {activeTab === "create" ? "Ouvrir l'Arène" : "Entrer dans l'Arène"}
+        </button>
+      </div>
+    </motion.div>
+  );
+
+  const renderLobby = () => (
+    <motion.div key="lobby" className="br-lobby-view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <div className="br-lobby-header">
+        <span className="br-lobby-tag">SALON D'ATTENTE</span>
+        <BrRoomCodeToolbar roomCode={roomCode} revealed={roomCodeRevealed} onToggleReveal={() => setRoomCodeRevealed(!roomCodeRevealed)} onCopy={copyRoomCode} />
+        <p className="br-lobby-info">Partagez ce code avec vos amis</p>
+      </div>
+
+      <div className="br-player-grid">
+        {players.map(p => (
+          <div key={p.id} className={`br-player-card ${p.id === playerId ? "me" : ""}`}>
+            <span className="br-player-name">{p.name} {p.id === hostId && "(Hôte)"}</span>
           </div>
-          
-          {/* GAME OVER */}
-          {gameState === "game_over" && winner && (
-            <div className="br-winner-card">
-              <div className="gp-cardGlow" />
-              <div className="gp-cardShine"></div>
-              <div className="br-trophy-icon">🏆</div>
-              <h2>{winner} remporte la partie !</h2>
-              <button onClick={() => navigate("/")} className="br-btn-primary">
-                🏠 ACCUEIL
-              </button>
+        ))}
+      </div>
+
+      {isHost ? (
+        <button className="hp-btn-primary" onClick={startGame} disabled={players.length < minPlayers || isStartingGame}>
+          {isStartingGame ? "Préparation..." : `Lancer (${players.length}/${maxPlayers})`}
+        </button>
+      ) : (
+        <div className="br-waiting-host">En attente de l'hôte...</div>
+      )}
+    </motion.div>
+  );
+
+  const renderPlaying = () => {
+    const elimArray = roundResults?.eliminated_ids || (roundResults?.eliminated_id ? [roundResults.eliminated_id] : []);
+    const eliminatedIds = new Set(elimArray.map(id => String(id)));
+
+    const elimNames = roundResults?.eliminated_names || (roundResults?.eliminated_name ? [roundResults.eliminated_name] : []);
+    const rankings = roundResults?.results || roundResults?.rankings || [];
+
+    const currentPlayer = players.find(p => String(p.id) === String(playerId));
+    const isAlive = currentPlayer ? currentPlayer.is_alive !== false : true;
+    const isEliminated = !isAlive || eliminatedIds.has(String(playerId));
+    const aliveCount = players.filter(p => p.is_alive !== false).length;
+
+    return (
+      <motion.div key="playing" className="br-playing-view">
+        <div className="br-top-bar">
+          <div className="br-round-badge">MANCHE {round}</div>
+          <div className="br-timer-badge urgent"><span className="br-timer-big">{timer}</span>s</div>
+          <div className="br-alive-badge">{aliveCount} VIVANTS</div>
+        </div>
+
+        {gameState === "game_over" ? (
+          <div className="br-victory-screen">
+            <div className="br-winner-podium">
+              <span className="br-winner-tag">VAINQUEUR</span>
+              <h1 className="gp-titleMain">Victoire de {winner}</h1>
             </div>
-          )}
-          
-          {/* ROUND RESULTS */}
-          {roundResults && !winner && (
-            <div className="br-results-card">
-              {/* SPECTATOR MODE */}
-              {isEliminated && !winner && gameState !== "playing" && (
-                <div className="br-spectator-card">
-                  <div className="gp-cardGlow" />
-                  <div className="gp-cardShine"></div>
-                  <div className="br-spectator-content">
-                    <span>⛔</span>
-                    <h3>Vous avez été éliminé</h3>
-                  </div>
-                </div>
-              )}
-              <div className="gp-cardGlow" />
-              <div className="gp-cardShine"></div>
-              
-              <div className="br-results-header">
-                📊 RÉSULTATS DE LA MANCHE {roundResults.round}
-              </div>
-              
-              <div className="br-real-salary">
-                💰 Salaire réel : 
-                <span>
-                  <strong> {roundResults.real_salary?.toLocaleString()} €</strong>
-                </span>
-              </div>
-              
-              <div className="br-eliminated-info">
-                ❌ {eliminatedNames.length > 1 ? "ÉLIMINÉS " : "ÉLIMINÉ "}:{" "}
-                <strong>{eliminatedNames.join(", ") || "Aucun"}</strong>
-              </div>
-              
-              <div className="br-rankings">
-                <div className="br-ranking-header">
-                  <span>#</span><span>JOUEUR</span><span>ESTIMATION</span><span>ÉCART</span>
-                </div>
-                {[...roundResults.results]
-                  .sort((a, b) => {
-                    const aElim = eliminatedIds.has(a.player_id);
-                    const bElim = eliminatedIds.has(b.player_id);
-                    if (aElim !== bElim) return aElim ? -1 : 1;
-                    const aErr = Number.isFinite(a.error) ? Math.abs(a.error) : Infinity;
-                    const bErr = Number.isFinite(b.error) ? Math.abs(b.error) : Infinity;
-                    if (aErr !== bErr) return aErr - bErr;
-                    return String(a.name ?? "").localeCompare(String(b.name ?? ""));
-                  })
-                  .map((r, idx) => (
-                  <div 
-                    key={r.player_id} 
-                    className={`br-ranking-row ${
-                      eliminatedIds.has(r.player_id) ? "eliminated" : ""
-                    } ${r.player_id === playerId ? "current" : ""}`}
-                  >
-                    <span>{idx + 1}</span>
-                    <span>{r.name}</span>
-                    <span>{r.guess != null ? `${r.guess.toLocaleString()} €` : "Pas de réponse"}</span>
-                    <span className={eliminatedIds.has(r.player_id) ? "error-high" : "error-low"}>
-                      {Number.isFinite(r.error) ? `${Math.abs(r.error).toFixed(1)}€` : "∞"}
-                    </span>
-                  </div>
-                  ))}
-              </div>
-              
-              {isWaitingNextRound && isHost && !roundResults?.will_game_over && (
-                <button className="br-btn-primary" onClick={startNextRoundNow}>
-                  ⚡ Lancer la prochaine manche
-                </button>
-              )}
+            <div className="br-victory-actions">
+              <button className="hp-btn-primary" onClick={() => navigate("/")}>Retour à l'Accueil</button>
+              <button className="hp-btn-secondary" onClick={() => window.location.reload()}>Rejouer</button>
             </div>
-          )}
-          
-          {/* ACTIVE ROUND - FULL DISPLAY LIKE HIGHLOWGAME */}
-          {gameState === "playing" && currentOffer && !roundResults && (
-            <div className="br-offer-card">
-              <div className="gp-cardGlow" />
-              <div className="gp-cardShine"></div>
-              
-              <div className="br-card-header">
-                <span className="gp-badge">OFFRE À DEVINER</span>
-                <span className="br-question-badge">❓ Salaire ?</span>
+          </div>
+        ) : gameState === "round_end" && roundResults ? (
+          <div className="br-results-screen">
+            <h2 className="br-results-title">Verdict</h2>
+
+            {isEliminated && eliminatedIds.has(playerId) ? (
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="br-status-msg eliminated">
+                VOUS AVEZ ÉTÉ ÉLIMINÉ
+              </motion.div>
+            ) : (
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="br-status-msg survived">
+                VOUS AVEZ SURVÉCU
+              </motion.div>
+            )}
+
+            <div className="br-real-salary">
+              {roundResults.real_salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
+              <span className="br-real-label">Salaire Réel</span>
+            </div>
+
+            <div className="br-round-summary">
+              <div className="br-summary-box eliminated">
+                <span className="label">ÉLIMINÉS CE TOUR</span>
+                <div className="names">
+                  {elimNames.length > 0 ? elimNames.join(", ") : (
+                    rankings.filter(r => eliminatedIds.has(String(r.player_id || r.id))).map(r => r.name).join(", ") || "Aucun"
+                  )}
+                </div>
               </div>
-              
-              <h2 className="br-offer-title">{currentOffer.intitule || currentOffer.title}</h2>
-              {currentOffer.appellationlibelle && currentOffer.appellationlibelle !== currentOffer.intitule && (
-                <div className="br-offer-sub">{currentOffer.appellationlibelle}</div>
-              )}
-              
-              {/* Full badges like in HighLowGame */}
+              <div className="br-summary-box alive">
+                <span className="label">SURVIVANTS</span>
+                <div className="count">{aliveCount}</div>
+              </div>
+            </div>
+
+            <div className="br-ranking-list">
+              {[...rankings]
+                .sort((a, b) => {
+                  const aErr = Math.abs(a.error || 0);
+                  const bErr = Math.abs(b.error || 0);
+                  return aErr - bErr;
+                })
+                .map((r, i) => {
+                  const rId = r.player_id || r.id;
+                  const isPlayerElim = eliminatedIds.has(String(rId));
+                  return (
+                    <div key={rId} className={`br-rank-item ${isPlayerElim ? "eliminated" : ""} ${String(rId) === String(playerId) ? "me" : ""}`}>
+                      <span className="br-rank-pos">#{i + 1}</span>
+                      <span className="br-rank-name">{r.name}</span>
+                      <div className="br-rank-data">
+                        <span className="br-rank-guess">{r.guess?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || "???"} €</span>
+                        <span className="br-rank-error">{Math.abs(r.error || 0).toFixed(0)}€ d'écart</span>
+                      </div>
+                      {isPlayerElim && <span className="br-elim-tag">ÉLIMINÉ</span>}
+                    </div>
+                  );
+                })}
+            </div>
+            {nextRoundTimer && <div className="br-next-timer">Prochaine manche dans <strong>{nextRoundTimer}s</strong></div>}
+          </div>
+        ) : (
+          <div className="gp-game-grid">
+            <div className="gp-job-side">
+              <h2 className="gp-job-title">{currentOffer?.intitule || currentOffer?.title}</h2>
               <div className="badgesContainer">
-                <div className="gp-badgeGroup gp-badgePrimary">
-                  {currentOffer.entreprise?.nom && <span className="gp-badge gp-badgeCompany">🏢 {currentOffer.entreprise.nom}</span>}
-                  <span className="gp-badge gp-badgeLocation">📍 {currentOffer.lieuTravail?.libelle || "Localisation inconnue"}</span>
-                </div>
-                
-                <div className="gp-badgeGroup">
-                  {currentOffer.typeContratLibelle && <span className="gp-badge">📄 {currentOffer.typeContratLibelle}</span>}
-                  {currentOffer.dureeTravailLibelle && <span className="gp-badge">⏱️ {currentOffer.dureeTravailLibelle}</span>}
-                  {currentOffer.dureeTravailLibelleConverti && <span className="gp-badge">💼 {currentOffer.dureeTravailLibelleConverti}</span>}
-                  {currentOffer.experienceLibelle && <span className="gp-badge">🎓 {currentOffer.experienceLibelle}</span>}
-                  {currentOffer.qualificationLibelle && <span className="gp-badge">📊 {currentOffer.qualificationLibelle}</span>}
-                  {currentOffer.nombrePostes > 1 && <span className="gp-badge">👥 {currentOffer.nombrePostes} postes</span>}
-                </div>
-                
-                <div className="gp-badgeGroup">
-                  {currentOffer.deplacementLibelle && currentOffer.deplacementLibelle !== "Jamais" && <span className="gp-badge">🚗 {currentOffer.deplacementLibelle}</span>}
-                  {currentOffer.permis && currentOffer.permis.length > 0 && (
-                    <span className="gp-badge">🚗 Permis: {currentOffer.permis.map(p => p.libelle).join(", ")}</span>
-                  )}
-                  {currentOffer.alternance && <span className="gp-badge gp-badgeSpecial">🔄 Alternance</span>}
-                  {currentOffer.accessibleTH && <span className="gp-badge gp-badgeSpecial">♿ Accessible TH</span>}
-                  {currentOffer.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">🤝 Handi-Engagé</span>}
-                </div>
-                
-                <div className="gp-badgeGroup">
-                  {currentOffer.romeLibelle && (
-                    <span className="gp-badge gp-badgeRome">
-                      🏷️ {currentOffer.romeLibelle}
-                      {currentOffer.romeCode && <span className="gp-romeCode"> · {currentOffer.romeCode}</span>}
-                    </span>
-                  )}
-                  {currentOffer.secteurActiviteLibelle && !currentOffer.romeLibelle && <span className="gp-badge">🏭 {currentOffer.secteurActiviteLibelle}</span>}
-                </div>
+                {currentOffer?.entreprise?.nom && <span className="gp-badge gp-badgeCompany">{currentOffer.entreprise.nom}</span>}
+                <span className="gp-badge gp-badgeLocation">{currentOffer?.lieuTravail?.libelle || currentOffer?.location}</span>
+                {currentOffer?.typeContratLibelle && <span className="gp-badge">{currentOffer.typeContratLibelle}</span>}
+                {currentOffer?.dureeTravailLibelle && <span className="gp-badge">{currentOffer.dureeTravailLibelle}</span>}
+                {currentOffer?.experienceLibelle && <span className="gp-badge">{currentOffer.experienceLibelle}</span>}
               </div>
-              
-              <div className="br-offer-desc">
-                <div className="br-desc-header">📋 DESCRIPTION</div>
-                <p>{currentOffer.description || "Aucune description disponible"}</p>
-              </div>
-              
+              <div className="gp-job-desc">{currentOffer?.description}</div>
+            </div>
+
+            <div className="gp-action-side">
               {isEliminated ? (
-                <div className="br-eliminated-block">Vous êtes éliminé</div>
+                <div className="br-waiting-card"><h3>Vous êtes éliminé</h3><p>Spectateur de l'arène...</p></div>
               ) : !hasGuessed ? (
-                <div className="br-guess-area">
-                  <input
-                    type="number"
-                    value={guess}
-                    onChange={(e) => setGuess(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && submitGuess()}
-                    placeholder="Estimation (€/mois)"
-                    className="br-input"
-                  />
-                  <button onClick={submitGuess} className="br-validate-btn">
-                    ✅ VALIDER
-                  </button>
+                <div className="gp-input-area">
+                  <span className="gp-input-label">VOTRE ESTIMATION BRUTE</span>
+                  <div className="gp-input-wrap">
+                    <input type="number" placeholder="Ex: 3500" value={guess} onChange={e => setGuess(e.target.value)} onKeyDown={e => e.key === "Enter" && submitGuess()} autoFocus />
+                    <span className="gp-currency">€</span>
+                  </div>
+                  <button className="hp-btn-primary" onClick={submitGuess} disabled={!guess}>VALIDER</button>
                 </div>
               ) : (
-                <div className="br-waiting">
-                  ✅ En attente des autres joueurs...
-                </div>
+                <div className="br-waiting-card"><div className="br-loader-dots">En attente des autres joueurs...</div></div>
               )}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+        )}
+      </motion.div>
+    );
+  };
+
+  return (
+    <div className="page-wrapper br-page">
+      <BrNotice notice={notice} onDismiss={() => setNotice(null)} />
+      <AnimatePresence mode="wait">
+        {view === "join" ? renderSetup() : view === "waiting" ? renderLobby() : renderPlaying()}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import "../styles/ModeSelectPage.css";
 import { useSound } from "../sound/SoundProvider";
 
@@ -8,125 +9,97 @@ import { useSound } from "../sound/SoundProvider";
  */
 
 /**
- * Mode selection page component.
- * Allows the player to choose between game modes.
+ * ModeSelectPage component.
+ * Allows the user to choose between different game modes: Classic, High/Low, or Battle Royale.
+ * 
  * @component
- * @returns {JSX.Element}
+ * @returns {JSX.Element} The rendered Mode selection page.
  */
 export default function ModeSelectPage() {
   const navigate = useNavigate();
   const { play } = useSound();
-  const [hoveredMode, setHoveredMode] = useState(null);
 
   const modes = [
     {
       id: "classic",
       title: "CLASSIQUE",
-      icon: "🎯",
-      description: "Devine le salaire exact d'une offre d'emploi",
-      features: ["Estimation précise", "Score sur 100 points", "5 à 50 manches"],
-      color: "#4f46e5",
+      icon: "",
+      description: "Devine le salaire exact d'une offre d'emploi réelle.",
+      features: ["Estimation précise", "Score sur 100 points"],
       route: "/game",
     },
     {
       id: "highlow",
       title: "HIGH / LOW",
-      icon: "⬆️⬇️",
-      description: "Compare deux offres et devine laquelle est la mieux payée",
-      features: ["Comparaison rapide", "Score infini", "Challenge de mémoire"],
-      color: "#ec4899",
+      icon: "",
+      description: "Compare deux offres et devine laquelle est la mieux payée.",
+      features: ["Comparaison rapide", "Série de victoires"],
       route: "/highlow",
     },
     {
       id: "battleroyale",
       title: "BATTLE ROYALE",
-      icon: "⚔️",
-      description: "Affronte d'autres joueurs dans une élimination à mort",
-      features: ["Multijoueur", "Élimination", "Dernier survivant"],
-      color: "#f59e0b",
+      icon: "",
+      description: "Affronte d'autres joueurs dans une élimination directe.",
+      features: ["Multijoueur en ligne", "Dernier survivant"],
       route: "/battleroyale",
     },
   ];
 
-/**
-   * Handle mode selection and navigate to the chosen route.
-   * @memberof module:Pages/ModeSelectPage
-   * @param {string} route
-   * @returns {void}
-   */
   const handleModeSelect = (route) => {
-    if (route === "/highlow") {
-      play("gamestart");
-    } else {
-      play("click");
+    play("click");
+    navigate(route);
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
     }
-    setTimeout(() => {
-      navigate(route);
-    }, 50);
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
   };
 
   return (
-    <div className="mode-container">
-      <div className="gp-bubble gp-bubble-1">🎮</div>
-      <div className="gp-bubble gp-bubble-2">💰</div>
-      <div className="gp-bubble gp-bubble-3">⚡</div>
-      <div className="gp-bubble gp-bubble-4">🎯</div>
-      
-      <div className="gp-float gp-float--one" />
-      <div className="gp-float gp-float--two" />
-      <div className="gp-float gp-float--three" />
-
-      <button className="mode-home-btn" onClick={() => navigate("/")}>
-        <img src="/logo512.svg" alt="SalaryGuessr" className="mode-home-logo" />
-        <span>SalaryGuessr</span>
-      </button>
-
-      <div className="mode-card">
-        <div className="gp-cardGlow" />
-        <div className="gp-cardShine"></div>
-        
-        <div className="mode-header">
-          <div className="mode-header-icon">🎲</div>
-          <h1 className="mode-title">Choisis ton mode de jeu</h1>
-        </div>
-
-        <div className="mode-grid">
-          {modes.map((mode) => (
-            <div
-              key={mode.id}
-              className={`mode-item ${hoveredMode === mode.id ? "hovered" : ""}`}
-              onMouseEnter={() => setHoveredMode(mode.id)}
-              onMouseLeave={() => setHoveredMode(null)}
-              onClick={() => handleModeSelect(mode.route)}
-              style={{ '--mode-color': mode.color }}
-            >
-              <div className="mode-item-glow"></div>
-              <div className="mode-item-header">
-                <span className="mode-item-icon">{mode.icon}</span>
-                <span className="mode-item-badge">NOUVEAU</span>
-              </div>
-              <h2 className="mode-item-title">{mode.title}</h2>
-              <p className="mode-item-desc">{mode.description}</p>
-              <ul className="mode-item-features">
-                {mode.features.map((feature, idx) => (
-                  <li key={idx}>
-                    <span className="mode-feature-check">✓</span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <button className="mode-play-btn">
-                <span>JOUER</span>
-                <span className="mode-play-arrow">→</span>
-              </button>
-            </div>
-          ))}
-        </div>
-
-        <div className="mode-footer">
-          <p>D'autres modes de jeu arrivent bientôt ! 🚀</p>
-        </div>
+    <motion.div
+      className="page-wrapper mode-page"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <div className="mode-hero">
+        <motion.h1 className="gp-titleMain" variants={itemVariants}>Défis</motion.h1>
+        <motion.p className="mode-intro" variants={itemVariants}>Choisissez votre arène</motion.p>
       </div>
-    </div>
+
+      <div className="mode-grid">
+        {modes.map((mode) => (
+          <motion.div
+            key={mode.id}
+            className="mode-card-new"
+            variants={itemVariants}
+            whileHover={{ scale: 1.05, translateY: -5 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => handleModeSelect(mode.route)}
+          >
+            {mode.icon && <div className="mode-icon-wrap">{mode.icon}</div>}
+            <h2 className="mode-card-title">{mode.title}</h2>
+            <p className="mode-card-desc">{mode.description}</p>
+            <div className="mode-footer-info">
+              {mode.features.map((f, i) => <span key={i}>• {f}</span>)}
+            </div>
+            <button className="mode-enter-btn">Entrer</button>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
   );
 }

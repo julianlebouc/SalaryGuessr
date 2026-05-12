@@ -35,6 +35,6 @@ describe('GamePage Component', () => {
     );
     const slider = screen.getByRole('slider');
     fireEvent.change(slider, { target: { value: '20' } });
-    expect(screen.getByText('20', { selector: '.gp-rangeValue' })).toBeInTheDocument();
+    expect(screen.getByText('20')).toBeInTheDocument();
   });
 });

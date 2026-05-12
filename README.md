@@ -1,4 +1,4 @@
-# SalaryGuessr 💰
+# SalaryGuessr
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-19.2.5-61dafb?logo=react)](https://reactjs.org/)
@@ -15,7 +15,7 @@ SalaryGuessr is an interactive web game where you test your knowledge of salarie
 
 Now live at https://salaryguessr.win/
 
-## 🎮 Game Modes
+## Game Modes
 
 ### Classic Mode
 - Guess the exact salary of a single job offer
@@ -33,13 +33,13 @@ Now live at https://salaryguessr.win/
 - Every round, the player with the worst guess is eliminated
 - The game ends when there is only one player left
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Node.js (v18 or higher)
 - Python (v3.8 or higher)
 - npm or yarn
 
-## 🛠️ Installation
+## Installation
 
 ### 1. Clone the repository
 
@@ -84,14 +84,14 @@ REACT_APP_API_URL=http://localhost:8000
 - On Linux : Run setup.sh
 
 
-## 🚀 Launch
+## Launch
 
 - On Windows : Run start.bat
 - On Linux : Run start.sh
 
 Open http://localhost:3000
 
-## 📚 Documentation
+## Documentation
 
 To generate the frontend JSDoc documentation, run:
 
@@ -112,7 +112,7 @@ sphinx-build -b html docs docs/_build
 
 The documentation will be generated in `backend/docs/_build/index.html`.
 
-## 🧪 Testing & Coverage
+## Testing & Coverage
 
 A comprehensive testing suite for both the frontend and backend.
 
