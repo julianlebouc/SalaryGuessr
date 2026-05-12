@@ -90,14 +90,14 @@ export default function StatsPage() {
           <h2 className="stats-sub">Performances par Mode</h2>
           <div className="stats-modes-list">
             <div className="stats-mode-row">
-              <div className="mode-name">🎯 Classique</div>
+              <div className="mode-name">Classique</div>
               <div className="mode-vals">
                 <span>MOY. <strong>{data.modes.classic.avg_score.toFixed(1)}</strong></span>
                 <span>REC. <strong>{data.modes.classic.max_score.toFixed(1)}</strong></span>
               </div>
             </div>
             <div className="stats-mode-row">
-              <div className="mode-name">↕️ High / Low</div>
+              <div className="mode-name">High / Low</div>
               <div className="mode-vals">
                 <span>MOY. <strong>{data.modes.highlow.avg_score.toFixed(1)}</strong></span>
                 <span>REC. <strong>{data.modes.highlow.max_score.toFixed(0)}</strong></span>

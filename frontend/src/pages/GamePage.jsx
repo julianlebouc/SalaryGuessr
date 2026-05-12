@@ -239,30 +239,30 @@ export default function GamePage() {
                     <h2 className="gp-job-title">{currentJob?.title}</h2>
 
                     <div className="badgesContainer">
-                      {currentJob?.company && <span className="gp-badge gp-badgeCompany">🏢 {currentJob.company}</span>}
-                      <span className="gp-badge gp-badgeLocation">📍 {currentJob?.location}</span>
-                      {currentJob?.postalCode && <span className="gp-badge">📮 {currentJob.postalCode}</span>}
-                      {currentJob?.contractType && <span className="gp-badge">📄 {currentJob.contractType}</span>}
-                      {currentJob?.contractHours && <span className="gp-badge">⏱️ {currentJob.contractHours}</span>}
-                      {currentJob?.travailType && <span className="gp-badge">💼 {currentJob.travailType}</span>}
-                      {currentJob?.experience && <span className="gp-badge">🎓 {currentJob.experience}</span>}
-                      {currentJob?.qualification && <span className="gp-badge">📊 {currentJob.qualification}</span>}
-                      {currentJob?.nombrePostes > 1 && <span className="gp-badge">👥 {currentJob.nombrePostes} postes</span>}
-                      {currentJob?.deplacement && currentJob.deplacement !== "Jamais" && <span className="gp-badge">🚗 {currentJob.deplacement}</span>}
-                      {currentJob?.permis && <span className="gp-badge">🚗 Permis: {currentJob.permis}</span>}
-                      {currentJob?.alternance && <span className="gp-badge gp-badgeSpecial">🔄 Alternance</span>}
-                      {currentJob?.accessibleTH && <span className="gp-badge gp-badgeSpecial">♿ Accessible TH</span>}
-                      {currentJob?.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">🤝 Handi-Engagé</span>}
+                      {currentJob?.company && <span className="gp-badge gp-badgeCompany">{currentJob.company}</span>}
+                      <span className="gp-badge gp-badgeLocation">{currentJob?.location}</span>
+                      {currentJob?.postalCode && <span className="gp-badge">{currentJob.postalCode}</span>}
+                      {currentJob?.contractType && <span className="gp-badge">{currentJob.contractType}</span>}
+                      {currentJob?.contractHours && <span className="gp-badge">{currentJob.contractHours}</span>}
+                      {currentJob?.travailType && <span className="gp-badge">{currentJob.travailType}</span>}
+                      {currentJob?.experience && <span className="gp-badge">{currentJob.experience}</span>}
+                      {currentJob?.qualification && <span className="gp-badge">{currentJob.qualification}</span>}
+                      {currentJob?.nombrePostes > 1 && <span className="gp-badge">{currentJob.nombrePostes} postes</span>}
+                      {currentJob?.deplacement && currentJob.deplacement !== "Jamais" && <span className="gp-badge">{currentJob.deplacement}</span>}
+                      {currentJob?.permis && <span className="gp-badge">Permis: {currentJob.permis}</span>}
+                      {currentJob?.alternance && <span className="gp-badge gp-badgeSpecial">Alternance</span>}
+                      {currentJob?.accessibleTH && <span className="gp-badge gp-badgeSpecial">Accessible TH</span>}
+                      {currentJob?.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">Handi-Engagé</span>}
                       {currentJob?.romeLabel && (
                         <span className="gp-badge gp-badgeRome">
-                          🏷️ {currentJob.romeLabel}
+                          {currentJob.romeLabel}
                           {currentJob.romeCode && <span className="gp-romeCode"> · {currentJob.romeCode}</span>}
                         </span>
                       )}
-                      {currentJob?.sector && !currentJob.romeLabel && <span className="gp-badge">🏭 {currentJob.sector}</span>}
+                      {currentJob?.sector && !currentJob.romeLabel && <span className="gp-badge">{currentJob.sector}</span>}
                       {currentJob?.created && (
                         <span className="gp-badge gp-badgeDate">
-                          📅 {formatDate(currentJob.created)}
+                          {formatDate(currentJob.created)}
                         </span>
                       )}
                     </div>
@@ -312,7 +312,7 @@ export default function GamePage() {
                       <div className="gp-points-val">+{result.score.toFixed(1)}</div>
                     </div>
                     <button className="hp-btn-primary" onClick={nextRound}>
-                      {round + 1 >= maxRounds ? "Voir le Score Final" : "Manche Suivante ➔"}
+                      {round + 1 >= maxRounds ? "Voir le Score Final" : "Manche Suivante"}
                     </button>
                   </motion.div>
                 )}

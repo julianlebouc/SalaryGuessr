@@ -104,7 +104,6 @@ export default function HighLowGame() {
       {gameOver ? (
         <div className="hl-gameover-view">
           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-            <span style={{ fontSize: '5rem' }}>💀</span>
             <h1>PARTIE TERMINÉE</h1>
             <div className="hl-final-score">
               {score}
@@ -136,8 +135,8 @@ export default function HighLowGame() {
                 <span className="hl-tag">DÉJÀ RÉVÉLÉ</span>
                 <h2 className="hl-job-title">{jobs[currentIndex]?.title}</h2>
                 <div className="gp-badgeGroup">
-                  <span className="gp-badge">🏢 {jobs[currentIndex]?.company || "Confidentiel"}</span>
-                  <span className="gp-badge">📍 {jobs[currentIndex]?.location || "France"}</span>
+                  <span className="gp-badge">{jobs[currentIndex]?.company || "Confidentiel"}</span>
+                  <span className="gp-badge">{jobs[currentIndex]?.location || "France"}</span>
                 </div>
                 <div className="hl-salary-display">{jobs[currentIndex]?.salary?.toLocaleString()} €</div>
               </motion.div>
@@ -151,7 +150,7 @@ export default function HighLowGame() {
                 onClick={() => handleGuess("higher")} 
                 disabled={showSalary}
               >
-                ▲ PLUS
+                PLUS
               </motion.button>
               <div className="hl-vs-text">VS</div>
               <motion.button 
@@ -161,7 +160,7 @@ export default function HighLowGame() {
                 onClick={() => handleGuess("lower")} 
                 disabled={showSalary}
               >
-                ▼ MOINS
+                MOINS
               </motion.button>
             </div>
 
@@ -177,8 +176,8 @@ export default function HighLowGame() {
                 <span className="hl-tag">EST-CE PLUS OU MOINS ?</span>
                 <h2 className="hl-job-title">{jobs[currentIndex+1]?.title}</h2>
                 <div className="gp-badgeGroup">
-                  <span className="gp-badge">🏢 {jobs[currentIndex+1]?.company || "Confidentiel"}</span>
-                  <span className="gp-badge">📍 {jobs[currentIndex+1]?.location || "France"}</span>
+                  <span className="gp-badge">{jobs[currentIndex+1]?.company || "Confidentiel"}</span>
+                  <span className="gp-badge">{jobs[currentIndex+1]?.location || "France"}</span>
                 </div>
                 <div className="hl-salary-display">
                   {showSalary ? (

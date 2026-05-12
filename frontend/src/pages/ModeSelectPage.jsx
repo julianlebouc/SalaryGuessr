@@ -12,7 +12,7 @@ export default function ModeSelectPage() {
     {
       id: "classic",
       title: "CLASSIQUE",
-      icon: "🎯",
+      icon: "",
       description: "Devine le salaire exact d'une offre d'emploi réelle.",
       features: ["Estimation précise", "Score sur 100 points"],
       route: "/game",
@@ -20,7 +20,7 @@ export default function ModeSelectPage() {
     {
       id: "highlow",
       title: "HIGH / LOW",
-      icon: "↕️",
+      icon: "",
       description: "Compare deux offres et devine laquelle est la mieux payée.",
       features: ["Comparaison rapide", "Série de victoires"],
       route: "/highlow",
@@ -28,7 +28,7 @@ export default function ModeSelectPage() {
     {
       id: "battleroyale",
       title: "BATTLE ROYALE",
-      icon: "⚔️",
+      icon: "",
       description: "Affronte d'autres joueurs dans une élimination directe.",
       features: ["Multijoueur en ligne", "Dernier survivant"],
       route: "/battleroyale",
@@ -79,7 +79,7 @@ export default function ModeSelectPage() {
             whileTap={{ scale: 0.98 }}
             onClick={() => handleModeSelect(mode.route)}
           >
-            <div className="mode-icon-wrap">{mode.icon}</div>
+            {mode.icon && <div className="mode-icon-wrap">{mode.icon}</div>}
             <h2 className="mode-card-title">{mode.title}</h2>
             <p className="mode-card-desc">{mode.description}</p>
             <div className="mode-footer-info">

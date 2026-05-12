@@ -56,10 +56,10 @@ export default function HomePage() {
 
           <motion.div className="hp-actions" variants={itemVariants}>
             <button className="hp-btn-primary" onClick={() => navigate("/mode-select")}>
-              🚀 Jouer Maintenant
+              Jouer Maintenant
             </button>
             <button className="hp-btn-secondary" onClick={() => navigate("/stats")}>
-              📊 Statistiques
+              Statistiques
             </button>
           </motion.div>
         </div>
@@ -74,9 +74,9 @@ export default function HomePage() {
           </div>
 
           <div className="hp-preview-meta">
-            <span className="gp-badge">🏢 Tech Studio</span>
-            <span className="gp-badge">📍 Remote</span>
-            <span className="gp-badge">📄 CDI</span>
+            <span className="gp-badge">Tech Studio</span>
+            <span className="gp-badge">Remote</span>
+            <span className="gp-badge">CDI</span>
           </div>
 
           <div className="hp-preview-bar">
