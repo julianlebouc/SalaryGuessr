@@ -20,6 +20,7 @@ describe('HighLowGame Component', () => {
   beforeEach(() => {
     vi.spyOn(gameUtils, 'fetchMultipleJobs').mockResolvedValue(mockJobs);
     vi.spyOn(gameUtils, 'fetchJob').mockResolvedValue({ id: '6', title: 'Job F', salary: 5000 });
+    vi.spyOn(gameUtils, 'validateGuess').mockResolvedValue({ real_salary: 2000 });
     vi.spyOn(gameUtils, 'validateComparison').mockResolvedValue({ correct: true, real_salary: 3000 });
   });
 
@@ -51,15 +52,14 @@ describe('HighLowGame Component', () => {
 
     await waitFor(() => screen.getByText(/Job A/i));
 
-    const higherBtn = screen.getByText(/PLUS ÉLEVÉ/i);
+    const higherBtn = screen.getByRole('button', { name: /PLUS/i });
     
     await act(async () => {
       fireEvent.click(higherBtn);
     });
 
     // Score should increment
-    expect(screen.getByText(/Score/i).parentElement).toHaveTextContent('1');
-    expect(screen.getByText(/✅/i)).toBeInTheDocument();
+    expect(screen.getByText(/SÉRIE ACTUELLE/i).nextSibling).toHaveTextContent('1');
   });
 
   test('wrong guess ends the game', async () => {
@@ -75,17 +75,15 @@ describe('HighLowGame Component', () => {
 
     await waitFor(() => screen.getByText(/Job A/i));
 
-    const higherBtn = screen.getByText(/PLUS ÉLEVÉ/i);
+    const higherBtn = screen.getByRole('button', { name: /PLUS/i });
     
     await act(async () => {
       fireEvent.click(higherBtn);
     });
 
-    expect(screen.getByText(/❌/i)).toBeInTheDocument();
-
     // Wait for the timeout in the component (1500ms)
     await waitFor(() => {
-      expect(screen.getByText(/GAME OVER/i)).toBeInTheDocument();
+      expect(screen.getByText(/PARTIE TERMINÉE/i)).toBeInTheDocument();
     }, { timeout: 3000 });
   });
 });

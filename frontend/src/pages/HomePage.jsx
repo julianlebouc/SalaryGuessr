@@ -120,13 +120,13 @@ export default function HomePage() {
 
       <div className="hp-footer-nav">
         <div className="hp-socials">
-          <a href="https://github.com/julianlebouc/SalaryGuessr" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/julianlebouc/SalaryGuessr" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
             <GithubIcon width="20" height="20" />
           </a>
-          <a href="https://discordapp.com/users/321002968218337289" target="_blank" rel="noopener noreferrer">
+          <a href="https://discordapp.com/users/321002968218337289" target="_blank" rel="noopener noreferrer" aria-label="Discord">
             <DiscordIcon width="20" height="20" />
           </a>
-          <a href="https://www.linkedin.com/in/julian-lebouc-851619134/" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.linkedin.com/in/julian-lebouc-851619134/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
             <LinkedinIcon width="20" height="20" />
           </a>
         </div>

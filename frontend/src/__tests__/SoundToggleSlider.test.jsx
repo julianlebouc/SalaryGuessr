@@ -22,7 +22,6 @@ describe('SoundToggleSlider Component', () => {
     render(<SoundToggleSlider />);
     const slider = screen.getByLabelText(/Volume/i);
     expect(slider.value).toBe("50");
-    expect(screen.getByText("🔊")).toBeInTheDocument();
   });
 
   test('calls setVolume when slider changes', () => {

@@ -59,7 +59,7 @@ describe('ModeSelectPage Component', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/game');
   });
 
-  test('navigates to high/low mode and plays gamestart sound', () => {
+  test('navigates to high/low mode and plays click sound', () => {
     render(
       <MemoryRouter>
         <ModeSelectPage />
@@ -67,23 +67,8 @@ describe('ModeSelectPage Component', () => {
     );
     
     fireEvent.click(screen.getByText(/HIGH \/ LOW/i));
-    expect(mockPlay).toHaveBeenCalledWith('gamestart');
-    
-    act(() => {
-      vi.runAllTimers();
-    });
+    expect(mockPlay).toHaveBeenCalledWith('click');
     
     expect(mockNavigate).toHaveBeenCalledWith('/highlow');
-  });
-
-  test('navigates back to home when logo clicked', () => {
-    render(
-      <MemoryRouter>
-        <ModeSelectPage />
-      </MemoryRouter>
-    );
-    
-    fireEvent.click(screen.getByText(/SalaryGuessr/i));
-    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });

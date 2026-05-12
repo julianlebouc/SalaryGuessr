@@ -48,6 +48,7 @@ export default function SoundToggleSlider() {
         min="0"
         max="100"
         step="1"
+        aria-label="Volume"
         value={Math.round(volume * 100)}
         onChange={(e) => {
           const v = Number(e.target.value) / 100;
