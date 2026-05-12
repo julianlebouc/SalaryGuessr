@@ -8,6 +8,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Legend
 } from "recharts";
 import "../styles/GamePage.css";
 import {
@@ -110,6 +111,10 @@ export default function GamePage() {
     setHistory([]);
     seenIdsRef.current.clear();
 
+    setGuess("");
+    setResult(null);
+    setShowResult(false);
+
     try {
       const firstJob = await fetchNormalizedJobWithSalary();
       seenIdsRef.current.add(firstJob.id);
@@ -147,6 +152,10 @@ export default function GamePage() {
   };
 
   const nextRound = async () => {
+    setGuess("");
+    setResult(null);
+    setShowResult(false);
+
     if (round + 1 >= maxRounds) {
       setPage("result");
       play("gameEnd3");
@@ -320,17 +329,25 @@ export default function GamePage() {
                 {(score / maxRounds).toFixed(1)}
                 <span className="gp-final-unit">/100</span>
               </div>
-              <p className="gp-final-text">Précision Moyenne</p>
+              <p className="gp-final-text">Score Final</p>
             </div>
 
             <div className="gp-chart-container">
-              <h3 className="gp-chart-title">Écart par Manche</h3>
+              <div className="gp-chart-header">
+                <h3 className="gp-chart-title">Écart par Manche</h3>
+              </div>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={history}>
                   <XAxis dataKey="round" stroke="rgba(255,255,255,0.3)" />
                   <Tooltip
                     contentStyle={{ background: "#1a103d", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }}
                     itemStyle={{ color: "#fff" }}
+                  />
+                  <Legend 
+                    verticalAlign="top" 
+                    align="right" 
+                    iconType="circle"
+                    wrapperStyle={{ top: -35, right: 0, fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px' }} 
                   />
                   <Bar dataKey="real" name="Réel" fill="var(--primary-purple)" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="estimated" name="Estimé" fill="rgba(255,255,255,0.15)" radius={[4, 4, 0, 0]} />

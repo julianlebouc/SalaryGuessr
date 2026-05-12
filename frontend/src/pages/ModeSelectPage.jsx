@@ -75,6 +75,8 @@ export default function ModeSelectPage() {
             key={mode.id}
             className="mode-card-new"
             variants={itemVariants}
+            whileHover={{ scale: 1.05, translateY: -5 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => handleModeSelect(mode.route)}
           >
             <div className="mode-icon-wrap">{mode.icon}</div>

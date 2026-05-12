@@ -12,6 +12,12 @@ import "../styles/StatsPage.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "";
 
+const formatDateFr = (dateStr) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+};
+
 export default function StatsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -49,7 +55,7 @@ export default function StatsPage() {
             </div>
             <div className="stats-hero-item">
               <span className="stats-hero-val">{data.total_games_played}</span>
-              <span className="stats-hero-lab">PARTIES</span>
+              <span className="stats-hero-lab">PARTIES JOUÉES</span>
             </div>
           </div>
 
@@ -57,10 +63,24 @@ export default function StatsPage() {
             <h2 className="stats-sub">Activité Quotidienne</h2>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={data.daily_activity}>
-                <XAxis dataKey="day" hide />
-                <YAxis hide />
-                <Tooltip contentStyle={{ background: "#1a103d", border: "none", borderRadius: "10px" }} />
-                <Bar dataKey="count" fill="var(--primary-purple)" radius={[4, 4, 0, 0]} />
+                <XAxis 
+                  dataKey="day" 
+                  tickFormatter={formatDateFr}
+                  stroke="rgba(255,255,255,0.3)"
+                  fontSize={12}
+                  tickMargin={10}
+                />
+                <YAxis 
+                  stroke="rgba(255,255,255,0.3)"
+                  fontSize={12}
+                  tickMargin={10}
+                />
+                <Tooltip 
+                  labelFormatter={formatDateFr}
+                  contentStyle={{ background: "#1a103d", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px" }} 
+                  itemStyle={{ color: "#fff" }}
+                />
+                <Bar dataKey="count" name="Parties" fill="var(--primary-purple)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

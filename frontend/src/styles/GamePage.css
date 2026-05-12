@@ -426,14 +426,23 @@
   padding: 1.5rem;
   border-radius: 20px;
   border: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.gp-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  width: 100%;
 }
 
 .gp-chart-title {
   font-size: 0.9rem;
   font-weight: 800;
-  margin-bottom: 1.5rem;
   text-align: left;
   opacity: 0.5;
+  margin: 0;
 }
 
 .gp-result-actions {

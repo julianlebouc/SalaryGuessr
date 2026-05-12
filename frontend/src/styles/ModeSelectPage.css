@@ -43,7 +43,6 @@
 .mode-card-new:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: var(--primary-purple);
-  transform: translateY(-5px);
 }
 
 .mode-card-new::before {
@@ -114,6 +113,7 @@
   .mode-hero {
     margin-bottom: 1rem;
   }
+
   .mode-grid {
     grid-template-columns: 1fr;
     gap: 0.5rem;
