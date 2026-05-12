@@ -4,6 +4,17 @@ import { motion } from "framer-motion";
 import "../styles/ModeSelectPage.css";
 import { useSound } from "../sound/SoundProvider";
 
+/**
+ * @module Pages/ModeSelectPage
+ */
+
+/**
+ * ModeSelectPage component.
+ * Allows the user to choose between different game modes: Classic, High/Low, or Battle Royale.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered Mode selection page.
+ */
 export default function ModeSelectPage() {
   const navigate = useNavigate();
   const { play } = useSound();

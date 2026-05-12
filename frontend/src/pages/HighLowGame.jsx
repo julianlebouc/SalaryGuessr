@@ -11,6 +11,17 @@ import {
 import { useSound } from "../sound/SoundProvider";
 import logger from "../utils/logger";
 
+/**
+ * @module Pages/HighLowGame
+ */
+
+/**
+ * HighLowGame component.
+ * Implements the "Higher or Lower" game mode where players compare two jobs.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered High/Low game page.
+ */
 export default function HighLowGame() {
   const navigate = useNavigate();
   const { play } = useSound();
@@ -24,6 +35,11 @@ export default function HighLowGame() {
   const [guessResult, setGuessResult] = useState(null);
   const [isWaiting, setIsWaiting] = useState(false);
 
+  /**
+   * Initializes the game state and fetches the first set of jobs.
+   * 
+   * @async
+   */
   const startGame = async () => {
     logger.info("High/Low game started");
     setLoading(true);
@@ -48,6 +64,12 @@ export default function HighLowGame() {
     }
   };
 
+  /**
+   * Processes the user's guess (higher or lower).
+   * 
+   * @async
+   * @param {"higher"|"lower"} guess - The user's comparison guess.
+   */
   const handleGuess = async (guess) => {
     if (isWaiting || showSalary || !jobs[currentIndex] || !jobs[currentIndex + 1]) return;
 

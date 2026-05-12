@@ -9,7 +9,9 @@ import "./SoundToggleSlider.css";
 
 /**
  * Polished Volume control slider with mute toggle.
+ * 
  * @component
+ * @returns {JSX.Element}
  */
 export default function SoundToggleSlider() {
   const { volume, setVolume } = useSound();

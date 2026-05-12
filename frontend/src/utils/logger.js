@@ -1,5 +1,6 @@
 /**
- * Logger utility to send client-side logs to the backend.
+ * @module Utils/logger
+ * @description Logger utility to send client-side logs to the backend.
  */
 
 const API_URL = process.env.REACT_APP_API_URL || '';

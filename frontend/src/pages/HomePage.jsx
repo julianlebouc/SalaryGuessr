@@ -8,8 +8,11 @@ import logger from "../utils/logger";
 import "../styles/HomePage.css";
 
 /**
- * Redesigned Home page for SalaryGuessr.
- * Seamless, full-page layout with logo and space-filling grid.
+ * HomePage component for SalaryGuessr.
+ * Displays the hero section, quick preview, and statistics summary.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered Home page.
  */
 export default function HomePage() {
   const navigate = useNavigate();

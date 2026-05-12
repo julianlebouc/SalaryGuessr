@@ -11,7 +11,10 @@ import { SoundProvider } from "../sound/SoundProvider";
 import SoundToggleSlider from "../sound/SoundToggleSlider";
 
 /**
- * Global Navigation component that handles the persistent Home button and Sound slider.
+ * GlobalNavigation component.
+ * Handles the persistent "Home" button and the sound volume slider.
+ * 
+ * @component
  */
 function GlobalNav() {
   const location = useLocation();
@@ -43,7 +46,11 @@ function GlobalNav() {
 }
 
 /**
- * Root application component with routing and audio context.
+ * Root Application component.
+ * Sets up routing, global providers (Sound), and common navigation elements.
+ * 
+ * @component
+ * @returns {JSX.Element}
  */
 function App() {
   return (

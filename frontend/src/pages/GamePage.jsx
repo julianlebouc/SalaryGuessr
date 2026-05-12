@@ -19,16 +19,34 @@ import {
 import { useSound } from "../sound/SoundProvider";
 import logger from "../utils/logger";
 
+/**
+ * @module Pages/GamePage
+ */
+
 const BUFFER_TARGET = 5;
 const MAX_FETCH_ATTEMPTS = 30;
 const PARALLEL_REQUESTS = 4;
 
+/**
+ * Formats an ISO date string into a localized French long date.
+ * 
+ * @param {string} dateStr - The date string to format.
+ * @returns {string} The formatted date (e.g., "12 mai 2026").
+ */
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
   const date = new Date(dateStr);
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
+/**
+ * GamePage component (Classic Mode).
+ * Manages the core gameplay loop: settings, playing rounds, and result display.
+ * Includes job buffering and pre-fetching logic for smooth transitions.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered Classic game page.
+ */
 export default function GamePage() {
   const navigate = useNavigate();
   const { play } = useSound();
@@ -54,6 +72,14 @@ export default function GamePage() {
   const refillPromiseRef = useRef(null);
   const seenIdsRef = useRef(new Set());
 
+  /**
+   * Fetches a single job from the API and ensures it has a valid salary
+   * and hasn't been seen in the current session.
+   * 
+   * @async
+   * @returns {Promise<Object>} The fetched job object.
+   * @throws {Error} If no valid job is found after MAX_FETCH_ATTEMPTS.
+   */
   const fetchNormalizedJobWithSalary = async () => {
     let attempts = 0;
     while (attempts < MAX_FETCH_ATTEMPTS) {
@@ -71,6 +97,14 @@ export default function GamePage() {
     throw new Error("Failed to fetch valid job after many attempts");
   };
 
+  /**
+   * Refills the internal job buffer to ensure no delays between rounds.
+   * Uses parallel fetching to speed up the process.
+   * 
+   * @async
+   * @param {number} [targetSize=BUFFER_TARGET] - The desired buffer size.
+   * @returns {Promise<Object[]>} The updated buffer.
+   */
   const refillBuffer = useCallback(async (targetSize = BUFFER_TARGET) => {
     if (refillPromiseRef.current) return refillPromiseRef.current;
 
@@ -103,6 +137,11 @@ export default function GamePage() {
     jobBufferRef.current = jobBuffer;
   }, [jobBuffer]);
 
+  /**
+   * Resets the game state and starts a new session.
+   * 
+   * @async
+   */
   const startGame = async () => {
     play("gamestart");
     logger.info("Classic game started");
@@ -129,6 +168,11 @@ export default function GamePage() {
     }
   };
 
+  /**
+   * Validates the user's numeric salary estimation against the server.
+   * 
+   * @async
+   */
   const validate = async () => {
     if (!currentJob || !guess || loadingJob) return;
     const user = Number(guess);
@@ -152,6 +196,11 @@ export default function GamePage() {
     }
   };
 
+  /**
+   * Moves to the next round or finishes the game if max rounds reached.
+   * 
+   * @async
+   */
   const nextRound = async () => {
     setGuess("");
     setResult(null);

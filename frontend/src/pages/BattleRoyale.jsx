@@ -9,7 +9,16 @@ import logger from "../utils/logger";
 const SOCKET_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 /**
- * Display a notice banner.
+ * @module Pages/BattleRoyale
+ */
+
+/**
+ * Display a notice banner for game notifications or errors.
+ * 
+ * @component
+ * @param {Object} props
+ * @param {Object} props.notice - The notice object { message, variant }.
+ * @param {function(): void} props.onDismiss - Callback to clear the notice.
  */
 function BrNotice({ notice, onDismiss }) {
   if (!notice) return null;
@@ -23,7 +32,15 @@ function BrNotice({ notice, onDismiss }) {
 }
 
 /**
- * Toolbar for room code.
+ * Toolbar for room code display and management.
+ * 
+ * @component
+ * @param {Object} props
+ * @param {string} props.roomCode - The room identification code.
+ * @param {boolean} props.revealed - Whether the code is visible.
+ * @param {function(): void} props.onToggleReveal - Toggle visibility.
+ * @param {function(): void} props.onCopy - Copy code to clipboard.
+ * @param {boolean} [props.compact] - Compact layout flag.
  */
 function BrRoomCodeToolbar({ roomCode, revealed, onToggleReveal, onCopy, compact }) {
   if (!roomCode) return null;
@@ -47,7 +64,11 @@ function BrRoomCodeToolbar({ roomCode, revealed, onToggleReveal, onCopy, compact
 }
 
 /**
- * Main Battle Royale Component
+ * Main Battle Royale Component.
+ * Handles socket connections, room creation/joining, and real-time multiplayer gameplay.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered Battle Royale page.
  */
 export default function BattleRoyale() {
   const navigate = useNavigate();
@@ -222,22 +243,34 @@ export default function BattleRoyale() {
     };
   }, []);
 
+  /**
+   * Emits a 'create_room' event to the server.
+   */
   const createRoom = () => {
     if (!playerName.trim()) return setNotice({ variant: "error", message: "Entrez un pseudo." });
     socketRef.current.emit("create_room", { game_type: "battle_royale", name: playerName });
   };
 
+  /**
+   * Emits a 'join_room' event to the server with the entered code.
+   */
   const joinRoom = () => {
     if (!roomCode.trim() || !playerName.trim()) return setNotice({ variant: "error", message: "Entrez le code et votre pseudo." });
     socketRef.current.emit("join_room", { code: roomCode.toUpperCase(), name: playerName });
   };
 
+  /**
+   * Starts the game for all players in the room (Host only).
+   */
   const startGame = () => {
     if (players.length < minPlayers) return setNotice({ variant: "warning", message: `Min ${minPlayers} joueurs requis.` });
     setIsStartingGame(true);
     socketRef.current.emit("start_game", { code: roomCode });
   };
 
+  /**
+   * Submits a salary guess for the current round.
+   */
   const submitGuess = () => {
     if (!guess || hasGuessed) return;
     const val = parseInt(guess);

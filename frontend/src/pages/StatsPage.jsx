@@ -12,12 +12,29 @@ import "../styles/StatsPage.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "";
 
+/**
+ * @module Pages/StatsPage
+ */
+
+/**
+ * Formats a date string into a French localized short date.
+ * 
+ * @param {string} dateStr - The date string to format.
+ * @returns {string} The formatted date (e.g., "12 mai").
+ */
 const formatDateFr = (dateStr) => {
   if (!dateStr) return "";
   const date = new Date(dateStr);
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 };
 
+/**
+ * StatsPage component.
+ * Fetches and displays global game statistics using charts and metrics.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered Statistics page.
+ */
 export default function StatsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
