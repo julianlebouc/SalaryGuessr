@@ -31,7 +31,11 @@
 
 html,
 body {
-  background-color: transparent;
+  background-color: var(--bg-midnight);
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
   color: var(--text-main);
   overflow-x: hidden;
   min-height: 100vh;
@@ -225,14 +229,33 @@ button {
   }
 }
 
+.page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  z-index: 1;
+}
+
 .gp-titleMain {
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 950;
   letter-spacing: -3px;
   color: #fff;
   text-transform: uppercase;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
   line-height: 0.9;
+  position: relative;
+}
+
+.gp-titleMain::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 4px;
+  background: var(--grad-purple);
+  margin-top: 0.5rem;
 }
 
 /* Data components should use mono */

@@ -4,6 +4,7 @@
 }
 
 .hp-grid {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -200,6 +201,7 @@
 
 /* Stats Row */
 .hp-stats-row {
+  position: relative;
   grid-column: span 2;
   display: flex;
   justify-content: space-around;

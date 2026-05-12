@@ -9,7 +9,6 @@ import StatsPage from "./StatsPage";
 import MentionsLegales from "./MentionsLegales";
 import { SoundProvider } from "../sound/SoundProvider";
 import SoundToggleSlider from "../sound/SoundToggleSlider";
-import TwilightBackground from "../components/TwilightBackground";
 
 /**
  * Global Navigation component that handles the persistent Home button and Sound slider.
@@ -49,7 +48,6 @@ function GlobalNav() {
 function App() {
   return (
     <SoundProvider>
-      <TwilightBackground />
       <Router>
         <GlobalNav />
         <Routes>
