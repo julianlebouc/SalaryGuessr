@@ -81,9 +81,12 @@ export default function HomePage() {
             </div>
 
             <div className="hp-hero-right">
+              <h2 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
+                SalaryGuessr, Salary Guesser, SalaryGuesser, Salary Guess - Devinez les salaires
+              </h2>
               <motion.p className="hp-subtitle" variants={itemVariants}>
-                Testez votre instinct sur le marché du travail.
-                Estimez les salaires d'offres réelles et grimpez au sommet du classement.
+                Testez votre instinct sur le marché du travail avec Salary Guessr.
+                Estimez les salaires d'offres réelles et grimpez au sommet du classement. Le meilleur Salary Guesser en ligne.
               </motion.p>
 
               <motion.div className="hp-actions" variants={itemVariants}>
