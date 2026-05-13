@@ -153,16 +153,16 @@ export default function HomePage() {
         {/* SOCIALS TILE */}
         <div className="tile span-6">
           {renderCorners()}
-          <div className="tile-content hp-socials" style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <div style={{ display: 'flex', gap: '2rem' }}>
+          <div className="tile-content no-padding">
+            <div className="hp-social-links">
               <a href="https://github.com/julianlebouc/SalaryGuessr" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                <GithubIcon width="24" height="24" />
+                <GithubIcon />
               </a>
               <a href="https://discordapp.com/users/321002968218337289" target="_blank" rel="noopener noreferrer" aria-label="Discord">
-                <DiscordIcon width="24" height="24" />
+                <DiscordIcon />
               </a>
               <a href="https://www.linkedin.com/in/julian-lebouc-851619134/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                <LinkedinIcon width="24" height="24" />
+                <LinkedinIcon />
               </a>
             </div>
           </div>
