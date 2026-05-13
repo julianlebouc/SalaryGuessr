@@ -270,16 +270,19 @@ export default function GamePage() {
         {page === "playing" && (
           <div className="tile-grid">
             <div className="tile span-12">
-              <div className="tile-content gp-game-header">
+              <div className="tile-content gp-game-header no-padding">
                 <div className="gp-round-badge">MANCHE {round + 1} / {maxRounds}</div>
                 <div className="gp-score-badge">{score.toFixed(0)} PTS</div>
-                <div className="gp-progress-bar" style={{ flexGrow: 1 }}>
-                  <motion.div
-                    className="gp-progress-fill"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${((round) / maxRounds) * 100}%` }}
-                  />
-                </div>
+              </div>
+            </div>
+
+            <div className="tile span-12 no-padding" style={{ height: '4px' }}>
+              <div className="gp-progress-bar">
+                <motion.div
+                  className="gp-progress-fill"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${((round) / maxRounds) * 100}%` }}
+                />
               </div>
             </div>
 

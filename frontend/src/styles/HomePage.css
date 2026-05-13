@@ -43,6 +43,8 @@
   filter: drop-shadow(0 0 20px var(--primary-purple-glow));
 }
 
+
+
 @media (max-width: 968px) {
   .hp-title-wrap {
     flex-direction: row;
@@ -97,6 +99,11 @@
 .hp-actions {
   display: flex;
   gap: 1.5rem;
+  width: 100%;
+}
+
+.hp-actions > button {
+  flex: 1;
 }
 
 @media (max-width: 968px) {

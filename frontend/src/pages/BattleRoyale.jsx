@@ -417,7 +417,7 @@ export default function BattleRoyale() {
     return (
       <div className="tile-grid">
         <div className="tile span-12">
-          <div className="tile-content br-top-bar">
+          <div className="tile-content br-top-bar no-padding">
             <div className="br-round-badge">MANCHE {round}</div>
             <div className="br-timer-badge urgent"><span className="br-timer-big">{timer}</span>s</div>
             <div className="br-alive-badge">{aliveCount} VIVANTS</div>

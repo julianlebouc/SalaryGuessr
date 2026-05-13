@@ -6,11 +6,12 @@
 }
 
 .hl-game-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+  gap: 0;
   height: 100%;
+  width: 100%;
 }
 
 /* Grid handled by tile-grid */

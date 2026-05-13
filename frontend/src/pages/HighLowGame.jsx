@@ -145,7 +145,7 @@ export default function HighLowGame() {
         ) : (
           <>
             <div className="tile span-12">
-              <div className="tile-content hl-game-header">
+              <div className="tile-content hl-game-header no-padding">
                 <div className="gp-round-badge">SÉRIE ACTUELLE</div>
                 <div className="gp-score-badge">{score}</div>
               </div>

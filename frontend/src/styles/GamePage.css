@@ -85,39 +85,47 @@
 }
 
 .gp-game-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+  gap: 0;
   height: 100%;
+  width: 100%;
 }
 
 @media (max-width: 640px) {
   .gp-game-header {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .gp-progress-bar {
-    grid-column: span 2;
+    flex-direction: row;
+    gap: 0;
   }
 }
 
 .gp-round-badge,
 .gp-score-badge {
-  font-weight: 850;
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 0.5rem 1.2rem;
-  border-radius: var(--ui-radius);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex: 1;
+  font-weight: 950;
+  font-size: clamp(0.9rem, 4vw, 3.5rem);
+  padding: clamp(0.5rem, 2vw, 2rem);
+  background: rgba(255, 255, 255, 0.05);
+  border-right: 1px solid var(--glass-border);
+  letter-spacing: clamp(1px, 1vw, 6px);
   text-transform: uppercase;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+@media (max-width: 640px) {
+  .gp-round-badge, .gp-score-badge {
+    letter-spacing: 1px;
+    padding: 0.5rem;
+  }
 }
 
 .gp-score-badge {
   color: var(--primary-purple);
-  border: 1px solid rgba(157, 80, 187, 0.2);
+  border-right: none;
 }
 
 .gp-progress-bar {
@@ -446,6 +454,17 @@
   border-radius: var(--ui-radius);
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
+}
+
+.br-top-bar, .gp-game-header {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: stretch;
+  align-items: center;
+  gap: 0;
+  height: 100%;
+  width: 100%;
+  flex-wrap: nowrap;
 }
 
 .gp-chart-header {
