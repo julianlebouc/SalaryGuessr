@@ -209,8 +209,6 @@
   display: flex;
   justify-content: space-around;
   padding: 3rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.02), transparent);
 }
 
 @media (max-width: 968px) {
@@ -256,8 +254,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 0 1rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   flex-shrink: 0;
 }
 
