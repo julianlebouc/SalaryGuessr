@@ -12,8 +12,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-grow: 1;
   text-align: center;
+  height: 100%;
 }
 
 .gp-config-box {
@@ -81,18 +81,14 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  flex-grow: 1;
-  max-width: 1100px;
-  margin: 0 auto;
   width: 100%;
 }
 
 .gp-game-header {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
+  display: flex;
   align-items: center;
   gap: 1.5rem;
-  margin-bottom: 2rem;
+  height: 100%;
 }
 
 @media (max-width: 640px) {
@@ -138,13 +134,7 @@
   box-shadow: 0 0 15px var(--primary-purple-glow);
 }
 
-.gp-game-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 3rem;
-  flex-grow: 1;
-  align-items: start;
-}
+/* Grid handled by tile-grid */
 
 @media (max-width: 1100px) {
   .gp-game-grid {
@@ -210,8 +200,7 @@
   display: flex;
   flex-direction: column;
   gap: clamp(0.5rem, 3vh, 1.5rem);
-  flex: 1;
-  min-height: 0;
+  height: 100%;
 }
 
 .gp-job-title {
@@ -295,12 +284,9 @@
 .gp-input-area {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1.5rem;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.01);
-  border-radius: var(--ui-radius);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.2);
+  height: 100%;
 }
 
 .gp-input-label {
@@ -348,13 +334,10 @@
 .gp-result-area {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 2rem;
   text-align: center;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: var(--ui-radius);
-  border: 1px solid var(--primary-purple);
-  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.2);
+  height: 100%;
 }
 
 .gp-comparison {
@@ -421,9 +404,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-grow: 1;
   text-align: center;
   gap: 2rem;
+  height: 100%;
 }
 
 .gp-final-box {

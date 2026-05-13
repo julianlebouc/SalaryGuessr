@@ -31,10 +31,6 @@
 html,
 body {
   background-color: var(--bg-midnight);
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 40px 40px;
   color: var(--text-main);
   overflow-x: hidden;
   min-height: 100vh;
@@ -134,38 +130,92 @@ button {
   }
 }
 
+/* --- TILE SYSTEM (Windows 8 Inspired) --- */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  flex: 1;
+  min-height: 100vh;
+  border-top: 1px solid var(--glass-border);
+  border-left: 1px solid var(--glass-border);
+  background: var(--bg-midnight);
+}
+
+.tile {
+  position: relative;
+  border-right: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--trans-smooth);
+}
+
+.tile:hover {
+  background: rgba(255, 255, 255, 0.02);
+  z-index: 2;
+}
+
+.tile-grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+.tile-content {
+  padding: 2.5rem;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tile:hover .tile-content {
+  transform: scale(1.01);
+  transition: var(--trans-smooth);
+}
+
+/* Utility for tile spanning */
+.span-1 { grid-column: span 1; }
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-5 { grid-column: span 5; }
+.span-6 { grid-column: span 6; }
+.span-8 { grid-column: span 8; }
+.span-9 { grid-column: span 9; }
+.span-12 { grid-column: span 12; }
+
+.row-span-2 { grid-row: span 2; }
+.row-span-3 { grid-row: span 3; }
+
+@media (max-width: 820px) {
+  .tile-grid {
+    grid-template-columns: 1fr;
+  }
+  .tile {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+  }
+}
+
 /* --- LAYOUT SYSTEM --- */
 .page-wrapper {
   min-height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 4rem 2rem 0;
   box-sizing: border-box;
   position: relative;
-  max-width: 1400px;
-  margin: 0 auto;
   z-index: 1;
-  overflow-x: hidden;
-  overflow-y: auto;
 }
 
-/* Add breathing room to the bottom of pages without a footer */
-.page-wrapper:not(.hp-page) {
-  padding-bottom: 4rem;
-}
-
-@media (max-width: 820px) {
-  .page-wrapper {
-    padding: 100px 1rem 0;
-    gap: 1.5rem;
-    height: auto;
-    min-height: 100vh;
-  }
-
-  .page-wrapper:not(.hp-page) {
-    padding-bottom: 2rem;
-  }
+.page-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Global Navigation Buttons */

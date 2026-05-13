@@ -1,32 +1,31 @@
-.hp-page {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.hp-grid {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
+.hp-hero {
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  align-content: center;
-  gap: 6rem;
-  flex-grow: 1;
+  justify-content: space-between;
+  gap: 3rem;
+  height: 100%;
+  padding: 3rem;
 }
 
-@media (max-width: 1200px) {
-  .hp-grid {
-    gap: 3rem;
-  }
+.hp-hero-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-@media (max-width: 968px) {
-  .hp-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    align-content: center;
-    text-align: center;
-    gap: 2rem;
+.hp-hero-right {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+  .hp-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem;
   }
 }
 
@@ -115,13 +114,13 @@
 
 /* Preview Section */
 .hp-preview {
-  background: rgba(255, 255, 255, 0.01);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--ui-radius);
-  padding: 3rem;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.2);
 }
 
 .hp-preview::before {
@@ -202,23 +201,7 @@
   color: var(--accent-cyan);
 }
 
-/* Stats Row */
-.hp-stats-row {
-  position: relative;
-  grid-column: span 2;
-  display: flex;
-  justify-content: space-around;
-  padding: 3rem 0;
-}
-
-@media (max-width: 968px) {
-  .hp-stats-row {
-    grid-column: span 1;
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding: 1.5rem 0;
-  }
-}
+/* Stats Row handled by tiles */
 
 .hp-stat-box {
   display: flex;
@@ -249,28 +232,7 @@
   letter-spacing: 3px;
 }
 
-/* Footer Nav */
-.hp-footer-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0 1rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  flex-shrink: 0;
-}
-
-@media (max-width: 640px) {
-  .hp-footer-nav {
-    flex-direction: column;
-    gap: 1.5rem;
-    text-align: center;
-    padding: 1rem 0;
-  }
-
-  .hp-preview {
-    display: none !important;
-  }
-}
+/* Footer handled by tiles */
 
 .hp-socials {
   display: flex;
