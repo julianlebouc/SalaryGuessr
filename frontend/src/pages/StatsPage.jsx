@@ -58,25 +58,30 @@ export default function StatsPage() {
 
   return (
     <motion.div className="page-wrapper stats-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <header className="stats-header">
-        <h1 className="gp-titleMain">Statistiques</h1>
-        <p className="stats-intro">Aperçu global (30 derniers jours)</p>
-      </header>
+      <div className="tile-grid">
+        <div className="tile span-12">
+          <header className="tile-content stats-header">
+            <h1 className="gp-titleMain" style={{ marginBottom: '1rem' }}>Statistiques</h1>
+            <p className="stats-intro">Aperçu global (30 derniers jours)</p>
+          </header>
+        </div>
 
-      <div className="stats-grid-main">
-        <div className="stats-column">
-          <div className="stats-hero-row">
-            <div className="stats-hero-item">
-              <span className="stats-hero-val">{data.unique_sessions_count}</span>
-              <span className="stats-hero-lab">VISITEURS</span>
-            </div>
-            <div className="stats-hero-item">
-              <span className="stats-hero-val">{data.total_games_played}</span>
-              <span className="stats-hero-lab">PARTIES JOUÉES</span>
-            </div>
+        <div className="tile span-6 tile-grid-bg">
+          <div className="tile-content stats-hero-item">
+            <span className="stats-hero-val">{data.unique_sessions_count}</span>
+            <span className="stats-hero-lab">VISITEURS</span>
           </div>
+        </div>
 
-          <div className="stats-chart-wrap">
+        <div className="tile span-6">
+          <div className="tile-content stats-hero-item">
+            <span className="stats-hero-val">{data.total_games_played}</span>
+            <span className="stats-hero-lab">PARTIES JOUÉES</span>
+          </div>
+        </div>
+
+        <div className="tile span-8 row-span-2">
+          <div className="tile-content stats-chart-wrap">
             <h2 className="stats-sub">Activité Quotidienne</h2>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={data.daily_activity}>
@@ -103,21 +108,23 @@ export default function StatsPage() {
           </div>
         </div>
 
-        <div className="stats-column">
-          <h2 className="stats-sub">Performances par Mode</h2>
-          <div className="stats-modes-list">
-            <div className="stats-mode-row">
-              <div className="mode-name">Classique</div>
-              <div className="mode-vals">
-                <span>MOY. <strong>{data.modes.classic.avg_score.toFixed(1)}</strong></span>
-                <span>REC. <strong>{data.modes.classic.max_score.toFixed(1)}</strong></span>
+        <div className="tile span-4 row-span-2 tile-grid-bg">
+          <div className="tile-content">
+            <h2 className="stats-sub">Performances</h2>
+            <div className="stats-modes-list">
+              <div className="stats-mode-row">
+                <div className="mode-name">Classique</div>
+                <div className="mode-vals">
+                  <span>MOY. <strong>{data.modes.classic.avg_score.toFixed(1)}</strong></span>
+                  <span>REC. <strong>{data.modes.classic.max_score.toFixed(1)}</strong></span>
+                </div>
               </div>
-            </div>
-            <div className="stats-mode-row">
-              <div className="mode-name">High / Low</div>
-              <div className="mode-vals">
-                <span>MOY. <strong>{data.modes.highlow.avg_score.toFixed(1)}</strong></span>
-                <span>REC. <strong>{data.modes.highlow.max_score.toFixed(0)}</strong></span>
+              <div className="stats-mode-row">
+                <div className="mode-name">High / Low</div>
+                <div className="mode-vals">
+                  <span>MOY. <strong>{data.modes.highlow.avg_score.toFixed(1)}</strong></span>
+                  <span>REC. <strong>{data.modes.highlow.max_score.toFixed(0)}</strong></span>
+                </div>
               </div>
             </div>
           </div>

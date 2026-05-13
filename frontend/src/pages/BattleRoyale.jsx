@@ -294,104 +294,112 @@ export default function BattleRoyale() {
 
   // UI RENDERERS
   const renderSetup = () => (
-    <motion.div key="setup" className="br-setup-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-      <h1 className="gp-titleMain">Battle Royale</h1>
-      <div className="br-setup-form">
-        <div className="br-tabs">
-          <button
-            className={activeTab === "create" ? "active" : ""}
-            onClick={() => setActiveTab("create")}
-          >
-            CRÉER
-            {activeTab === "create" && (
-              <motion.div layoutId="br-tab-bg" className="br-tab-indicator" />
-            )}
-          </button>
-          <button
-            className={activeTab === "join" ? "active" : ""}
-            onClick={() => setActiveTab("join")}
-          >
-            REJOINDRE
-            {activeTab === "join" && (
-              <motion.div layoutId="br-tab-bg" className="br-tab-indicator" />
-            )}
-          </button>
-        </div>
-
-        <input
-          className="br-input-field"
-          placeholder="Votre Pseudo"
-          value={playerName}
-          onChange={e => setPlayerName(e.target.value)}
-          maxLength={20}
-        />
-
-        <div className="br-tab-content-wrap">
-          <AnimatePresence>
-            {activeTab === "join" ? (
-              <motion.div
-                key="join-input"
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -20, opacity: 0 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                style={{ width: '100%' }}
+    <div className="tile-grid">
+      <div className="tile span-12">
+        <div key="setup" className="tile-content br-setup-view br-animate-slide">
+          <h1 className="gp-titleMain">Battle Royale</h1>
+          <div className="br-setup-form">
+            <div className="br-tabs">
+              <button
+                className={activeTab === "create" ? "active" : ""}
+                onClick={() => setActiveTab("create")}
               >
-                <input
-                  className="br-input-field"
-                  placeholder="Code Salle"
-                  value={roomCode}
-                  onChange={e => setRoomCode(e.target.value.toUpperCase())}
-                  maxLength={6}
-                />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="create-spacer"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="br-tab-spacer"
-              />
-            )}
-          </AnimatePresence>
-        </div>
+                CRÉER
+                {activeTab === "create" && (
+                  <motion.div layoutId="br-tab-bg" className="br-tab-indicator" />
+                )}
+              </button>
+              <button
+                className={activeTab === "join" ? "active" : ""}
+                onClick={() => setActiveTab("join")}
+              >
+                REJOINDRE
+                {activeTab === "join" && (
+                  <motion.div layoutId="br-tab-bg" className="br-tab-indicator" />
+                )}
+              </button>
+            </div>
 
-        <button
-          className="hp-btn-primary"
-          onClick={activeTab === "create" ? createRoom : joinRoom}
-          disabled={!playerName || (activeTab === "join" && !roomCode)}
-        >
-          {activeTab === "create" ? "Ouvrir l'Arène" : "Entrer dans l'Arène"}
-        </button>
+            <input
+              className="br-input-field"
+              placeholder="Votre Pseudo"
+              value={playerName}
+              onChange={e => setPlayerName(e.target.value)}
+              maxLength={20}
+            />
+
+            <div className="br-tab-content-wrap">
+              <AnimatePresence>
+                {activeTab === "join" ? (
+                  <motion.div
+                    key="join-input"
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -20, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    style={{ width: '100%' }}
+                  >
+                    <input
+                      className="br-input-field"
+                      placeholder="Code Salle"
+                      value={roomCode}
+                      onChange={e => setRoomCode(e.target.value.toUpperCase())}
+                      maxLength={6}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="create-spacer"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="br-tab-spacer"
+                  />
+                )}
+              </AnimatePresence>
+            </div>
+
+            <button
+              className="hp-btn-primary"
+              onClick={activeTab === "create" ? createRoom : joinRoom}
+              disabled={!playerName || (activeTab === "join" && !roomCode)}
+            >
+              {activeTab === "create" ? "Ouvrir l'Arène" : "Entrer dans l'Arène"}
+            </button>
+          </div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 
   const renderLobby = () => (
-    <motion.div key="lobby" className="br-lobby-view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <div className="br-lobby-header">
-        <span className="br-lobby-tag">SALON D'ATTENTE</span>
-        <BrRoomCodeToolbar roomCode={roomCode} revealed={roomCodeRevealed} onToggleReveal={() => setRoomCodeRevealed(!roomCodeRevealed)} onCopy={copyRoomCode} />
-        <p className="br-lobby-info">Partagez ce code avec vos amis</p>
-      </div>
-
-      <div className="br-player-grid">
-        {players.map(p => (
-          <div key={p.id} className={`br-player-card ${p.id === playerId ? "me" : ""}`}>
-            <span className="br-player-name">{p.name} {p.id === hostId && "(Hôte)"}</span>
+    <div className="tile-grid">
+      <div className="tile span-12">
+        <div key="lobby" className="tile-content br-lobby-view br-animate-fade">
+          <div className="br-lobby-header">
+            <span className="br-lobby-tag">SALON D'ATTENTE</span>
+            <BrRoomCodeToolbar roomCode={roomCode} revealed={roomCodeRevealed} onToggleReveal={() => setRoomCodeRevealed(!roomCodeRevealed)} onCopy={copyRoomCode} />
+            <p className="br-lobby-info">Partagez ce code avec vos amis</p>
           </div>
-        ))}
-      </div>
 
-      {isHost ? (
-        <button className="hp-btn-primary" onClick={startGame} disabled={players.length < minPlayers || isStartingGame}>
-          {isStartingGame ? "Préparation..." : `Lancer (${players.length}/${maxPlayers})`}
-        </button>
-      ) : (
-        <div className="br-waiting-host">En attente de l'hôte...</div>
-      )}
-    </motion.div>
+          <div className="br-player-grid">
+            {players.map(p => (
+              <div key={p.id} className={`br-player-card ${p.id === playerId ? "me" : ""}`}>
+                <span className="br-player-name">{p.name} {p.id === hostId && "(Hôte)"}</span>
+              </div>
+            ))}
+          </div>
+
+          {isHost ? (
+            <button className="hp-btn-primary" onClick={startGame} disabled={players.length < minPlayers || isStartingGame}>
+              {isStartingGame ? "Préparation..." : `Lancer (${players.length}/${maxPlayers})`}
+            </button>
+          ) : (
+            <div className="br-waiting-host">En attente de l'hôte...</div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 
   const renderPlaying = () => {
@@ -407,125 +415,133 @@ export default function BattleRoyale() {
     const aliveCount = players.filter(p => p.is_alive !== false).length;
 
     return (
-      <motion.div key="playing" className="br-playing-view">
-        <div className="br-top-bar">
-          <div className="br-round-badge">MANCHE {round}</div>
-          <div className="br-timer-badge urgent"><span className="br-timer-big">{timer}</span>s</div>
-          <div className="br-alive-badge">{aliveCount} VIVANTS</div>
+      <div className="tile-grid">
+        <div className="tile span-12">
+          <div className="tile-content br-top-bar no-padding">
+            <div className="br-round-badge">MANCHE {round}</div>
+            <div className="br-timer-badge urgent"><span className="br-timer-big">{timer}</span>s</div>
+            <div className="br-alive-badge">{aliveCount} VIVANTS</div>
+          </div>
         </div>
 
         {gameState === "game_over" ? (
-          <div className="br-victory-screen">
-            <div className="br-winner-podium">
-              <span className="br-winner-tag">VAINQUEUR</span>
-              <h1 className="gp-titleMain">Victoire de {winner}</h1>
-            </div>
-            <div className="br-victory-actions">
-              <button className="hp-btn-primary" onClick={() => navigate("/")}>Retour à l'Accueil</button>
-              <button className="hp-btn-secondary" onClick={() => window.location.reload()}>Rejouer</button>
+          <div className="tile span-12">
+            <div className="tile-content br-victory-screen">
+              <div className="br-winner-podium">
+                <span className="br-winner-tag">VAINQUEUR</span>
+                <h1 className="gp-titleMain">Victoire de {winner}</h1>
+              </div>
+              <div className="br-victory-actions">
+                <button className="hp-btn-primary" onClick={() => navigate("/")}>Retour à l'Accueil</button>
+                <button className="hp-btn-secondary" onClick={() => window.location.reload()}>Rejouer</button>
+              </div>
             </div>
           </div>
         ) : gameState === "round_end" && roundResults ? (
-          <div className="br-results-screen">
-            <h2 className="br-results-title">Verdict</h2>
+          <div className="tile span-12">
+            <div className="tile-content br-results-screen">
+              <h2 className="br-results-title">Verdict</h2>
 
-            {isEliminated && eliminatedIds.has(playerId) ? (
-              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="br-status-msg eliminated">
-                VOUS AVEZ ÉTÉ ÉLIMINÉ
-              </motion.div>
-            ) : (
-              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="br-status-msg survived">
-                VOUS AVEZ SURVÉCU
-              </motion.div>
-            )}
-
-            <div className="br-real-salary">
-              {roundResults.real_salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
-              <span className="br-real-label">Salaire Réel</span>
-            </div>
-
-            <div className="br-round-summary">
-              <div className="br-summary-box eliminated">
-                <span className="label">ÉLIMINÉS CE TOUR</span>
-                <div className="names">
-                  {elimNames.length > 0 ? elimNames.join(", ") : (
-                    rankings.filter(r => eliminatedIds.has(String(r.player_id || r.id))).map(r => r.name).join(", ") || "Aucun"
-                  )}
-                </div>
-              </div>
-              <div className="br-summary-box alive">
-                <span className="label">SURVIVANTS</span>
-                <div className="count">{aliveCount}</div>
-              </div>
-            </div>
-
-            <div className="br-ranking-list">
-              {[...rankings]
-                .sort((a, b) => {
-                  const aErr = Math.abs(a.error || 0);
-                  const bErr = Math.abs(b.error || 0);
-                  return aErr - bErr;
-                })
-                .map((r, i) => {
-                  const rId = r.player_id || r.id;
-                  const isPlayerElim = eliminatedIds.has(String(rId));
-                  return (
-                    <div key={rId} className={`br-rank-item ${isPlayerElim ? "eliminated" : ""} ${String(rId) === String(playerId) ? "me" : ""}`}>
-                      <span className="br-rank-pos">#{i + 1}</span>
-                      <span className="br-rank-name">{r.name}</span>
-                      <div className="br-rank-data">
-                        <span className="br-rank-guess">{r.guess?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || "???"} €</span>
-                        <span className="br-rank-error">{Math.abs(r.error || 0).toFixed(0)}€ d'écart</span>
-                      </div>
-                      {isPlayerElim && <span className="br-elim-tag">ÉLIMINÉ</span>}
-                    </div>
-                  );
-                })}
-            </div>
-            {nextRoundTimer && <div className="br-next-timer">Prochaine manche dans <strong>{nextRoundTimer}s</strong></div>}
-          </div>
-        ) : (
-          <div className="gp-game-grid">
-            <div className="gp-job-side">
-              <h2 className="gp-job-title">{currentOffer?.intitule || currentOffer?.title}</h2>
-              <div className="badgesContainer">
-                {currentOffer?.entreprise?.nom && <span className="gp-badge gp-badgeCompany">{currentOffer.entreprise.nom}</span>}
-                <span className="gp-badge gp-badgeLocation">{currentOffer?.lieuTravail?.libelle || currentOffer?.location}</span>
-                {currentOffer?.typeContratLibelle && <span className="gp-badge">{currentOffer.typeContratLibelle}</span>}
-                {currentOffer?.dureeTravailLibelle && <span className="gp-badge">{currentOffer.dureeTravailLibelle}</span>}
-                {currentOffer?.experienceLibelle && <span className="gp-badge">{currentOffer.experienceLibelle}</span>}
-              </div>
-              <div className="gp-job-desc">{currentOffer?.description}</div>
-            </div>
-
-            <div className="gp-action-side">
-              {isEliminated ? (
-                <div className="br-waiting-card"><h3>Vous êtes éliminé</h3><p>Spectateur de l'arène...</p></div>
-              ) : !hasGuessed ? (
-                <div className="gp-input-area">
-                  <span className="gp-input-label">VOTRE ESTIMATION BRUTE</span>
-                  <div className="gp-input-wrap">
-                    <input type="number" placeholder="Ex: 3500" value={guess} onChange={e => setGuess(e.target.value)} onKeyDown={e => e.key === "Enter" && submitGuess()} autoFocus />
-                    <span className="gp-currency">€</span>
-                  </div>
-                  <button className="hp-btn-primary" onClick={submitGuess} disabled={!guess}>VALIDER</button>
+              {isEliminated && eliminatedIds.has(playerId) ? (
+                <div className="br-status-msg eliminated br-animate-pop">
+                  VOUS AVEZ ÉTÉ ÉLIMINÉ
                 </div>
               ) : (
-                <div className="br-waiting-card"><div className="br-loader-dots">En attente des autres joueurs...</div></div>
+                <div className="br-status-msg survived br-animate-pop">
+                  VOUS AVEZ SURVÉCU
+                </div>
               )}
+
+              <div className="br-real-salary">
+                {roundResults.real_salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
+                <span className="br-real-label">Salaire Réel</span>
+              </div>
+
+              <div className="br-round-summary">
+                <div className="br-summary-box eliminated">
+                  <span className="label">ÉLIMINÉS CE TOUR</span>
+                  <div className="names">
+                    {elimNames.length > 0 ? elimNames.join(", ") : (
+                      rankings.filter(r => eliminatedIds.has(String(r.player_id || r.id))).map(r => r.name).join(", ") || "Aucun"
+                    )}
+                  </div>
+                </div>
+                <div className="br-summary-box alive">
+                  <span className="label">SURVIVANTS</span>
+                  <div className="count">{aliveCount}</div>
+                </div>
+              </div>
+
+              <div className="br-ranking-list">
+                {[...rankings]
+                  .sort((a, b) => {
+                    const aErr = Math.abs(a.error || 0);
+                    const bErr = Math.abs(b.error || 0);
+                    return aErr - bErr;
+                  })
+                  .map((r, i) => {
+                    const rId = r.player_id || r.id;
+                    const isPlayerElim = eliminatedIds.has(String(rId));
+                    return (
+                      <div key={rId} className={`br-rank-item ${isPlayerElim ? "eliminated" : ""} ${String(rId) === String(playerId) ? "me" : ""}`}>
+                        <span className="br-rank-pos">#{i + 1}</span>
+                        <span className="br-rank-name">{r.name}</span>
+                        <div className="br-rank-data">
+                          <span className="br-rank-guess">{r.guess?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || "???"} €</span>
+                          <span className="br-rank-error">{Math.abs(r.error || 0).toFixed(0)}€ d'écart</span>
+                        </div>
+                        {isPlayerElim && <span className="br-elim-tag">ÉLIMINÉ</span>}
+                      </div>
+                    );
+                  })}
+              </div>
+              {nextRoundTimer && <div className="br-next-timer">Prochaine manche dans <strong>{nextRoundTimer}s</strong></div>}
             </div>
           </div>
+        ) : (
+          <>
+            <div className="tile span-8 row-span-2">
+              <div className="tile-content gp-job-side">
+                <h2 className="gp-job-title">{currentOffer?.intitule || currentOffer?.title}</h2>
+                <div className="badgesContainer">
+                  {currentOffer?.entreprise?.nom && <span className="gp-badge gp-badgeCompany">{currentOffer.entreprise.nom}</span>}
+                  <span className="gp-badge gp-badgeLocation">{currentOffer?.lieuTravail?.libelle || currentOffer?.location}</span>
+                  {currentOffer?.typeContratLibelle && <span className="gp-badge">{currentOffer.typeContratLibelle}</span>}
+                  {currentOffer?.dureeTravailLibelle && <span className="gp-badge">{currentOffer.dureeTravailLibelle}</span>}
+                  {currentOffer?.experienceLibelle && <span className="gp-badge">{currentOffer.experienceLibelle}</span>}
+                </div>
+                <div className="gp-job-desc">{currentOffer?.description}</div>
+              </div>
+            </div>
+
+            <div className="tile span-4 row-span-2">
+              <div className="tile-content gp-action-side">
+                {isEliminated ? (
+                  <div className="br-waiting-card"><h3>Vous êtes éliminé</h3><p>Spectateur de l'arène...</p></div>
+                ) : !hasGuessed ? (
+                  <div className="gp-input-area">
+                    <span className="gp-input-label">VOTRE ESTIMATION BRUTE</span>
+                    <div className="gp-input-wrap">
+                      <input type="number" placeholder="Ex: 3500" value={guess} onChange={e => setGuess(e.target.value)} onKeyDown={e => e.key === "Enter" && submitGuess()} autoFocus />
+                      <span className="gp-currency">€</span>
+                    </div>
+                    <button className="hp-btn-primary" onClick={submitGuess} disabled={!guess}>VALIDER</button>
+                  </div>
+                ) : (
+                  <div className="br-waiting-card"><div className="br-loader-dots">En attente des autres joueurs...</div></div>
+                )}
+              </div>
+            </div>
+          </>
         )}
-      </motion.div>
+      </div>
     );
   };
 
   return (
     <div className="page-wrapper br-page">
       <BrNotice notice={notice} onDismiss={() => setNotice(null)} />
-      <AnimatePresence mode="wait">
-        {view === "join" ? renderSetup() : view === "waiting" ? renderLobby() : renderPlaying()}
-      </AnimatePresence>
+      {view === "join" ? renderSetup() : view === "waiting" ? renderLobby() : renderPlaying()}
     </div>
   );
 }

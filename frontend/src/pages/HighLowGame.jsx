@@ -125,102 +125,114 @@ export default function HighLowGame() {
 
   return (
     <motion.div className="page-wrapper hl-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      {gameOver ? (
-        <div className="hl-gameover-view">
-          <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-            <h1>PARTIE TERMINÉE</h1>
-            <div className="hl-final-score">
-              {score}
-              <span>Série de victoires</span>
-            </div>
-            <div className="hl-result-actions">
-              <button className="hp-btn-primary" onClick={startGame}>Rejouer</button>
-              <button className="hp-btn-secondary" onClick={() => navigate("/")}>Retour Accueil</button>
-            </div>
-          </motion.div>
-        </div>
-      ) : (
-        <>
-          <div className="hl-game-header">
-            <div className="gp-round-badge">SÉRIE ACTUELLE</div>
-            <div className="gp-score-badge">{score}</div>
-          </div>
-
-          <div className="hl-main-grid">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={jobs[currentIndex]?.id}
-                className="hl-job-item"
-                initial={{ x: -100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 100, opacity: 0 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <span className="hl-tag">DÉJÀ RÉVÉLÉ</span>
-                <h2 className="hl-job-title">{jobs[currentIndex]?.title}</h2>
-                <div className="gp-badgeGroup">
-                  <span className="gp-badge">{jobs[currentIndex]?.company || "Confidentiel"}</span>
-                  <span className="gp-badge">{jobs[currentIndex]?.location || "France"}</span>
+      <div className="tile-grid">
+        {gameOver ? (
+          <div className="tile span-12">
+            <div className="tile-content hl-gameover-view">
+              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+                <h1>PARTIE TERMINÉE</h1>
+                <div className="hl-final-score">
+                  {score}
+                  <span>Série de victoires</span>
                 </div>
-                <div className="hl-salary-display">{jobs[currentIndex]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</div>
-              </motion.div>
-            </AnimatePresence>
-
-            <div className="hl-vs-zone">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="hl-vs-btn up"
-                onClick={() => handleGuess("higher")}
-                disabled={showSalary}
-              >
-                PLUS
-              </motion.button>
-              <div className="hl-vs-text">VS</div>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="hl-vs-btn down"
-                onClick={() => handleGuess("lower")}
-                disabled={showSalary}
-              >
-                MOINS
-              </motion.button>
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={jobs[currentIndex + 1]?.id}
-                className="hl-job-item"
-                initial={{ x: 100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -100, opacity: 0 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <span className="hl-tag">EST-CE PLUS OU MOINS ?</span>
-                <h2 className="hl-job-title">{jobs[currentIndex + 1]?.title}</h2>
-                <div className="gp-badgeGroup">
-                  <span className="gp-badge">{jobs[currentIndex + 1]?.company || "Confidentiel"}</span>
-                  <span className="gp-badge">{jobs[currentIndex + 1]?.location || "France"}</span>
-                </div>
-                <div className="hl-salary-display">
-                  {showSalary ? (
-                    <motion.span
-                      initial={{ scale: 1.5, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      style={{ color: guessResult === "correct" ? "var(--accent-cyan)" : "#ff6b6b" }}
-                    >
-                      {jobs[currentIndex + 1]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
-                    </motion.span>
-                  ) : (
-                    <span className="hl-salary-placeholder">??? €</span>
-                  )}
+                <div className="hl-result-actions">
+                  <button className="hp-btn-primary" onClick={startGame}>Rejouer</button>
+                  <button className="hp-btn-secondary" onClick={() => navigate("/")}>Retour Accueil</button>
                 </div>
               </motion.div>
-            </AnimatePresence>
+            </div>
           </div>
-        </>
-      )}
+        ) : (
+          <>
+            <div className="tile span-12">
+              <div className="tile-content hl-game-header no-padding">
+                <div className="gp-round-badge">SÉRIE ACTUELLE</div>
+                <div className="gp-score-badge">{score}</div>
+              </div>
+            </div>
+
+            <div className="tile span-5 tile-grid-bg">
+              <div className="tile-content hl-job-item">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={jobs[currentIndex]?.id}
+                    initial={{ x: -50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: 50, opacity: 0 }}
+                    style={{ textAlign: 'center' }}
+                  >
+                    <span className="hl-tag">DÉJÀ RÉVÉLÉ</span>
+                    <h2 className="hl-job-title">{jobs[currentIndex]?.title}</h2>
+                    <div className="gp-badgeGroup" style={{ justifyContent: 'center', marginTop: '1rem' }}>
+                      <span className="gp-badge">{jobs[currentIndex]?.company || "Confidentiel"}</span>
+                      <span className="gp-badge">{jobs[currentIndex]?.location || "France"}</span>
+                    </div>
+                    <div className="hl-salary-display" style={{ marginTop: '2rem' }}>{jobs[currentIndex]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+
+            <div className="tile span-2">
+              <div className="tile-content hl-vs-zone">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="hl-vs-btn up"
+                  onClick={() => handleGuess("higher")}
+                  disabled={showSalary}
+                >
+                  PLUS
+                </motion.button>
+                <div className="hl-vs-text">VS</div>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="hl-vs-btn down"
+                  onClick={() => handleGuess("lower")}
+                  disabled={showSalary}
+                >
+                  MOINS
+                </motion.button>
+              </div>
+            </div>
+
+            <div className="tile span-5 tile-grid-bg">
+              <div className="tile-content hl-job-item">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={jobs[currentIndex + 1]?.id}
+                    initial={{ x: 50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -50, opacity: 0 }}
+                    style={{ textAlign: 'center' }}
+                  >
+                    <span className="hl-tag">EST-CE PLUS OU MOINS ?</span>
+                    <h2 className="hl-job-title">{jobs[currentIndex + 1]?.title}</h2>
+                    <div className="gp-badgeGroup" style={{ justifyContent: 'center', marginTop: '1rem' }}>
+                      <span className="gp-badge">{jobs[currentIndex + 1]?.company || "Confidentiel"}</span>
+                      <span className="gp-badge">{jobs[currentIndex + 1]?.location || "France"}</span>
+                    </div>
+                    <div className="hl-salary-display" style={{ marginTop: '2rem' }}>
+                      {showSalary ? (
+                        <motion.span
+                          initial={{ scale: 1.5, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          style={{ color: guessResult === "correct" ? "var(--accent-cyan)" : "#ff6b6b" }}
+                        >
+                          {jobs[currentIndex + 1]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
+                        </motion.span>
+                      ) : (
+                        <span className="hl-salary-placeholder">??? €</span>
+                      )}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </motion.div>
   );
 }

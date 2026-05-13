@@ -243,31 +243,40 @@ export default function GamePage() {
     <motion.div className="page-wrapper gp-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <AnimatePresence mode="wait">
         {page === "settings" && (
-          <motion.div key="settings" className="gp-settings-view animate-fade-in">
-            <h1 className="gp-titleMain">Configuration</h1>
-            <div className="gp-config-box">
-              <label className="gp-config-label">Nombre de manches : <strong>{maxRounds}</strong></label>
-              <input
-                type="range"
-                min="5"
-                max="50"
-                step="5"
-                value={maxRounds}
-                onChange={e => setMaxRounds(Number(e.target.value))}
-                className="gp-range-input"
-              />
-              <button className="hp-btn-primary" onClick={startGame} disabled={loadingStart}>
-                {loadingStart ? "Préparation..." : "Lancer la Partie"}
-              </button>
+          <div className="tile-grid">
+            <div className="tile span-12">
+              <motion.div key="settings" className="tile-content gp-settings-view animate-fade-in">
+                <h1 className="gp-titleMain">Configuration</h1>
+                <div className="gp-config-box">
+                  <label className="gp-config-label">Nombre de manches : <strong>{maxRounds}</strong></label>
+                  <input
+                    type="range"
+                    min="5"
+                    max="50"
+                    step="5"
+                    value={maxRounds}
+                    onChange={e => setMaxRounds(Number(e.target.value))}
+                    className="gp-range-input"
+                  />
+                  <button className="hp-btn-primary" onClick={startGame} disabled={loadingStart}>
+                    {loadingStart ? "Préparation..." : "Lancer la Partie"}
+                  </button>
+                </div>
+              </motion.div>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {page === "playing" && (
-          <motion.div key="playing" className="gp-playing-view">
-            <div className="gp-game-header">
-              <div className="gp-round-badge">MANCHE {round + 1} / {maxRounds}</div>
-              <div className="gp-score-badge">{score.toFixed(0)} PTS</div>
+          <div className="tile-grid gp-game-grid">
+            <div className="tile span-12">
+              <div className="tile-content gp-game-header no-padding">
+                <div className="gp-round-badge">MANCHE {round + 1} / {maxRounds}</div>
+                <div className="gp-score-badge">{score.toFixed(0)} PTS</div>
+              </div>
+            </div>
+
+            <div className="tile span-12 no-padding" style={{ height: '4px' }}>
               <div className="gp-progress-bar">
                 <motion.div
                   className="gp-progress-fill"
@@ -277,8 +286,8 @@ export default function GamePage() {
               </div>
             </div>
 
-            <div className="gp-game-grid">
-              <div className="gp-job-side">
+            <div className="tile span-8 tile-grid-bg">
+              <div className="tile-content gp-job-side">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentJob?.id}
@@ -316,8 +325,10 @@ export default function GamePage() {
                   </motion.div>
                 </AnimatePresence>
               </div>
+            </div>
 
-              <div className="gp-action-side">
+            <div className="tile span-4">
+              <div className="tile-content gp-action-side">
                 {!showResult ? (
                   <div className="gp-input-area">
                     <span className="gp-input-label">ESTIMEZ LE SALAIRE MENSUEL BRUT</span>
@@ -363,48 +374,52 @@ export default function GamePage() {
                 )}
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {page === "result" && (
-          <motion.div key="result" className="gp-result-view animate-fade-in">
-            <h1 className="gp-titleMain">Bilan de la Partie</h1>
-            <div className="gp-final-box">
-              <div className="gp-final-score">
-                {(score / maxRounds).toFixed(1)}
-                <span className="gp-final-unit">/100</span>
-              </div>
-              <p className="gp-final-text">Score Final</p>
-            </div>
+          <div className="tile-grid">
+            <div className="tile span-12">
+              <motion.div key="result" className="tile-content gp-result-view animate-fade-in">
+                <h1 className="gp-titleMain">Bilan de la Partie</h1>
+                <div className="gp-final-box">
+                  <div className="gp-final-score">
+                    {(score / maxRounds).toFixed(1)}
+                    <span className="gp-final-unit">/100</span>
+                  </div>
+                  <p className="gp-final-text">Score Final</p>
+                </div>
 
-            <div className="gp-chart-container">
-              <div className="gp-chart-header">
-                <h3 className="gp-chart-title">Écart par Manche</h3>
-              </div>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={history}>
-                  <XAxis dataKey="round" stroke="rgba(255,255,255,0.3)" />
-                  <Tooltip
-                    contentStyle={{ background: "#1a103d", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }}
-                    itemStyle={{ color: "#fff" }}
-                  />
-                  <Legend
-                    verticalAlign="top"
-                    align="right"
-                    iconType="circle"
-                    wrapperStyle={{ top: -35, right: 0, fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px' }}
-                  />
-                  <Bar dataKey="real" name="Réel" fill="var(--primary-purple)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="estimated" name="Estimé" fill="rgba(255,255,255,0.15)" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+                <div className="gp-chart-container">
+                  <div className="gp-chart-header">
+                    <h3 className="gp-chart-title">Écart par Manche</h3>
+                  </div>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={history}>
+                      <XAxis dataKey="round" stroke="rgba(255,255,255,0.3)" />
+                      <Tooltip
+                        contentStyle={{ background: "#1a103d", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }}
+                        itemStyle={{ color: "#fff" }}
+                      />
+                      <Legend
+                        verticalAlign="top"
+                        align="right"
+                        iconType="circle"
+                        wrapperStyle={{ top: -35, right: 0, fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px' }}
+                      />
+                      <Bar dataKey="real" name="Réel" fill="var(--primary-purple)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="estimated" name="Estimé" fill="rgba(255,255,255,0.15)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
 
-            <div className="gp-result-actions">
-              <button className="hp-btn-primary" onClick={() => setPage("settings")}>Rejouer</button>
-              <button className="hp-btn-secondary" onClick={() => navigate("/")}>Retour Accueil</button>
+                <div className="gp-result-actions">
+                  <button className="hp-btn-primary" onClick={() => setPage("settings")}>Rejouer</button>
+                  <button className="hp-btn-secondary" onClick={() => navigate("/")}>Retour Accueil</button>
+                </div>
+              </motion.div>
             </div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </motion.div>

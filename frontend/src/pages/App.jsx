@@ -56,6 +56,10 @@ function App() {
   return (
     <SoundProvider>
       <Router>
+        <div className="noise-overlay" />
+        <div className="ambient-glow glow-1" />
+        <div className="ambient-glow glow-2" />
+        <div className="ambient-glow glow-3" />
         <GlobalNav />
         <Routes>
           <Route path="/" element={<HomePage />} />

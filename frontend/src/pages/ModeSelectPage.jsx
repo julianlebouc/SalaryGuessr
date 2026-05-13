@@ -19,6 +19,24 @@ export default function ModeSelectPage() {
   const navigate = useNavigate();
   const { play } = useSound();
 
+  const handleMouseMove = (e) => {
+    const grid = e.currentTarget;
+    const rect = grid.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    grid.style.setProperty('--mouse-x', `${x}px`);
+    grid.style.setProperty('--mouse-y', `${y}px`);
+  };
+
+  const renderCorners = () => (
+    <>
+      <div className="tile-corner top-left" />
+      <div className="tile-corner top-right" />
+      <div className="tile-corner bottom-left" />
+      <div className="tile-corner bottom-right" />
+    </>
+  );
+
   const modes = [
     {
       id: "classic",
@@ -55,7 +73,7 @@ export default function ModeSelectPage() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
+      transition: { staggerChildren: 0.05 }
     }
   };
 
@@ -75,29 +93,33 @@ export default function ModeSelectPage() {
       animate="visible"
       variants={containerVariants}
     >
-      <div className="mode-hero">
-        <motion.h1 className="gp-titleMain" variants={itemVariants}>Défis</motion.h1>
-        <motion.p className="mode-intro" variants={itemVariants}>Choisissez votre arène</motion.p>
-      </div>
+      <div className="tile-grid" onMouseMove={handleMouseMove}>
+        <div className="tile span-12">
+          {renderCorners()}
+          <div className="tile-content mode-hero">
+            <motion.h1 className="gp-titleMain" variants={itemVariants} style={{ marginBottom: '1rem' }}>Défis</motion.h1>
+            <motion.p className="mode-intro" variants={itemVariants}>Choisissez votre arène</motion.p>
+          </div>
+        </div>
 
-      <div className="mode-grid">
-        {modes.map((mode) => (
-          <motion.div
-            key={mode.id}
-            className="mode-card-new"
-            variants={itemVariants}
-            whileHover={{ scale: 1.05, translateY: -5 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => handleModeSelect(mode.route)}
-          >
-            {mode.icon && <div className="mode-icon-wrap">{mode.icon}</div>}
-            <h2 className="mode-card-title">{mode.title}</h2>
-            <p className="mode-card-desc">{mode.description}</p>
-            <div className="mode-footer-info">
-              {mode.features.map((f, i) => <span key={i}>• {f}</span>)}
-            </div>
-            <button className="mode-enter-btn">Entrer</button>
-          </motion.div>
+        {modes.map((mode, i) => (
+          <div key={mode.id} className={`tile span-4 ${(i % 2 === 0) ? 'tile-grid-bg' : ''}`}>
+            {renderCorners()}
+            <motion.div
+              className="tile-content mode-card-new"
+              variants={itemVariants}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => handleModeSelect(mode.route)}
+            >
+              {mode.icon && <div className="mode-icon-wrap">{mode.icon}</div>}
+              <h2 className="mode-card-title">{mode.title}</h2>
+              <p className="mode-card-desc">{mode.description}</p>
+              <div className="mode-footer-info">
+                {mode.features.map((f, i) => <span key={i}>• {f}</span>)}
+              </div>
+              <button className="mode-enter-btn">Entrer</button>
+            </motion.div>
+          </div>
         ))}
       </div>
     </motion.div>
