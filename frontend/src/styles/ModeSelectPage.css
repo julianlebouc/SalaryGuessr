@@ -27,8 +27,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 3rem 2rem;
+  padding: 2.5rem 1.5rem;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -56,13 +57,13 @@
 }
 
 .mode-icon-wrap {
-  font-size: 3rem;
+  font-size: 3.5rem;
   margin-bottom: 1.5rem;
   filter: drop-shadow(0 0 15px var(--primary-purple-glow));
 }
 
 .mode-card-title {
-  font-size: 1.6rem;
+  font-size: clamp(1.6rem, 2.2vw, 2.2rem);
   font-weight: 950;
   text-transform: uppercase;
   letter-spacing: -1px;
@@ -73,20 +74,22 @@
   color: var(--text-secondary);
   line-height: 1.5;
   margin-bottom: 1.5rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  max-width: 95%;
 }
 
 .mode-footer-info {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
   font-weight: 700;
   margin-bottom: 1.5rem;
 }
 
 .mode-enter-btn {
+  margin-top: auto;
   width: 100%;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.03);

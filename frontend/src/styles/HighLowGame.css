@@ -51,9 +51,11 @@
   }
 
   .hl-vs-btn {
-    padding: 1rem 2rem !important;
-    font-size: 1rem !important;
-    border-radius: 12px !important;
+    width: 100px !important;
+    height: 60px !important;
+    padding: 0 !important;
+    font-size: 0.9rem !important;
+    border-radius: 4px !important;
   }
 
   .hl-vs-text {
@@ -130,37 +132,44 @@
 }
 
 .hl-vs-btn {
-  padding: 1.2rem 3rem;
-  border-radius: var(--ui-radius);
+  width: 160px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 6px;
   font-weight: 900;
   font-size: 1.1rem;
   color: white;
   text-transform: uppercase;
   letter-spacing: 2px;
   transition: all 0.2s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .hl-vs-btn.up {
-  background: rgba(0, 242, 254, 0.1);
+  background: rgba(0, 242, 254, 0.05);
   border: 2px solid var(--accent-cyan);
+  box-shadow: 0 8px 20px rgba(0, 242, 254, 0.15), 0 0 10px rgba(0, 242, 254, 0.1);
 }
 
 .hl-vs-btn.up:hover {
   background: var(--accent-cyan);
   color: black;
-  box-shadow: 0 4px 0px rgba(0, 242, 254, 0.5);
-  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(0, 242, 254, 0.4);
 }
 
 .hl-vs-btn.down {
-  background: rgba(157, 80, 187, 0.1);
-  border: 2px solid var(--primary-purple);
+  background: rgba(255, 107, 107, 0.05);
+  border: 2px solid #ff6b6b;
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.15), 0 0 10px rgba(255, 107, 107, 0.1);
 }
 
 .hl-vs-btn.down:hover {
-  background: var(--primary-purple);
-  box-shadow: 0 4px 0px rgba(157, 80, 187, 0.5);
-  transform: translateY(-2px);
+  background: #ff6b6b;
+  color: black;
+  box-shadow: 0 0 30px rgba(255, 107, 107, 0.4);
 }
 
 .hl-gameover-view {

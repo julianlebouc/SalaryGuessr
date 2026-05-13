@@ -137,11 +137,11 @@ export default function HomePage() {
 
         {/* STATS TILES */}
         {[
-          { label: "Offres Réelles", value: "∞", contrast: true },
-          { label: "Gratuit", value: "100%", contrast: false },
-          { label: "Modes de Jeu", value: "3", contrast: false }
+          { label: "Offres Réelles", value: "∞" },
+          { label: "Gratuit", value: "100%" },
+          { label: "Modes de Jeu", value: "3" }
         ].map((stat, i) => (
-          <div key={i} className={`tile span-4 ${stat.contrast ? 'tile-grid-bg' : ''}`}>
+          <div key={i} className={'tile span-4'}>
             {renderCorners()}
             <motion.div className="tile-content hp-stat-box" variants={itemVariants}>
               <span className="hp-stat-val">{stat.value}</span>
