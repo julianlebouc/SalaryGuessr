@@ -31,7 +31,7 @@ export default function MentionsLegales() {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="ml-container"
       initial="hidden"
       animate="visible"
@@ -50,7 +50,7 @@ export default function MentionsLegales() {
             <h2>1. Éditeur du site</h2>
             <p>
               Le site <strong>SalaryGuessr</strong> est un projet personnel édité par Julian Lebouc.<br />
-              Contact : Julian Lebouc via GitHub ou LinkedIn.
+              Contact : via Discord,GitHub ou LinkedIn.
             </p>
           </section>
         </div>
@@ -93,7 +93,7 @@ export default function MentionsLegales() {
           <section className="tile-content ml-section">
             <h2>5. Données Techniques</h2>
             <p>
-              Les adresses IP peuvent être collectées dans les journaux de sécurité du serveur pour prévenir les abus, 
+              Les adresses IP peuvent être collectées dans les journaux de sécurité du serveur pour prévenir les abus,
               conformément à l'intérêt légitime de l'éditeur pour assurer la sécurité du service.
             </p>
           </section>

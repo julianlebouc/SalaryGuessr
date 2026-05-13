@@ -77,11 +77,8 @@
 }
 
 /* Playing View */
-.gp-playing-view {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
+.gp-game-grid {
+  grid-template-rows: auto auto 1fr;
 }
 
 .gp-game-header {

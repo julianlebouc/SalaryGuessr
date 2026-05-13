@@ -41,6 +41,24 @@ export default function HomePage() {
     }
   };
 
+  const renderCorners = () => (
+    <>
+      <div className="tile-corner top-left" />
+      <div className="tile-corner top-right" />
+      <div className="tile-corner bottom-left" />
+      <div className="tile-corner bottom-right" />
+    </>
+  );
+
+  const handleMouseMove = (e) => {
+    const grid = e.currentTarget;
+    const rect = grid.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    grid.style.setProperty('--mouse-x', `${x}px`);
+    grid.style.setProperty('--mouse-y', `${y}px`);
+  };
+
   return (
     <motion.div
       className="page-wrapper hp-page"
@@ -48,9 +66,10 @@ export default function HomePage() {
       animate="visible"
       variants={containerVariants}
     >
-      <div className="tile-grid">
+      <div className="tile-grid" onMouseMove={handleMouseMove}>
         {/* HERO TILE */}
         <div className="tile span-8 row-span-2">
+          {renderCorners()}
           <div className="tile-content hp-hero">
             <div className="hp-hero-left">
               <motion.div className="hp-title-wrap" variants={itemVariants}>
@@ -81,6 +100,7 @@ export default function HomePage() {
 
         {/* PREVIEW TILE */}
         <div className="tile span-4 row-span-2 tile-grid-bg">
+          {renderCorners()}
           <motion.div className="tile-content hp-preview" variants={itemVariants}>
             <div className="hp-preview-header">
               <span className="hp-preview-tag">MANCHE 1</span>
@@ -122,6 +142,7 @@ export default function HomePage() {
           { label: "Modes de Jeu", value: "3", contrast: false }
         ].map((stat, i) => (
           <div key={i} className={`tile span-4 ${stat.contrast ? 'tile-grid-bg' : ''}`}>
+            {renderCorners()}
             <motion.div className="tile-content hp-stat-box" variants={itemVariants}>
               <span className="hp-stat-val">{stat.value}</span>
               <span className="hp-stat-lab">{stat.label}</span>
@@ -131,6 +152,7 @@ export default function HomePage() {
 
         {/* SOCIALS TILE */}
         <div className="tile span-6">
+          {renderCorners()}
           <div className="tile-content hp-socials" style={{ justifyContent: 'center', alignItems: 'center' }}>
             <div style={{ display: 'flex', gap: '2rem' }}>
               <a href="https://github.com/julianlebouc/SalaryGuessr" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
@@ -148,6 +170,7 @@ export default function HomePage() {
 
         {/* LEGAL TILE */}
         <div className="tile span-6 tile-grid-bg">
+          {renderCorners()}
           <div className="tile-content" style={{ justifyContent: 'center', alignItems: 'center' }}>
             <a href="/mentions-legales" className="hp-legal" onClick={(e) => { e.preventDefault(); navigate('/mentions-legales'); }}>
               Mentions Légales • © 2026 SalaryGuessr

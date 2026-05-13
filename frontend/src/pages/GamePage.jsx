@@ -268,7 +268,7 @@ export default function GamePage() {
         )}
 
         {page === "playing" && (
-          <div className="tile-grid">
+          <div className="tile-grid gp-game-grid">
             <div className="tile span-12">
               <div className="tile-content gp-game-header no-padding">
                 <div className="gp-round-badge">MANCHE {round + 1} / {maxRounds}</div>
@@ -286,7 +286,7 @@ export default function GamePage() {
               </div>
             </div>
 
-            <div className="tile span-8 row-span-2 tile-grid-bg">
+            <div className="tile span-8 tile-grid-bg">
               <div className="tile-content gp-job-side">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -327,7 +327,7 @@ export default function GamePage() {
               </div>
             </div>
 
-            <div className="tile span-4 row-span-2">
+            <div className="tile span-4">
               <div className="tile-content gp-action-side">
                 {!showResult ? (
                   <div className="gp-input-area">

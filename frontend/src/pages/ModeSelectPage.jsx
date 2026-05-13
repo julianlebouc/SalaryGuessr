@@ -19,6 +19,24 @@ export default function ModeSelectPage() {
   const navigate = useNavigate();
   const { play } = useSound();
 
+  const handleMouseMove = (e) => {
+    const grid = e.currentTarget;
+    const rect = grid.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    grid.style.setProperty('--mouse-x', `${x}px`);
+    grid.style.setProperty('--mouse-y', `${y}px`);
+  };
+
+  const renderCorners = () => (
+    <>
+      <div className="tile-corner top-left" />
+      <div className="tile-corner top-right" />
+      <div className="tile-corner bottom-left" />
+      <div className="tile-corner bottom-right" />
+    </>
+  );
+
   const modes = [
     {
       id: "classic",
@@ -75,8 +93,9 @@ export default function ModeSelectPage() {
       animate="visible"
       variants={containerVariants}
     >
-      <div className="tile-grid">
+      <div className="tile-grid" onMouseMove={handleMouseMove}>
         <div className="tile span-12">
+          {renderCorners()}
           <div className="tile-content mode-hero">
             <motion.h1 className="gp-titleMain" variants={itemVariants} style={{ marginBottom: '1rem' }}>Défis</motion.h1>
             <motion.p className="mode-intro" variants={itemVariants}>Choisissez votre arène</motion.p>
@@ -85,6 +104,7 @@ export default function ModeSelectPage() {
 
         {modes.map((mode, i) => (
           <div key={mode.id} className={`tile span-4 ${(i % 2 === 0) ? 'tile-grid-bg' : ''}`}>
+            {renderCorners()}
             <motion.div
               className="tile-content mode-card-new"
               variants={itemVariants}
