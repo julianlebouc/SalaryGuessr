@@ -296,7 +296,7 @@ export default function BattleRoyale() {
   const renderSetup = () => (
     <div className="tile-grid">
       <div className="tile span-12">
-        <motion.div key="setup" className="tile-content br-setup-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+        <div key="setup" className="tile-content br-setup-view br-animate-slide">
           <h1 className="gp-titleMain">Battle Royale</h1>
           <div className="br-setup-form">
             <div className="br-tabs">
@@ -367,7 +367,7 @@ export default function BattleRoyale() {
               {activeTab === "create" ? "Ouvrir l'Arène" : "Entrer dans l'Arène"}
             </button>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
@@ -375,7 +375,7 @@ export default function BattleRoyale() {
   const renderLobby = () => (
     <div className="tile-grid">
       <div className="tile span-12">
-        <motion.div key="lobby" className="tile-content br-lobby-view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <div key="lobby" className="tile-content br-lobby-view br-animate-fade">
           <div className="br-lobby-header">
             <span className="br-lobby-tag">SALON D'ATTENTE</span>
             <BrRoomCodeToolbar roomCode={roomCode} revealed={roomCodeRevealed} onToggleReveal={() => setRoomCodeRevealed(!roomCodeRevealed)} onCopy={copyRoomCode} />
@@ -397,7 +397,7 @@ export default function BattleRoyale() {
           ) : (
             <div className="br-waiting-host">En attente de l'hôte...</div>
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );
@@ -443,13 +443,13 @@ export default function BattleRoyale() {
               <h2 className="br-results-title">Verdict</h2>
 
               {isEliminated && eliminatedIds.has(playerId) ? (
-                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="br-status-msg eliminated">
+                <div className="br-status-msg eliminated br-animate-pop">
                   VOUS AVEZ ÉTÉ ÉLIMINÉ
-                </motion.div>
+                </div>
               ) : (
-                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="br-status-msg survived">
+                <div className="br-status-msg survived br-animate-pop">
                   VOUS AVEZ SURVÉCU
-                </motion.div>
+                </div>
               )}
 
               <div className="br-real-salary">
@@ -541,9 +541,7 @@ export default function BattleRoyale() {
   return (
     <div className="page-wrapper br-page">
       <BrNotice notice={notice} onDismiss={() => setNotice(null)} />
-      <AnimatePresence mode="wait">
-        {view === "join" ? renderSetup() : view === "waiting" ? renderLobby() : renderPlaying()}
-      </AnimatePresence>
+      {view === "join" ? renderSetup() : view === "waiting" ? renderLobby() : renderPlaying()}
     </div>
   );
 }
