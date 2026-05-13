@@ -94,6 +94,12 @@
   font-size: clamp(1.2rem, 3vw, 2.5rem);
   font-weight: 900;
   line-height: 1.1;
+  min-height: 3.3em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: center;
 }
 
 .hl-salary-display {
