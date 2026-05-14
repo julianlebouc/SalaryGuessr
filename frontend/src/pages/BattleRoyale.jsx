@@ -372,35 +372,51 @@ export default function BattleRoyale() {
     </div>
   );
 
-  const renderLobby = () => (
-    <div className="tile-grid">
-      <div className="tile span-12">
-        <div key="lobby" className="tile-content br-lobby-view br-animate-fade">
-          <div className="br-lobby-header">
-            <span className="br-lobby-tag">SALON D'ATTENTE</span>
-            <BrRoomCodeToolbar roomCode={roomCode} revealed={roomCodeRevealed} onToggleReveal={() => setRoomCodeRevealed(!roomCodeRevealed)} onCopy={copyRoomCode} />
-            <p className="br-lobby-info">Partagez ce code avec vos amis</p>
-          </div>
+  const renderLobby = () => {
+    const totalSlots = Math.max(players.length, minPlayers);
+    const slots = Array.from({ length: totalSlots });
 
-          <div className="br-player-grid">
-            {players.map(p => (
-              <div key={p.id} className={`br-player-card ${p.id === playerId ? "me" : ""}`}>
-                <span className="br-player-name">{p.name} {p.id === hostId && "(Hôte)"}</span>
-              </div>
-            ))}
-          </div>
+    return (
+      <div className="tile-grid">
+        <div className="tile span-12">
+          <div key="lobby-header" className="tile-content br-lobby-header-tile br-animate-fade">
+            <div className="br-lobby-header">
+              <span className="br-lobby-tag">SALON D'ATTENTE</span>
+              <BrRoomCodeToolbar roomCode={roomCode} revealed={roomCodeRevealed} onToggleReveal={() => setRoomCodeRevealed(!roomCodeRevealed)} onCopy={copyRoomCode} />
+              <p className="br-lobby-info">Partagez ce code avec vos amis</p>
+            </div>
 
-          {isHost ? (
-            <button className="hp-btn-primary" onClick={startGame} disabled={players.length < minPlayers || isStartingGame}>
-              {isStartingGame ? "Préparation..." : `Lancer (${players.length}/${maxPlayers})`}
-            </button>
-          ) : (
-            <div className="br-waiting-host">En attente de l'hôte...</div>
-          )}
+            <div className="br-lobby-actions">
+              {isHost ? (
+                <button className="hp-btn-primary" onClick={startGame} disabled={players.length < minPlayers || isStartingGame}>
+                  {isStartingGame ? "Préparation..." : `Lancer (${players.length}/${maxPlayers})`}
+                </button>
+              ) : (
+                <div className="br-waiting-host">En attente de l'hôte...</div>
+              )}
+            </div>
+          </div>
         </div>
+
+        {slots.map((_, i) => {
+          const p = players[i];
+          return (
+            <div key={i} className={`tile span-2 ${!p ? "tile-empty-slot" : ""} ${p?.id === playerId ? "me" : ""}`}>
+              <div className="tile-content br-player-tile">
+                {p ? (
+                  <span className="br-player-name">
+                    {p.name} {p.id === hostId && "(H)"}
+                  </span>
+                ) : (
+                  <span className="br-player-empty">Vide</span>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderPlaying = () => {
     const elimArray = roundResults?.eliminated_ids || (roundResults?.eliminated_id ? [roundResults.eliminated_id] : []);

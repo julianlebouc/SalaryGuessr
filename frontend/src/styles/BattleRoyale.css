@@ -116,17 +116,10 @@
 }
 
 /* Lobby View */
-.br-lobby-view {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  height: 100%;
-}
-
+/* Lobby View - Grid Refactor */
 .br-lobby-header {
   text-align: center;
+  margin-bottom: 1rem;
 }
 
 .br-lobby-tag {
@@ -219,6 +212,52 @@
 .br-player-name {
   font-weight: 700;
   font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+}
+
+.br-lobby-header-tile {
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+  min-height: 250px;
+  padding-top: 4rem !important;
+}
+
+@media (max-width: 640px) {
+  .br-lobby-header-tile {
+    padding-top: 6rem !important;
+    min-height: 200px;
+  }
+}
+
+.tile-empty-slot {
+  background: rgba(255, 71, 87, 0.05) !important;
+  border-color: rgba(255, 71, 87, 0.2) !important;
+}
+
+.br-player-tile {
+  align-items: center;
+  justify-content: center;
+  padding: 1rem !important;
+  min-height: 100px;
+}
+
+.br-player-empty {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: rgba(255, 71, 87, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.br-player-card.me {
+  border: 1px solid var(--accent-cyan);
+  background: rgba(0, 242, 254, 0.05);
 }
 
 /* Playing View */
