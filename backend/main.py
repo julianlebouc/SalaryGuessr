@@ -171,15 +171,13 @@ def validate(data: dict):
             "correct": correct,
             "real_salary": real_salary,
             "other_salary": other_salary,
-            "comparison": "higher" if is_higher else ("equal" if is_equal else "lower"),
-            "salaire": original_salaire # Reveal unmasked
+            "comparison": "higher" if is_higher else ("equal" if is_equal else "lower")
         }
 
     # CASE 2: Just reveal salary (if guess is None)
     if guess is None:
         return {
-            "real_salary": real_salary,
-            "salaire": original_salaire # Reveal unmasked
+            "real_salary": real_salary
         }
 
     # CASE 3: Numeric guess
@@ -198,9 +196,7 @@ def validate(data: dict):
             "real_salary": real_val,
             "guess": guess_val,
             "score": score,
-            "error_percent": error_ratio * 100,
-            "salaire": original_salaire, # Reveal unmasked
-            "salary_text": original_salaire.get("libelle") or original_salaire.get("commentaire") # Reveal unmasked text
+            "error_percent": error_ratio * 100
         }
     except Exception as e:
         logger.warning(f"Invalid guess attempt: {str(e)}")

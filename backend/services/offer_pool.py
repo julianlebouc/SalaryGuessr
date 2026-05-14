@@ -25,6 +25,61 @@ SALARY_CACHE = {}
 cache_lock = threading.Lock()
 MAX_CACHE_SIZE = 2000
 
+MONTHS_FR = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+
+def format_date_fr(date_str):
+    """Format ISO date to '13 mai 2026' format."""
+    if not date_str: return None
+    try:
+        # Expected format: 2026-05-13T...
+        year = date_str[:4]
+        month_idx = int(date_str[5:7]) - 1
+        day = date_str[8:10].lstrip('0') or '0'
+        return f"{day} {MONTHS_FR[month_idx]} {year}"
+    except:
+        return date_str
+
+def normalize_job_for_client(job, salary_text, include_salary=False, salary_value=None):
+    """
+    Transforms a raw France Travail job into a flat, minimized model for the frontend.
+    """
+    # Base fields
+    norm = {
+        "id": job.get("id"),
+        "title": job.get("intitule"),
+        "description": clean_html(job.get("description", "")),
+        "created": format_date_fr(job.get("dateCreation")),
+        "contractType": job.get("typeContratLibelle") or job.get("typeContrat"),
+        "contractHours": job.get("dureeTravailLibelle"),
+        "experience": job.get("experienceLibelle"),
+        "qualification": job.get("qualificationLibelle"),
+        "alternance": job.get("alternance", False),
+        "accessibleTH": job.get("accessibleTH", False),
+        "employeurHandiEngage": job.get("employeurHandiEngage", False),
+        "travailType": job.get("dureeTravailLibelleConverti"),
+    }
+    
+    # Flatten Entreprise
+    ent = job.get("entreprise", {})
+    norm["company"] = ent.get("nom")
+    if ent.get("description"):
+        norm["companyDescription"] = clean_html(ent.get("description"))
+        
+    # Flatten LieuTravail
+    lt = job.get("lieuTravail", {})
+    norm["location"] = lt.get("libelle")
+    
+    # Flatten Permis
+    permis_list = job.get("permis", [])
+    if permis_list:
+        norm["permis"] = ", ".join([p.get("libelle") for p in permis_list if p.get("libelle")])
+        
+    # Salary fields (Only numeric if included)
+    if include_salary:
+        norm["salary_real"] = salary_value
+        
+    return norm
+
 def build_offer_pool(target_size=POOL_TARGET_SIZE):
     """
     Rebuild the job offer pool by fetching multiple pages from the API.
@@ -211,42 +266,25 @@ def get_normalized_job(include_salary=True):
     salary_text = salaire.get("libelle", "") or salaire.get("commentaire", "")
     salary_value = parse_salary(salary_text)
     
-    result = dict(job)
-    result["description"] = clean_html(job.get("description", ""))
+    # Perform all normalization on the backend to minimize transmission
+    result = normalize_job_for_client(
+        job, 
+        salary_text, 
+        include_salary=include_salary, 
+        salary_value=salary_value
+    )
     
     # Store in cache for verification
     job_id = job.get("id")
     with cache_lock:
-        # Store both the numeric value and the original salaire object for reveal
         SALARY_CACHE[job_id] = {
             "value": salary_value,
             "original_salaire": salaire
         }
-        # Cleanup cache if too large
         if len(SALARY_CACHE) > MAX_CACHE_SIZE:
             keys = list(SALARY_CACHE.keys())
             for k in keys[:500]:
                 del SALARY_CACHE[k]
-
-    if include_salary:
-        result["salary_real"] = salary_value
-        result["salary_text"] = salary_text
-        result["salaire"] = salaire
-    else:
-        # Mask salary text for public transmission
-        result["salary_text"] = mask_salary_text(salary_text)
-        
-        # Also mask the original 'salaire' object fields
-        if "salaire" in result:
-            masked_salaire = dict(result["salaire"])
-            if "libelle" in masked_salaire:
-                masked_salaire["libelle"] = mask_salary_text(masked_salaire["libelle"])
-            if "commentaire" in masked_salaire:
-                masked_salaire["commentaire"] = mask_salary_text(masked_salaire["commentaire"])
-            result["salaire"] = masked_salaire
-    
-    result["already_played_pool_size"] = get_played_count()
-    result["pool_remaining"] = get_pool_size()
     
     return result
 

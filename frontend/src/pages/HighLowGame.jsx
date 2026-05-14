@@ -168,6 +168,8 @@ export default function HighLowGame() {
                     <div className="gp-badgeGroup" style={{ justifyContent: 'center', marginTop: '1rem' }}>
                       <span className="gp-badge">{jobs[currentIndex]?.company || "Confidentiel"}</span>
                       <span className="gp-badge">{jobs[currentIndex]?.location || "France"}</span>
+                      {jobs[currentIndex]?.contractType && <span className="gp-badge">{jobs[currentIndex].contractType}</span>}
+                      {jobs[currentIndex]?.contractHours && <span className="gp-badge">{jobs[currentIndex].contractHours}</span>}
                     </div>
                     <div className="hl-salary-display" style={{ marginTop: '2rem' }}>{jobs[currentIndex]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</div>
                   </motion.div>
@@ -214,6 +216,8 @@ export default function HighLowGame() {
                     <div className="gp-badgeGroup" style={{ justifyContent: 'center', marginTop: '1rem' }}>
                       <span className="gp-badge">{jobs[currentIndex + 1]?.company || "Confidentiel"}</span>
                       <span className="gp-badge">{jobs[currentIndex + 1]?.location || "France"}</span>
+                      {jobs[currentIndex + 1]?.contractType && <span className="gp-badge">{jobs[currentIndex + 1].contractType}</span>}
+                      {jobs[currentIndex + 1]?.contractHours && <span className="gp-badge">{jobs[currentIndex + 1].contractHours}</span>}
                     </div>
                     <div className="hl-salary-display" style={{ marginTop: '2rem' }}>
                       {showSalary ? (

@@ -47,56 +47,11 @@ export function hideSalaryInText(text) {
 export function normalizeJob(raw) {
   if (!raw?.id) return null;
 
-  let salary = raw.salary_real ?? null;
-  if (!salary && raw.salary_text) {
-    const nums = raw.salary_text.replace(/\s/g, "").match(/\d+(?:[.,]\d+)?/g);
-    if (nums) {
-      const vals = nums.map((n) => parseFloat(n.replace(",", "."))).filter((v) => v > 1000);
-      if (vals.length) salary = vals.reduce((a, b) => a + b, 0) / vals.length;
-    }
-  }
-
-  let cleanedDescription = raw.description ?? "";
-  cleanedDescription = cleanedDescription.replace(/<[^>]+>/g, " ").trim();
-  cleanedDescription = hideSalaryInText(cleanedDescription);
-
+  // Most normalization is now done on the backend.
+  // We just ensure salary is mapped correctly for legacy compatibility.
   return {
-    id: raw.id,
-    title: raw.intitule ?? "Poste inconnu",
-    description: cleanedDescription,
-    company: raw.entreprise?.nom ?? null,
-    companyDescription: raw.entreprise?.description
-      ? raw.entreprise.description.replace(/<[^>]+>/g, "").trim()
-      : null,
-    location: raw.lieuTravail?.libelle ?? "Localisation inconnue",
-    locationCoords: {
-      lat: raw.lieuTravail?.latitude,
-      lng: raw.lieuTravail?.longitude,
-    },
-    postalCode: raw.lieuTravail?.codePostal ?? null,
-    contractType: raw.typeContratLibelle ?? raw.typeContrat ?? null,
-    contractHours: raw.dureeTravailLibelle ?? null,
-    natureContrat: raw.natureContrat ?? null,
-    experience: raw.experienceLibelle ?? null,
-    experienceYears: raw.experienceExige ?? null,
-    qualification: raw.qualificationLibelle ?? null,  
-    romeCode: raw.romeCode ?? null,
-    romeLabel: raw.romeLibelle ?? null,
-    appellation: raw.appellationlibelle ?? null,
-    sector: raw.secteurActiviteLibelle ?? null,
-    naf: raw.codeNAF ?? null,
-    alternance: raw.alternance ?? false,
-    accessibleTH: raw.accessibleTH ?? false,
-    employeurHandiEngage: raw.employeurHandiEngage ?? false,
-    nombrePostes: raw.nombrePostes ?? 1,
-    created: raw.dateCreation ?? null,
-    updated: raw.dateActualisation ?? null,
-    offerUrl: raw.origineOffre?.urlOrigine ?? null,
-    salary,
-    salary_text: raw.salary_text ?? null,
-    travailType: raw.dureeTravailLibelleConverti ?? null,
-    deplacement: raw.deplacementLibelle ?? null,
-    permis: raw.permis ? raw.permis.map(p => p.libelle).join(", ") : null,
+    ...raw,
+    salary: raw.salary_real ?? null,
   };
 }
 
