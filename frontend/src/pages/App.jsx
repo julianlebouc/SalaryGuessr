@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import HomePage from "./HomePage";
 import GamePage from "./GamePage";
 import HighLowGame from "./HighLowGame";
@@ -24,23 +23,16 @@ function GlobalNav() {
   return (
     <>
       <SoundToggleSlider />
-      <AnimatePresence mode="popLayout">
-        {!isHome && (
-          <motion.button
-            key="home-btn"
-            className="gp-homeBtn"
-            onClick={() => navigate("/")}
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -20, opacity: 0, transition: { duration: 0.2 } }}
-            whileHover={{ translateY: -2, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <img src="/logo512.svg" alt="Logo" className="gp-home-logo" />
-            <span>Accueil</span>
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {!isHome && (
+        <button
+          className="gp-homeBtn tile-animate"
+          onClick={() => navigate("/")}
+          style={{ animationDelay: '0s' }}
+        >
+          <img src="/logo512.svg" alt="Logo" className="gp-home-logo" />
+          <span>Accueil</span>
+        </button>
+      )}
     </>
   );
 }

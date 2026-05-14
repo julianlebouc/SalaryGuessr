@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import "../styles/ModeSelectPage.css";
 import { useSound } from "../sound/SoundProvider";
 
@@ -69,59 +68,35 @@ export default function ModeSelectPage() {
     navigate(route);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.05 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
-  };
-
   return (
-    <motion.div
-      className="page-wrapper mode-page"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
+    <div className="page-wrapper mode-page">
       <div className="tile-grid" onMouseMove={handleMouseMove}>
-        <div className="tile span-12">
+        <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
           {renderCorners()}
           <div className="tile-content mode-hero">
-            <motion.h1 className="gp-titleMain" variants={itemVariants} style={{ marginBottom: '1rem' }}>Défis</motion.h1>
-            <motion.p className="mode-intro" variants={itemVariants}>Choisissez votre arène</motion.p>
+            <h1 className="gp-titleMain" style={{ marginBottom: '1rem' }}>Défis</h1>
+            <p className="mode-intro">Choisissez votre arène</p>
           </div>
         </div>
 
         {modes.map((mode, i) => (
-          <div key={mode.id} className={`tile span-4 ${(i % 2 === 0) ? 'tile-grid-bg' : ''}`}>
+          <div key={mode.id} className="tile span-4 tile-grid-bg tile-animate" style={{ animationDelay: `${0.08 + (i * 0.04)}s` }}>
             {renderCorners()}
-            <motion.div
+            <div
               className="tile-content mode-card-new"
-              variants={itemVariants}
-              whileTap={{ scale: 0.98 }}
               onClick={() => handleModeSelect(mode.route)}
             >
               {mode.icon && <div className="mode-icon-wrap">{mode.icon}</div>}
               <h2 className="mode-card-title">{mode.title}</h2>
               <p className="mode-card-desc">{mode.description}</p>
               <div className="mode-footer-info">
-                {mode.features.map((f, i) => <span key={i}>• {f}</span>)}
+                {mode.features.map((f, idx) => <span key={idx}>• {f}</span>)}
               </div>
               <button className="mode-enter-btn">Entrer</button>
-            </motion.div>
+            </div>
           </div>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }

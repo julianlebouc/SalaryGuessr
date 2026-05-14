@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import io from "socket.io-client";
@@ -105,7 +105,6 @@ export default function BattleRoyale() {
   const playerIdRef = useRef(null);
   const playerNameRef = useRef("");
   const roomCodeRef = useRef("");
-  const gameIdRef = useRef(null);
   const playRef = useRef(play);
 
   useEffect(() => { playerIdRef.current = playerId; }, [playerId]);
@@ -287,16 +286,10 @@ export default function BattleRoyale() {
     }
   };
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "";
-    return new Date(dateStr).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
-  };
-
-  // UI RENDERERS
   const renderSetup = () => (
     <div className="tile-grid">
-      <div className="tile span-12">
-        <div key="setup" className="tile-content br-setup-view br-animate-slide">
+      <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
+        <div key="setup" className="tile-content br-setup-view">
           <h1 className="gp-titleMain">Battle Royale</h1>
           <div className="br-setup-form">
             <div className="br-tabs">
@@ -329,7 +322,7 @@ export default function BattleRoyale() {
             />
 
             <div className="br-tab-content-wrap">
-              <AnimatePresence>
+              <AnimatePresence mode="popLayout">
                 {activeTab === "join" ? (
                   <motion.div
                     key="join-input"
@@ -378,8 +371,8 @@ export default function BattleRoyale() {
 
     return (
       <div className="tile-grid">
-        <div className="tile span-12">
-          <div key="lobby-header" className="tile-content br-lobby-header-tile br-animate-fade">
+        <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
+          <div key="lobby-header" className="tile-content br-lobby-header-tile">
             <div className="br-lobby-header">
               <span className="br-lobby-tag">SALON D'ATTENTE</span>
               <BrRoomCodeToolbar roomCode={roomCode} revealed={roomCodeRevealed} onToggleReveal={() => setRoomCodeRevealed(!roomCodeRevealed)} onCopy={copyRoomCode} />
@@ -401,7 +394,7 @@ export default function BattleRoyale() {
         {slots.map((_, i) => {
           const p = players[i];
           return (
-            <div key={i} className={`tile span-2 ${!p ? "tile-empty-slot" : ""} ${p?.id === playerId ? "me" : ""}`}>
+            <div key={i} className={`tile span-2 ${!p ? "tile-empty-slot" : ""} ${p?.id === playerId ? "me" : ""} tile-animate`} style={{ animationDelay: `${0.08 + (i * 0.04)}s` }}>
               <div className="tile-content br-player-tile">
                 {p ? (
                   <span className="br-player-name">
@@ -421,10 +414,8 @@ export default function BattleRoyale() {
   const renderPlaying = () => {
     const elimArray = roundResults?.eliminated_ids || (roundResults?.eliminated_id ? [roundResults.eliminated_id] : []);
     const eliminatedIds = new Set(elimArray.map(id => String(id)));
-
     const elimNames = roundResults?.eliminated_names || (roundResults?.eliminated_name ? [roundResults.eliminated_name] : []);
     const rankings = roundResults?.results || roundResults?.rankings || [];
-
     const currentPlayer = players.find(p => String(p.id) === String(playerId));
     const isAlive = currentPlayer ? currentPlayer.is_alive !== false : true;
     const isEliminated = !isAlive || eliminatedIds.has(String(playerId));
@@ -432,7 +423,7 @@ export default function BattleRoyale() {
 
     return (
       <div className="tile-grid">
-        <div className="tile span-12">
+        <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
           <div className="tile-content br-top-bar no-padding">
             <div className="br-round-badge">MANCHE {round}</div>
             <div className="br-timer-badge urgent"><span className="br-timer-big">{timer}</span>s</div>
@@ -441,12 +432,12 @@ export default function BattleRoyale() {
         </div>
 
         {gameState === "game_over" ? (
-          <div className="tile span-12">
+          <div className="tile span-12 tile-animate" style={{ animationDelay: '0.08s' }}>
             <div className="tile-content br-victory-screen">
               <div className="br-winner-podium">
                 <span className="br-winner-tag">{winner ? "VAINQUEUR" : "FIN DE PARTIE"}</span>
                 <h1 className="gp-titleMain">
-                  {!winner 
+                  {!winner
                     ? "Tout le monde a été éliminé !"
                     : playerName && winner.trim().toLowerCase() === playerName.trim().toLowerCase()
                       ? "Vous avez gagné !"
@@ -460,25 +451,18 @@ export default function BattleRoyale() {
             </div>
           </div>
         ) : gameState === "round_end" && roundResults ? (
-          <div className="tile span-12">
+          <div className="tile span-12 tile-animate" style={{ animationDelay: '0.08s' }}>
             <div className="tile-content br-results-screen">
               <h2 className="br-results-title">Verdict</h2>
-
               {isEliminated && eliminatedIds.has(playerId) ? (
-                <div className="br-status-msg eliminated br-animate-pop">
-                  VOUS AVEZ ÉTÉ ÉLIMINÉ
-                </div>
+                <div className="br-status-msg eliminated">VOUS AVEZ ÉTÉ ÉLIMINÉ</div>
               ) : (
-                <div className="br-status-msg survived br-animate-pop">
-                  VOUS AVEZ SURVÉCU
-                </div>
+                <div className="br-status-msg survived">VOUS AVEZ SURVÉCU</div>
               )}
-
               <div className="br-real-salary">
                 {roundResults.real_salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
                 <span className="br-real-label">Salaire Réel</span>
               </div>
-
               <div className="br-round-summary">
                 <div className="br-summary-box eliminated">
                   <span className="label">ÉLIMINÉS CE TOUR</span>
@@ -493,14 +477,9 @@ export default function BattleRoyale() {
                   <div className="count">{aliveCount}</div>
                 </div>
               </div>
-
               <div className="br-ranking-list">
                 {[...rankings]
-                  .sort((a, b) => {
-                    const aErr = Math.abs(a.error || 0);
-                    const bErr = Math.abs(b.error || 0);
-                    return aErr - bErr;
-                  })
+                  .sort((a, b) => Math.abs(a.error || 0) - Math.abs(b.error || 0))
                   .map((r, i) => {
                     const rId = r.player_id || r.id;
                     const isPlayerElim = eliminatedIds.has(String(rId));
@@ -522,7 +501,7 @@ export default function BattleRoyale() {
           </div>
         ) : (
           <>
-            <div className="tile span-8 row-span-2">
+            <div className="tile span-8 row-span-2 tile-animate" style={{ animationDelay: '0.08s' }}>
               <div className="tile-content gp-job-side">
                 <h2 className="gp-job-title">{currentOffer?.title}</h2>
                 <div className="badgesContainer">
@@ -540,8 +519,7 @@ export default function BattleRoyale() {
                 <div className="gp-job-desc">{currentOffer?.description}</div>
               </div>
             </div>
-
-            <div className="tile span-4 row-span-2">
+            <div className="tile span-4 row-span-2 tile-animate" style={{ animationDelay: '0.12s' }}>
               <div className="tile-content gp-action-side">
                 {isEliminated ? (
                   <div className="br-waiting-card"><h3>Vous êtes éliminé</h3><p>Spectateur de l'arène...</p></div>

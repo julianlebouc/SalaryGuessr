@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import {
   BarChart,
   Bar,
@@ -57,30 +56,30 @@ export default function StatsPage() {
   if (loading) return <div className="page-wrapper" style={{ justifyContent: 'center', alignItems: 'center' }}>Chargement...</div>;
 
   return (
-    <motion.div className="page-wrapper stats-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+    <div className="page-wrapper stats-page">
       <div className="tile-grid">
-        <div className="tile span-12">
+        <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
           <header className="tile-content stats-header">
             <h1 className="gp-titleMain" style={{ marginBottom: '1rem' }}>Statistiques</h1>
             <p className="stats-intro">Aperçu global (30 derniers jours)</p>
           </header>
         </div>
 
-        <div className="tile span-6 tile-grid-bg">
+        <div className="tile span-6 tile-grid-bg tile-animate" style={{ animationDelay: '0.08s' }}>
           <div className="tile-content stats-hero-item">
             <span className="stats-hero-val">{data.unique_sessions_count}</span>
             <span className="stats-hero-lab">VISITEURS</span>
           </div>
         </div>
 
-        <div className="tile span-6">
+        <div className="tile span-6 tile-animate" style={{ animationDelay: '0.12s' }}>
           <div className="tile-content stats-hero-item">
             <span className="stats-hero-val">{data.total_games_played}</span>
             <span className="stats-hero-lab">PARTIES JOUÉES</span>
           </div>
         </div>
 
-        <div className="tile span-8 row-span-2">
+        <div className="tile span-8 row-span-2 tile-animate" style={{ animationDelay: '0.16s' }}>
           <div className="tile-content stats-chart-wrap">
             <h2 className="stats-sub">Activité Quotidienne</h2>
             <ResponsiveContainer width="100%" height={300}>
@@ -108,7 +107,7 @@ export default function StatsPage() {
           </div>
         </div>
 
-        <div className="tile span-4 row-span-2 tile-grid-bg">
+        <div className="tile span-4 row-span-2 tile-grid-bg tile-animate" style={{ animationDelay: '0.2s' }}>
           <div className="tile-content">
             <h2 className="stats-sub">Performances</h2>
             <div className="stats-modes-list">
@@ -130,6 +129,6 @@ export default function StatsPage() {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

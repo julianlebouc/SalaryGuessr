@@ -1,6 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import '../styles/MentionsLegales.css';
 
 /**
@@ -14,38 +12,17 @@ import '../styles/MentionsLegales.css';
  * @returns {JSX.Element}
  */
 export default function MentionsLegales() {
-  const navigate = useNavigate();
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 }
-  };
-
   return (
-    <motion.div
-      className="ml-container"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
+    <div className="ml-container">
       <div className="tile-grid">
-        <div className="tile span-12">
+        <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
           <header className="tile-content ml-header">
             <h1 className="ml-title">Mentions Légales</h1>
             <p>Dernière mise à jour : 12 mai 2026</p>
           </header>
         </div>
 
-        <div className="tile span-6">
+        <div className="tile span-6 tile-animate" style={{ animationDelay: '0.08s' }}>
           <section className="tile-content ml-section">
             <h2>1. Éditeur du site</h2>
             <p>
@@ -55,7 +32,7 @@ export default function MentionsLegales() {
           </section>
         </div>
 
-        <div className="tile span-6">
+        <div className="tile span-6 tile-animate" style={{ animationDelay: '0.12s' }}>
           <section className="tile-content ml-section">
             <h2>2. Hébergement</h2>
             <p>
@@ -65,7 +42,7 @@ export default function MentionsLegales() {
           </section>
         </div>
 
-        <div className="tile span-12">
+        <div className="tile span-12 tile-animate" style={{ animationDelay: '0.16s' }}>
           <section className="tile-content ml-section">
             <h2>3. Propriété intellectuelle</h2>
             <p>
@@ -75,7 +52,7 @@ export default function MentionsLegales() {
           </section>
         </div>
 
-        <div className="tile span-6">
+        <div className="tile span-6 tile-animate" style={{ animationDelay: '0.2s' }}>
           <section className="tile-content ml-section">
             <h2>4. Protection des données</h2>
             <p>
@@ -89,7 +66,7 @@ export default function MentionsLegales() {
           </section>
         </div>
 
-        <div className="tile span-6">
+        <div className="tile span-6 tile-animate" style={{ animationDelay: '0.24s' }}>
           <section className="tile-content ml-section">
             <h2>5. Données Techniques</h2>
             <p>
@@ -99,12 +76,12 @@ export default function MentionsLegales() {
           </section>
         </div>
 
-        <div className="tile span-12">
+        <div className="tile span-12 tile-animate" style={{ animationDelay: '0.28s' }}>
           <div className="tile-content ml-footer">
             © {new Date().getFullYear()} SalaryGuessr — Développé avec passion.
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

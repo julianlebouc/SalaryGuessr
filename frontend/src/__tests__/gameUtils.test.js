@@ -50,9 +50,9 @@ describe('gameUtils - normalizeJob', () => {
       lieuTravail: { libelle: "Paris" }
     };
     const job = normalizeJob(raw);
-    expect(job.title).toBe("Dev");
+    expect(job.intitule).toBe("Dev");
     expect(job.salary).toBe(3500);
-    expect(job.location).toBe("Paris");
+    expect(job.lieuTravail.libelle).toBe("Paris");
   });
 
   test('should handle missing data gracefully', () => {
