@@ -120,8 +120,11 @@
   justify-content: center;
   height: 100%;
 }
+
 @media (max-width: 640px) {
-  .gp-round-badge, .gp-score-badge {
+
+  .gp-round-badge,
+  .gp-score-badge {
     letter-spacing: 1px;
     padding: 0.5rem;
   }
@@ -151,11 +154,11 @@
 @media (max-width: 1100px) {
   .gp-game-grid {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    min-height: auto !important;
   }
 
-  .gp-game-header {
-    margin-bottom: 0.75rem;
+  .gp-game-grid .tile-grid {
+    min-height: 0;
   }
 
   .gp-job-side {
@@ -467,7 +470,8 @@
   position: relative;
 }
 
-.br-top-bar, .gp-game-header {
+.br-top-bar,
+.gp-game-header {
   display: flex !important;
   flex-direction: row !important;
   justify-content: stretch;
