@@ -30,7 +30,7 @@ function GlobalNav() {
             key="home-btn"
             className="gp-homeBtn"
             onClick={() => navigate("/")}
-            initial={{ x: -20, opacity: 0 }}
+            initial={{ x: -20 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -20, opacity: 0, transition: { duration: 0.2 } }}
             whileHover={{ translateY: -2, scale: 1.02 }}
