@@ -134,7 +134,7 @@ button {
   letter-spacing: 1px;
   text-transform: uppercase;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 0px rgba(106, 17, 203, 1);
+  box-shadow: 4px 4px 0px rgba(106, 17, 203, 1);
   transition: all 0.2s ease-out;
   display: inline-flex;
   align-items: center;
@@ -165,7 +165,7 @@ button {
 
 .hp-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 0px rgba(106, 17, 203, 1);
+  box-shadow: 6px 6px 0px rgba(106, 17, 203, 1);
   background: #7a26db;
 }
 
@@ -344,8 +344,8 @@ button {
 
 .tile-grid-bg {
   background-image:
-    linear-gradient(rgba(0, 121, 227, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 121, 227, 0.1) 1px, transparent 1px);
+    linear-gradient(rgba(0, 121, 227, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 121, 227, 0.15) 1px, transparent 1px);
   background-size: 30px 30px;
 }
 

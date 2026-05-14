@@ -144,32 +144,34 @@
   color: white;
   text-transform: uppercase;
   letter-spacing: 2px;
-  transition: all 0.2s ease;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease-out;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
 }
 
 .hl-vs-btn.up {
   background: rgba(0, 242, 254, 0.05);
   border: 2px solid var(--accent-cyan);
-  box-shadow: 0 8px 20px rgba(0, 242, 254, 0.15), 0 0 10px rgba(0, 242, 254, 0.1);
+  box-shadow: 4px 4px 0px var(--accent-cyan);
 }
 
 .hl-vs-btn.up:hover {
   background: var(--accent-cyan);
   color: black;
-  box-shadow: 0 0 30px rgba(0, 242, 254, 0.4);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--accent-cyan);
 }
 
 .hl-vs-btn.down {
   background: rgba(255, 107, 107, 0.05);
   border: 2px solid #ff6b6b;
-  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.15), 0 0 10px rgba(255, 107, 107, 0.1);
+  box-shadow: 4px 4px 0px #ff6b6b;
 }
 
 .hl-vs-btn.down:hover {
   background: #ff6b6b;
   color: black;
-  box-shadow: 0 0 30px rgba(255, 107, 107, 0.4);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #ff6b6b;
 }
 
 .hl-gameover-view {

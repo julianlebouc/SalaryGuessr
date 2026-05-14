@@ -104,7 +104,7 @@
 .mode-card-new:hover .mode-enter-btn {
   background: var(--grad-purple);
   border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 0px rgba(106, 17, 203, 1);
+  box-shadow: 4px 4px 0px rgba(106, 17, 203, 1);
 }
 
 @media (max-width: 968px) {
