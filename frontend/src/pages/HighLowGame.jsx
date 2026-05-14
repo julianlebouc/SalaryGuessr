@@ -34,7 +34,6 @@ export default function HighLowGame() {
   const [showSalary, setShowSalary] = useState(false);
   const [guessResult, setGuessResult] = useState(null);
   const [isWaiting, setIsWaiting] = useState(false);
-
   /**
    * Initializes the game state and fetches the first set of jobs.
    * 
@@ -62,7 +61,6 @@ export default function HighLowGame() {
       setLoading(false);
     }
   };
-
   /**
    * Processes the user's guess (higher or lower).
    * 
@@ -126,12 +124,12 @@ export default function HighLowGame() {
   if (loading) return <div className="page-wrapper" style={{ justifyContent: 'center', alignItems: 'center' }}>Chargement des offres...</div>;
 
   return (
-    <motion.div className="page-wrapper hl-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+    <div className="page-wrapper hl-page">
       <div className="tile-grid hl-main-grid">
         {gameOver ? (
-          <div className="tile span-12">
+          <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
             <div className="tile-content hl-gameover-view">
-              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+              <div className="hl-gameover-inner">
                 <h1>PARTIE TERMINÉE</h1>
                 <div className="hl-final-score">
                   {score}
@@ -141,19 +139,19 @@ export default function HighLowGame() {
                   <button className="hp-btn-primary" onClick={startGame}>Rejouer</button>
                   <button className="hp-btn-secondary" onClick={() => navigate("/")}>Retour Accueil</button>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
         ) : (
           <>
-            <div className="tile span-12">
+            <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
               <div className="tile-content hl-game-header no-padding">
                 <div className="gp-round-badge">SÉRIE ACTUELLE</div>
                 <div className="gp-score-badge">{score}</div>
               </div>
             </div>
 
-            <div className="tile span-5 tile-grid-bg">
+            <div className="tile span-5 tile-grid-bg tile-animate" style={{ animationDelay: '0.08s' }}>
               <div className="tile-content hl-job-item">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -177,14 +175,14 @@ export default function HighLowGame() {
               </div>
             </div>
 
-            <div className="tile span-2">
+            <div className="tile span-2 tile-animate" style={{ animationDelay: '0.1s' }}>
               <div className="tile-content hl-vs-zone">
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className="hl-vs-btn up"
                   onClick={() => handleGuess("higher")}
-                  disabled={showSalary}
+                  disabled={isWaiting || showSalary}
                 >
                   PLUS
                 </motion.button>
@@ -194,14 +192,14 @@ export default function HighLowGame() {
                   whileTap={{ scale: 0.9 }}
                   className="hl-vs-btn down"
                   onClick={() => handleGuess("lower")}
-                  disabled={showSalary}
+                  disabled={isWaiting || showSalary}
                 >
                   MOINS
                 </motion.button>
               </div>
             </div>
 
-            <div className="tile span-5 tile-grid-bg">
+            <div className="tile span-5 tile-grid-bg tile-animate" style={{ animationDelay: '0.12s' }}>
               <div className="tile-content hl-job-item">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -239,6 +237,6 @@ export default function HighLowGame() {
           </>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

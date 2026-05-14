@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ReactComponent as DiscordIcon } from '../assets/discord.svg';
 import { ReactComponent as GithubIcon } from '../assets/github.svg';
 import { ReactComponent as LinkedinIcon } from '../assets/linkedin.svg';
@@ -21,24 +20,13 @@ export default function HomePage() {
     logger.info("Landing page visit");
   }, []);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 15, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
+  const handleMouseMove = (e) => {
+    const grid = e.currentTarget;
+    const rect = grid.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    grid.style.setProperty('--mouse-x', `${x}px`);
+    grid.style.setProperty('--mouse-y', `${y}px`);
   };
 
   const renderCorners = () => (
@@ -50,61 +38,47 @@ export default function HomePage() {
     </>
   );
 
-  const handleMouseMove = (e) => {
-    const grid = e.currentTarget;
-    const rect = grid.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    grid.style.setProperty('--mouse-x', `${x}px`);
-    grid.style.setProperty('--mouse-y', `${y}px`);
-  };
-
   return (
-    <motion.div
-      className="page-wrapper hp-page"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
+    <div className="page-wrapper hp-page">
       <div className="tile-grid" onMouseMove={handleMouseMove}>
         {/* HERO TILE */}
-        <div className="tile span-8 row-span-2">
+        <div className="tile span-8 row-span-2 tile-animate" style={{ animationDelay: '0.04s' }}>
           {renderCorners()}
           <div className="tile-content hp-hero">
             <div className="hp-hero-left">
-              <motion.div className="hp-title-wrap" variants={itemVariants}>
+              <div className="hp-title-wrap">
                 <img src="/logo512.svg" alt="SalaryGuessr Logo" className="hp-logo-img" />
                 <h1 className="hp-title">
                   Salary<br />Guessr
                 </h1>
-              </motion.div>
+              </div>
             </div>
 
             <div className="hp-hero-right">
               <h2 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: '0' }}>
                 SalaryGuessr, Salary Guesser, SalaryGuesser, Salary Guess - Devinez les salaires
               </h2>
-              <motion.p className="hp-subtitle" variants={itemVariants}>
+              <p className="hp-subtitle">
                 Testez votre instinct sur le marché du travail avec Salary Guessr.
                 Estimez les salaires d'offres réelles et grimpez au sommet du classement. Le meilleur Salary Guesser en ligne.
-              </motion.p>
+              </p>
 
-              <motion.div className="hp-actions" variants={itemVariants}>
+              <div className="hp-actions">
                 <button className="hp-btn-primary" onClick={() => navigate("/mode-select")}>
                   Jouer Maintenant
                 </button>
                 <button className="hp-btn-secondary" onClick={() => navigate("/stats")}>
                   Statistiques
                 </button>
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* PREVIEW TILE */}
-        <div className="tile span-4 row-span-2 tile-grid-bg">
+        <div className="tile span-4 row-span-2 tile-grid-bg tile-animate" style={{ animationDelay: '0.08s' }}>
           {renderCorners()}
-          <motion.div className="tile-content hp-preview" variants={itemVariants}>
+          <div className="tile-content hp-preview">
             <div className="hp-preview-header">
               <span className="hp-preview-tag">MANCHE 1</span>
               <h3 className="hp-preview-title">Product Designer (H/F)</h3>
@@ -117,11 +91,9 @@ export default function HomePage() {
             </div>
 
             <div className="hp-preview-bar">
-              <motion.div
+              <div
                 className="hp-preview-fill"
-                initial={{ width: 0 }}
-                animate={{ width: "75%" }}
-                transition={{ duration: 1.5, delay: 1 }}
+                style={{ width: '75%', transition: 'width 1.5s ease-out 1s' }}
               />
             </div>
 
@@ -135,7 +107,7 @@ export default function HomePage() {
                 <span className="hp-val accent">52k €</span>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* STATS TILES */}
@@ -144,17 +116,17 @@ export default function HomePage() {
           { label: "Gratuit", value: "100%" },
           { label: "Modes de Jeu", value: "3" }
         ].map((stat, i) => (
-          <div key={i} className={'tile span-4'}>
+          <div key={i} className="tile span-4 tile-animate" style={{ animationDelay: `${0.12 + i * 0.04}s` }}>
             {renderCorners()}
-            <motion.div className="tile-content hp-stat-box" variants={itemVariants}>
+            <div className="tile-content hp-stat-box">
               <span className="hp-stat-val">{stat.value}</span>
               <span className="hp-stat-lab">{stat.label}</span>
-            </motion.div>
+            </div>
           </div>
         ))}
 
         {/* SOCIALS TILE */}
-        <div className="tile span-6">
+        <div className="tile span-6 tile-animate" style={{ animationDelay: '0.24s' }}>
           {renderCorners()}
           <div className="tile-content no-padding">
             <div className="hp-social-links">
@@ -172,7 +144,7 @@ export default function HomePage() {
         </div>
 
         {/* LEGAL TILE */}
-        <div className="tile span-6 tile-grid-bg">
+        <div className="tile span-6 tile-grid-bg tile-animate" style={{ animationDelay: '0.28s' }}>
           {renderCorners()}
           <div className="tile-content" style={{ justifyContent: 'center', alignItems: 'center' }}>
             <a href="/mentions-legales" className="hp-legal" onClick={(e) => { e.preventDefault(); navigate('/mentions-legales'); }}>
@@ -181,6 +153,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

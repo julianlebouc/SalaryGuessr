@@ -14,25 +14,25 @@ const API_URL = process.env.REACT_APP_API_URL;
  */
 export function hideSalaryInText(text) {
   if (!text) return text;
-  
+
   let result = text;
   const currencyRegex = /€|euro|euros/gi;
   let match;
-  
+
   while ((match = currencyRegex.exec(text)) !== null) {
     const position = match.index;
     const start = Math.max(0, position - 20);
     const end = Math.min(text.length, position + 20);
-    
+
     const beforeMatch = result.substring(start, position);
     const afterMatch = result.substring(position, end);
-    
+
     let censoredBefore = beforeMatch.replace(/\d+(?:[.,]\d+)?/g, (nums) => '•'.repeat(nums.length));
     let censoredAfter = afterMatch.replace(/\d+(?:[.,]\d+)?/g, (nums) => '•'.repeat(nums.length));
-    
+
     result = result.substring(0, start) + censoredBefore + censoredAfter + result.substring(end);
   }
-  
+
   return result;
 }
 
@@ -118,10 +118,10 @@ export async function validateComparison(jobIdToGuess, knownJobId, guess) {
   const res = await fetch(`${API_URL}/validate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
-      job_id: jobIdToGuess, 
-      other_job_id: knownJobId, 
-      guess 
+    body: JSON.stringify({
+      job_id: jobIdToGuess,
+      other_job_id: knownJobId,
+      guess
     }),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -141,7 +141,7 @@ export function calculateScore(estimated, real) {
   if (!Number.isFinite(real) || real <= 0 || !Number.isFinite(estimated) || estimated <= 0) {
     return 0;
   }
-  
+
   const errorRatio = Math.abs(estimated - real) / real;
   let roundScore = 0;
 
@@ -149,7 +149,7 @@ export function calculateScore(estimated, real) {
     const x = errorRatio / 0.5;
     roundScore = 100 * Math.pow(1 - x, 2);
   }
-  
+
   return {
     score: roundScore,
     error: errorRatio * 100,
@@ -186,7 +186,7 @@ export function formatDate(dateStr) {
 export function compareSalaries(leftSalary, rightSalary) {
   const isEqual = Math.abs(rightSalary - leftSalary) < 1;
   const isHigher = rightSalary > leftSalary;
-  
+
   return { isEqual, isHigher, isLower: !isHigher };
 }
 
@@ -199,13 +199,13 @@ export function compareSalaries(leftSalary, rightSalary) {
  */
 export function evaluateHigherLowerGuess(leftJob, rightJob, guess) {
   if (!leftJob || !rightJob) return false;
-  
+
   const { isEqual, isHigher } = compareSalaries(leftJob.salary, rightJob.salary);
-  
+
   if (isEqual) return true;
-  
+
   if (guess === "higher") return isHigher;
   if (guess === "lower") return !isHigher;
-  
+
   return false;
 }

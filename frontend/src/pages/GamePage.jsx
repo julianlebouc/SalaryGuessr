@@ -169,7 +169,7 @@ export default function GamePage() {
   };
 
   /**
-   * Validates the user's numeric salary estimation against the server.
+   * Validates the current salary guess and updates the score and history.
    * 
    * @async
    */
@@ -239,12 +239,12 @@ export default function GamePage() {
   };
 
   return (
-    <motion.div className="page-wrapper gp-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+    <div className="page-wrapper gp-page">
       <AnimatePresence mode="wait">
         {page === "settings" && (
-          <div className="tile-grid">
-            <div className="tile span-12">
-              <motion.div key="settings" className="tile-content gp-settings-view animate-fade-in">
+          <div className="tile-grid" key="settings-grid">
+            <div className="tile span-12 tile-animate" style={{ animationDelay: '0.1s' }}>
+              <div className="tile-content gp-settings-view">
                 <h1 className="gp-titleMain">Configuration</h1>
                 <div className="gp-config-box">
                   <label className="gp-config-label">Nombre de manches : <strong>{maxRounds}</strong></label>
@@ -261,21 +261,21 @@ export default function GamePage() {
                     {loadingStart ? "Préparation..." : "Lancer la Partie"}
                   </button>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
         )}
 
         {page === "playing" && (
-          <div className="tile-grid gp-game-grid">
-            <div className="tile span-12">
+          <div className="tile-grid gp-game-grid" key="playing-grid">
+            <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
               <div className="tile-content gp-game-header no-padding">
                 <div className="gp-round-badge">MANCHE {round + 1} / {maxRounds}</div>
                 <div className="gp-score-badge">{score.toFixed(0)} PTS</div>
               </div>
             </div>
 
-            <div className="tile span-12 no-padding" style={{ height: '4px' }}>
+            <div className="tile span-12 no-padding tile-animate" style={{ height: '4px', animationDelay: '0.15s' }}>
               <div className="gp-progress-bar">
                 <motion.div
                   className="gp-progress-fill"
@@ -285,7 +285,7 @@ export default function GamePage() {
               </div>
             </div>
 
-            <div className="tile span-8 tile-grid-bg">
+            <div className="tile span-8 tile-grid-bg tile-animate" style={{ animationDelay: '0.08s' }}>
               <div className="tile-content gp-job-side">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -317,7 +317,7 @@ export default function GamePage() {
               </div>
             </div>
 
-            <div className="tile span-4">
+            <div className="tile span-4 tile-animate" style={{ animationDelay: '0.3s' }}>
               <div className="tile-content gp-action-side">
                 {!showResult ? (
                   <div className="gp-input-area">
@@ -337,11 +337,7 @@ export default function GamePage() {
                     </button>
                   </div>
                 ) : (
-                  <motion.div
-                    className="gp-result-area"
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                  >
+                  <div className="gp-result-area">
                     <div className="gp-comparison">
                       <div className="gp-comp-item">
                         <span>VOTRE ESTIMATION</span>
@@ -359,7 +355,7 @@ export default function GamePage() {
                     <button className="hp-btn-primary" onClick={nextRound}>
                       {round + 1 >= maxRounds ? "Voir le Score Final" : "Manche Suivante"}
                     </button>
-                  </motion.div>
+                  </div>
                 )}
               </div>
             </div>
@@ -367,9 +363,9 @@ export default function GamePage() {
         )}
 
         {page === "result" && (
-          <div className="tile-grid">
-            <div className="tile span-12">
-              <motion.div key="result" className="tile-content gp-result-view animate-fade-in">
+          <div className="tile-grid" key="result-grid">
+            <div className="tile span-12 tile-animate" style={{ animationDelay: '0.1s' }}>
+              <div className="tile-content gp-result-view">
                 <h1 className="gp-titleMain">Bilan de la Partie</h1>
                 <div className="gp-final-box">
                   <div className="gp-final-score">
@@ -406,11 +402,11 @@ export default function GamePage() {
                   <button className="hp-btn-primary" onClick={() => setPage("settings")}>Rejouer</button>
                   <button className="hp-btn-secondary" onClick={() => navigate("/")}>Retour Accueil</button>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }
