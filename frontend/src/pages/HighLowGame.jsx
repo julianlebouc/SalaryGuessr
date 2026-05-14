@@ -55,6 +55,7 @@ export default function HighLowGame() {
         newJobs[0].salary = reveal.real_salary;
       }
       setJobs(newJobs);
+      logger.info("High/Low game started");
     } catch (err) {
       console.error("Start game failed", err);
     } finally {
