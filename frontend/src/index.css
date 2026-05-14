@@ -23,57 +23,6 @@
   --accent-pink-glow: rgba(255, 0, 127, 0.3);
 }
 
-@keyframes ambient-float {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  33% {
-    transform: translate(5vw, 5vh) scale(1.1);
-  }
-
-  66% {
-    transform: translate(-5vw, 10vh) scale(0.9);
-  }
-
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-}
-
-.ambient-glow {
-  position: fixed;
-  width: 60vw;
-  height: 60vw;
-  border-radius: 50%;
-  filter: blur(120px);
-  z-index: -2;
-  opacity: 0.15;
-  pointer-events: none;
-  animation: ambient-float 20s infinite ease-in-out;
-}
-
-.glow-1 {
-  background: var(--primary-purple);
-  top: -10%;
-  left: -10%;
-}
-
-.glow-2 {
-  background: var(--accent-cyan);
-  bottom: -10%;
-  right: -10%;
-  animation-delay: -5s;
-}
-
-.glow-3 {
-  background: var(--accent-pink);
-  top: 40%;
-  right: 20%;
-  animation-delay: -10s;
-  opacity: 0.1;
-}
-
 .noise-overlay {
   position: fixed;
   top: 0;
