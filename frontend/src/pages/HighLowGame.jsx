@@ -41,7 +41,6 @@ export default function HighLowGame() {
    * @async
    */
   const startGame = async () => {
-    logger.info("High/Low game started");
     setLoading(true);
     setScore(0);
     setGameOver(false);
@@ -51,7 +50,7 @@ export default function HighLowGame() {
     setIsWaiting(false);
 
     try {
-      const newJobs = await fetchMultipleJobs(5);
+      const newJobs = await fetchMultipleJobs(2);
       if (newJobs.length > 0) {
         const reveal = await validateGuess(newJobs[0].id);
         newJobs[0].salary = reveal.real_salary;
@@ -117,7 +116,10 @@ export default function HighLowGame() {
     }
   };
 
+  const hasStarted = useRef(false);
   useEffect(() => {
+    if (hasStarted.current) return;
+    hasStarted.current = true;
     startGame();
   }, []);
 

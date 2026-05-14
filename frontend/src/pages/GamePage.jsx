@@ -23,9 +23,9 @@ import logger from "../utils/logger";
  * @module Pages/GamePage
  */
 
-const BUFFER_TARGET = 5;
+const BUFFER_TARGET = 1;
 const MAX_FETCH_ATTEMPTS = 30;
-const PARALLEL_REQUESTS = 4;
+const PARALLEL_REQUESTS = 1;
 
 /**
  * Formats an ISO date string into a localized French long date.
@@ -111,11 +111,13 @@ export default function GamePage() {
     refillPromiseRef.current = (async () => {
       let currentBuf = [...jobBufferRef.current];
       while (currentBuf.length < targetSize) {
+        const missing = targetSize - currentBuf.length;
+        const toFetch = Math.min(missing, PARALLEL_REQUESTS);
         try {
-          const promises = Array.from({ length: PARALLEL_REQUESTS }, () => fetchNormalizedJobWithSalary());
+          const promises = Array.from({ length: toFetch }, () => fetchNormalizedJobWithSalary());
           const batch = await Promise.all(promises);
           for (const job of batch) {
-            if (!seenIdsRef.current.has(job.id) && currentBuf.length < targetSize) {
+            if (job && !seenIdsRef.current.has(job.id) && currentBuf.length < targetSize) {
               currentBuf.push(job);
               seenIdsRef.current.add(job.id);
             }
@@ -144,7 +146,6 @@ export default function GamePage() {
    */
   const startGame = async () => {
     play("gamestart");
-    logger.info("Classic game started");
     setLoadingStart(true);
     setRound(0);
     setScore(0);
@@ -161,7 +162,6 @@ export default function GamePage() {
       setCurrentJob(firstJob);
       setPage("playing");
       setLoadingStart(false);
-      void refillBuffer(BUFFER_TARGET);
     } catch (err) {
       setLoadingStart(false);
       alert("Erreur lors du chargement des offres. Veuillez réessayer.");
@@ -189,6 +189,7 @@ export default function GamePage() {
       setResult({ user, real: response.real_salary, score: response.score });
       setShowResult(true);
       play("roundEnd2");
+      void refillBuffer(BUFFER_TARGET);
     } catch (err) {
       play("error");
     } finally {
@@ -226,13 +227,11 @@ export default function GamePage() {
       setJobBuffer(rest);
       jobBufferRef.current = rest;
       setLoadingJob(false);
-      void refillBuffer(BUFFER_TARGET);
     } else {
       try {
         const newJob = await fetchNormalizedJobWithSalary();
         setCurrentJob(newJob);
         setLoadingJob(false);
-        void refillBuffer(BUFFER_TARGET);
       } catch (err) {
         setPage("result");
       }
