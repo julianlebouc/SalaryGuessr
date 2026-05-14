@@ -162,6 +162,7 @@ export default function GamePage() {
       setCurrentJob(firstJob);
       setPage("playing");
       setLoadingStart(false);
+      logger.info("Classic game started");
     } catch (err) {
       setLoadingStart(false);
       alert("Erreur lors du chargement des offres. Veuillez réessayer.");
