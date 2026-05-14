@@ -23,6 +23,13 @@
   gap: 1.5rem;
 }
 
+@media (max-width: 640px) {
+  .br-setup-form {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+}
+
 .br-tabs {
   display: flex;
   gap: 1px;
@@ -45,6 +52,14 @@
   letter-spacing: 1px;
   background: transparent;
   z-index: 1;
+}
+
+@media (max-width: 480px) {
+  .br-tabs button {
+    padding: 0.6rem 0.3rem;
+    font-size: 0.75rem;
+    letter-spacing: 0;
+  }
 }
 
 .br-tabs button.active {

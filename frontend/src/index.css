@@ -357,6 +357,12 @@ button {
   flex-direction: column;
 }
 
+@media (max-width: 640px) {
+  .tile-content {
+    padding: 1.25rem;
+  }
+}
+
 .tile:hover .tile-content {
   transform: scale(1.01);
   transition: var(--trans-smooth);
@@ -509,12 +515,12 @@ button {
 
 @media (max-width: 768px) {
   .page-wrapper {
-    padding: 5rem 1rem 0;
+    padding: 5rem 0 0;
   }
 }
 
 .gp-titleMain {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(1.8rem, 6vw, 4.5rem);
   font-weight: 950;
   letter-spacing: -3px;
   color: #fff;

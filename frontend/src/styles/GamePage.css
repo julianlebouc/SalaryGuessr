@@ -30,6 +30,13 @@
   box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.2);
 }
 
+@media (max-width: 640px) {
+  .gp-config-box {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+}
+
 .gp-config-label {
   font-size: 1rem;
   color: var(--text-secondary);
@@ -270,6 +277,13 @@
   overflow-y: auto;
   padding-right: 1rem;
   max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .gp-job-desc {
+    padding-right: 0;
+    font-size: 0.85rem;
+  }
 }
 
 .gp-job-desc::-webkit-scrollbar {

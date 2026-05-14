@@ -29,6 +29,12 @@
   }
 }
 
+@media (max-width: 640px) {
+  .hp-hero {
+    padding: 1.25rem;
+  }
+}
+
 /* Hero Section */
 .hp-title-wrap {
   display: flex;
