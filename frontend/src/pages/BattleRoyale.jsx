@@ -445,7 +445,11 @@ export default function BattleRoyale() {
             <div className="tile-content br-victory-screen">
               <div className="br-winner-podium">
                 <span className="br-winner-tag">VAINQUEUR</span>
-                <h1 className="gp-titleMain">Victoire de {winner}</h1>
+                <h1 className="gp-titleMain">
+                  {winner && playerName && winner.trim().toLowerCase() === playerName.trim().toLowerCase()
+                    ? "Vous avez gagné !"
+                    : `Victoire de ${winner}`}
+                </h1>
               </div>
               <div className="br-victory-actions">
                 <button className="hp-btn-primary" onClick={() => navigate("/")}>Retour à l'Accueil</button>
