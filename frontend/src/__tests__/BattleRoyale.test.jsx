@@ -45,6 +45,30 @@ describe('BattleRoyale Component', () => {
     fireEvent.change(input, { target: { value: 'Tester' } });
     fireEvent.click(screen.getByText(/Ouvrir l'Arène/i));
     
-    expect(mockSocket.emit).toHaveBeenCalledWith('create_room', expect.any(Object));
+    expect(mockSocket.emit).toHaveBeenCalledWith('create_room', expect.objectContaining({ name: 'Tester' }));
+  });
+
+  test('switches to join tab and emits join_room', () => {
+    render(
+      <MemoryRouter>
+        <BattleRoyale />
+      </MemoryRouter>
+    );
+    
+    const joinTab = screen.getByText(/REJOINDRE/i);
+    fireEvent.click(joinTab);
+    
+    const pseudoInput = screen.getByPlaceholderText(/pseudo/i);
+    const codeInput = screen.getByPlaceholderText(/code salle/i);
+    
+    fireEvent.change(pseudoInput, { target: { value: 'Joiner' } });
+    fireEvent.change(codeInput, { target: { value: 'ABCDEF' } });
+    
+    fireEvent.click(screen.getByText(/Entrer dans l'Arène/i));
+    
+    expect(mockSocket.emit).toHaveBeenCalledWith('join_room', expect.objectContaining({ 
+      name: 'Joiner',
+      code: 'ABCDEF'
+    }));
   });
 });

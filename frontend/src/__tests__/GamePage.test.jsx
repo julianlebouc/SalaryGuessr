@@ -17,6 +17,19 @@ vi.mock('../sound/SoundProvider', () => ({
   useSound: () => ({ play: vi.fn() }),
 }));
 
+vi.mock('../utils/gameUtils', () => ({
+  fetchJob: vi.fn(() => Promise.resolve({
+    id: "123",
+    title: "Mock Job",
+    salary: 4000,
+    company: "Test Co",
+    location: "Paris",
+    description: "Job description here"
+  })),
+  hasValidSalary: vi.fn(() => true),
+  validateGuess: vi.fn(() => Promise.resolve({ score: 90, real_salary: 4000 })),
+}));
+
 describe('GamePage Component', () => {
   test('renders settings page initially', () => {
     render(
@@ -36,5 +49,21 @@ describe('GamePage Component', () => {
     const slider = screen.getByRole('slider');
     fireEvent.change(slider, { target: { value: '20' } });
     expect(screen.getByText('20')).toBeInTheDocument();
+  });
+
+  test('starts the game when clicking lancer la partie', async () => {
+    render(
+      <MemoryRouter>
+        <GamePage />
+      </MemoryRouter>
+    );
+    
+    const startButton = screen.getByText(/LANCER LA PARTIE/i);
+    fireEvent.click(startButton);
+    
+    // Wait for the transition to playing view
+    const badge = await screen.findByText(/MANCHE 1/i);
+    expect(badge).toBeInTheDocument();
+    expect(screen.getByText(/Mock Job/i)).toBeInTheDocument();
   });
 });

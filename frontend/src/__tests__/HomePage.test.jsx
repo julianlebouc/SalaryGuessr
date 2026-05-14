@@ -25,7 +25,7 @@ describe('HomePage Component', () => {
       </MemoryRouter>
     );
     
-    expect(screen.getByRole('heading', { name: /Salary/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /Salary/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Jouer Maintenant/i })).toBeInTheDocument();
   });
 
@@ -63,5 +63,54 @@ describe('HomePage Component', () => {
     expect(screen.getAllByText(/Offres Réelles/i)[0]).toBeInTheDocument();
     expect(screen.getAllByText(/Gratuit/i)[0]).toBeInTheDocument();
     expect(screen.getAllByText(/Modes de Jeu/i)[0]).toBeInTheDocument();
+  });
+
+  test('navigates to stats when clicking stats button', () => {
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+    
+    const statsButton = screen.getByRole('button', { name: /Statistiques/i });
+    fireEvent.click(statsButton);
+    
+    expect(mockNavigate).toHaveBeenCalledWith('/stats');
+  });
+
+  test('navigates to mentions legales when clicking the link', () => {
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+    
+    const legalLink = screen.getByText(/Mentions Légales/i);
+    fireEvent.click(legalLink);
+    
+    expect(mockNavigate).toHaveBeenCalledWith('/mentions-legales');
+  });
+
+  test('updates CSS variables on mouse move', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+    
+    const grid = container.querySelector('.tile-grid');
+    
+    // Mock getBoundingClientRect
+    grid.getBoundingClientRect = vi.fn(() => ({
+      left: 0,
+      top: 0,
+      width: 1000,
+      height: 1000,
+    }));
+
+    fireEvent.mouseMove(grid, { clientX: 100, clientY: 200 });
+
+    expect(grid.style.getPropertyValue('--mouse-x')).toBe('100px');
+    expect(grid.style.getPropertyValue('--mouse-y')).toBe('200px');
   });
 });

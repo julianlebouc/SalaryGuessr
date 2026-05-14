@@ -86,4 +86,26 @@ describe('HighLowGame Component', () => {
       expect(screen.getByText(/PARTIE TERMINÉE/i)).toBeInTheDocument();
     }, { timeout: 3000 });
   });
+
+  test('correct lower guess increments score', async () => {
+    vi.spyOn(gameUtils, 'validateComparison').mockResolvedValue({ correct: true, real_salary: 1500 });
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <HighLowGame />
+        </MemoryRouter>
+      );
+    });
+
+    await waitFor(() => screen.getByText(/Job A/i));
+
+    const lowerBtn = screen.getByRole('button', { name: /MOINS/i });
+    
+    await act(async () => {
+      fireEvent.click(lowerBtn);
+    });
+
+    expect(screen.getByText(/SÉRIE ACTUELLE/i).nextSibling).toHaveTextContent('1');
+  });
 });
