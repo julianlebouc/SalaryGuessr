@@ -188,7 +188,15 @@ export default function GamePage() {
       }]);
       setResult({ user, real: response.real_salary, score: response.score });
       setShowResult(true);
-      play("roundEnd2");
+
+      const roundScore = response.score;
+      if (roundScore < 33.33) {
+        play("roundEnd1");
+      } else if (roundScore < 66.66) {
+        play("roundEnd2");
+      } else {
+        play("roundEnd3");
+      }
       void refillBuffer(BUFFER_TARGET);
     } catch (err) {
       play("error");
@@ -209,8 +217,15 @@ export default function GamePage() {
 
     if (round + 1 >= maxRounds) {
       setPage("result");
-      play("gameEnd3");
-      logger.info("Classic game finished", { score: score / maxRounds });
+      const avgScore = score / maxRounds;
+      if (avgScore < 33.33) {
+        play("gameEnd1");
+      } else if (avgScore < 66.66) {
+        play("gameEnd2");
+      } else {
+        play("gameEnd3");
+      }
+      logger.info("Classic game finished", { score: avgScore });
       return;
     }
 
