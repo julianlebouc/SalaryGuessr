@@ -13,25 +13,23 @@
 
 SalaryGuessr is an interactive web game where you test your knowledge of salaries in the French job market. You'll be presented with real job offers from France Travail (formerly Pôle Emploi), and your mission is to estimate the monthly salary as accurately as possible. The closer you are, the more points you earn!
 
+![SalaryGuessr Home](screenshots/home.png)
+
 Now live at https://salaryguessr.win/
 
 ## Game Modes
 
 ### Classic Mode
-- Guess the exact salary of a single job offer
-- Score up to 100 points per round based on precision
-- Customizable number of rounds (5 to 50)
+Test your knowledge by estimating the monthly gross salary of real job offers. Score points based on your precision across multiple rounds.
+![Classic Mode](screenshots/classic.png)
 
-### High/Low Mode
-- Compare two job offers side by side
-- Guess which offer has the higher salary
-- Endless chain of comparisons
+### High / Low
+A fast-paced mode where you compare two job offers. Predict whether the next offer's salary is higher or lower than the current one to build the longest streak.
+![High / Low](screenshots/highlow.png)
 
-### Battle Royale Mode
-- Multiplayer game with 5 to 50 players
-- All players guess the salary of the same job offer at the same time
-- Every round, the player with the worst guess is eliminated
-- The game ends when there is only one player left
+### Battle Royale
+Compete against other players in real-time. Everyone guesses the salary of the same job offer, and the player with the furthest estimate is eliminated each round.
+![Battle Royale](screenshots/battleroyale.png)
 
 ## Prerequisites
 
