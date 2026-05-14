@@ -339,7 +339,6 @@ export default function GamePage() {
                         onChange={e => setGuess(e.target.value)}
                         onKeyDown={e => e.key === "Enter" && validate()}
                         placeholder="Ex: 3500"
-                        autoFocus
                       />
                       <span className="gp-currency">€</span>
                     </div>

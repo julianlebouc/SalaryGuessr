@@ -542,7 +542,7 @@ export default function BattleRoyale() {
                   <div className="gp-input-area">
                     <span className="gp-input-label">VOTRE ESTIMATION BRUTE</span>
                     <div className="gp-input-wrap">
-                      <input type="number" placeholder="Ex: 3500" value={guess} onChange={e => setGuess(e.target.value)} onKeyDown={e => e.key === "Enter" && submitGuess()} autoFocus />
+                      <input type="number" placeholder="Ex: 3500" value={guess} onChange={e => setGuess(e.target.value)} onKeyDown={e => e.key === "Enter" && submitGuess()} />
                       <span className="gp-currency">€</span>
                     </div>
                     <button className="hp-btn-primary" onClick={submitGuess} disabled={!guess}>VALIDER</button>
