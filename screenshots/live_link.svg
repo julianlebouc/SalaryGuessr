@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="60" viewBox="0 0 700 60">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6a11cb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2575fc;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="bold" fill="url(#grad)">
+    Jouer en ligne : https://salaryguessr.win/
+  </text>
+</svg>

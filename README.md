@@ -15,7 +15,11 @@ SalaryGuessr is an interactive web game where you test your knowledge of salarie
 
 ![SalaryGuessr Home](screenshots/home.png)
 
-Now live at https://salaryguessr.win/
+<div align="center">
+  <a href="https://salaryguessr.win/">
+    <img src="screenshots/live_link.svg" alt="Jouer en ligne" width="700">
+  </a>
+</div>
 
 ## Game Modes
 
