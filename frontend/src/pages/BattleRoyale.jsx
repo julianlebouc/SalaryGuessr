@@ -444,11 +444,13 @@ export default function BattleRoyale() {
           <div className="tile span-12">
             <div className="tile-content br-victory-screen">
               <div className="br-winner-podium">
-                <span className="br-winner-tag">VAINQUEUR</span>
+                <span className="br-winner-tag">{winner ? "VAINQUEUR" : "FIN DE PARTIE"}</span>
                 <h1 className="gp-titleMain">
-                  {winner && playerName && winner.trim().toLowerCase() === playerName.trim().toLowerCase()
-                    ? "Vous avez gagné !"
-                    : `Victoire de ${winner}`}
+                  {!winner 
+                    ? "Tout le monde a été éliminé !"
+                    : playerName && winner.trim().toLowerCase() === playerName.trim().toLowerCase()
+                      ? "Vous avez gagné !"
+                      : `Victoire de ${winner}`}
                 </h1>
               </div>
               <div className="br-victory-actions">
@@ -522,13 +524,18 @@ export default function BattleRoyale() {
           <>
             <div className="tile span-8 row-span-2">
               <div className="tile-content gp-job-side">
-                <h2 className="gp-job-title">{currentOffer?.intitule || currentOffer?.title}</h2>
+                <h2 className="gp-job-title">{currentOffer?.title}</h2>
                 <div className="badgesContainer">
-                  {currentOffer?.entreprise?.nom && <span className="gp-badge gp-badgeCompany">{currentOffer.entreprise.nom}</span>}
-                  <span className="gp-badge gp-badgeLocation">{currentOffer?.lieuTravail?.libelle || currentOffer?.location}</span>
-                  {currentOffer?.typeContratLibelle && <span className="gp-badge">{currentOffer.typeContratLibelle}</span>}
-                  {currentOffer?.dureeTravailLibelle && <span className="gp-badge">{currentOffer.dureeTravailLibelle}</span>}
-                  {currentOffer?.experienceLibelle && <span className="gp-badge">{currentOffer.experienceLibelle}</span>}
+                  {currentOffer?.company && <span className="gp-badge gp-badgeCompany">{currentOffer.company}</span>}
+                  <span className="gp-badge gp-badgeLocation">{currentOffer?.location}</span>
+                  {currentOffer?.contractType && <span className="gp-badge">{currentOffer.contractType}</span>}
+                  {currentOffer?.contractHours && <span className="gp-badge">{currentOffer.contractHours}</span>}
+                  {currentOffer?.experience && <span className="gp-badge">{currentOffer.experience}</span>}
+                  {currentOffer?.qualification && <span className="gp-badge">{currentOffer.qualification}</span>}
+                  {currentOffer?.permis && <span className="gp-badge">Permis: {currentOffer.permis}</span>}
+                  {currentOffer?.alternance && <span className="gp-badge gp-badgeSpecial">Alternance</span>}
+                  {currentOffer?.accessibleTH && <span className="gp-badge gp-badgeSpecial">Accessible TH</span>}
+                  {currentOffer?.employeurHandiEngage && <span className="gp-badge gp-badgeSpecial">Handi-Engagé</span>}
                 </div>
                 <div className="gp-job-desc">{currentOffer?.description}</div>
               </div>
