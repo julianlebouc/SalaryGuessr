@@ -127,7 +127,7 @@ export default function HighLowGame() {
 
   return (
     <motion.div className="page-wrapper hl-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <div className="tile-grid">
+      <div className="tile-grid hl-main-grid">
         {gameOver ? (
           <div className="tile span-12">
             <div className="tile-content hl-gameover-view">
@@ -171,7 +171,7 @@ export default function HighLowGame() {
                       {jobs[currentIndex]?.contractType && <span className="gp-badge">{jobs[currentIndex].contractType}</span>}
                       {jobs[currentIndex]?.contractHours && <span className="gp-badge">{jobs[currentIndex].contractHours}</span>}
                     </div>
-                    <div className="hl-salary-display" style={{ marginTop: '2rem' }}>{jobs[currentIndex]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</div>
+                    <div className="hl-salary-display">{jobs[currentIndex]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</div>
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -219,7 +219,7 @@ export default function HighLowGame() {
                       {jobs[currentIndex + 1]?.contractType && <span className="gp-badge">{jobs[currentIndex + 1].contractType}</span>}
                       {jobs[currentIndex + 1]?.contractHours && <span className="gp-badge">{jobs[currentIndex + 1].contractHours}</span>}
                     </div>
-                    <div className="hl-salary-display" style={{ marginTop: '2rem' }}>
+                    <div className="hl-salary-display">
                       {showSalary ? (
                         <motion.span
                           initial={{ scale: 1.5, opacity: 0 }}
