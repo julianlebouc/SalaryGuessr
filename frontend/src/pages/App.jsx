@@ -64,17 +64,19 @@ function App() {
     <SettingsProvider>
       <SoundProvider>
         <Router>
-          <div className="noise-overlay" />
-          <GlobalNav />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/mode-select" element={<ModeSelectPage />} />
-            <Route path="/game" element={<GamePage />} />
-            <Route path="/highlow" element={<HighLowGame />} />
-            <Route path="/battleroyale" element={<BattleRoyale />} />
-            <Route path="/stats" element={<StatsPage />} />
-            <Route path="/mentions-legales" element={<MentionsLegales />} />
-          </Routes>
+          <div className="theme-retro">
+            <div className="noise-overlay" />
+            <GlobalNav />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/mode-select" element={<ModeSelectPage />} />
+              <Route path="/game" element={<GamePage />} />
+              <Route path="/highlow" element={<HighLowGame />} />
+              <Route path="/battleroyale" element={<BattleRoyale />} />
+              <Route path="/stats" element={<StatsPage />} />
+              <Route path="/mentions-legales" element={<MentionsLegales />} />
+            </Routes>
+          </div>
         </Router>
       </SoundProvider>
     </SettingsProvider>
