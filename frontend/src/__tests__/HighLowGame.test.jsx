@@ -8,6 +8,18 @@ vi.mock('../sound/SoundProvider', () => ({
   useSound: () => ({ play: vi.fn() }),
 }));
 
+vi.mock('../context/SettingsContext', () => ({
+  useSettings: () => ({
+    volume: 0.5,
+    setVolume: vi.fn(),
+    salaryType: 'brut',
+    salaryPeriod: 'monthly',
+    convertToBase: (val) => val,
+    convertFromBase: (val) => val,
+    getSalaryLabel: () => 'Brut Mensuel',
+  }),
+}));
+
 describe('HighLowGame Component', () => {
   const mockJobs = [
     { id: '1', title: 'Job A', salary: 2000, company: 'C1', location: 'L1' },

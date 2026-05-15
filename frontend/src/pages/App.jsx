@@ -7,7 +7,9 @@ import BattleRoyale from "./BattleRoyale";
 import StatsPage from "./StatsPage";
 import MentionsLegales from "./MentionsLegales";
 import { SoundProvider } from "../sound/SoundProvider";
-import SoundToggleSlider from "../sound/SoundToggleSlider";
+import { SettingsProvider } from "../context/SettingsContext";
+import SettingsPopup from "../components/SettingsPopup";
+import { useState } from "react";
 
 /**
  * GlobalNavigation component.
@@ -19,10 +21,23 @@ function GlobalNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === "/";
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
     <>
-      <SoundToggleSlider />
+      <div className="sg-top-right-nav">
+        <button 
+          className="sg-settings-btn tile-animate"
+          onClick={() => setIsSettingsOpen(true)}
+          title="Paramètres"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Paramètres</span>
+        </button>
+      </div>
+
+      <SettingsPopup isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+
       {!isHome && (
         <button
           className="gp-homeBtn tile-animate"
@@ -46,21 +61,23 @@ function GlobalNav() {
  */
 function App() {
   return (
-    <SoundProvider>
-      <Router>
-        <div className="noise-overlay" />
-        <GlobalNav />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/mode-select" element={<ModeSelectPage />} />
-          <Route path="/game" element={<GamePage />} />
-          <Route path="/highlow" element={<HighLowGame />} />
-          <Route path="/battleroyale" element={<BattleRoyale />} />
-          <Route path="/stats" element={<StatsPage />} />
-          <Route path="/mentions-legales" element={<MentionsLegales />} />
-        </Routes>
-      </Router>
-    </SoundProvider>
+    <SettingsProvider>
+      <SoundProvider>
+        <Router>
+          <div className="noise-overlay" />
+          <GlobalNav />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/mode-select" element={<ModeSelectPage />} />
+            <Route path="/game" element={<GamePage />} />
+            <Route path="/highlow" element={<HighLowGame />} />
+            <Route path="/battleroyale" element={<BattleRoyale />} />
+            <Route path="/stats" element={<StatsPage />} />
+            <Route path="/mentions-legales" element={<MentionsLegales />} />
+          </Routes>
+        </Router>
+      </SoundProvider>
+    </SettingsProvider>
   );
 }
 
