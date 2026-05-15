@@ -182,7 +182,7 @@ def build_offer_pool(target_size=POOL_TARGET_SIZE):
             selected_indices = set()
             
             for i in range(target_size):
-                t = i / (target_size - 1)
+                t = i / (target_size - 1) if target_size > 1 else 0
                 # Apply cosine curve to concentrate sampling at the borders
                 curved_t = (1 - math.cos(math.pi * t)) / 2
                 base_idx = int(curved_t * (n_candidates - 1))

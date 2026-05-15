@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 from backend.multiplayer.room_manager import RoomManager
 from backend.multiplayer.games.battle_royale import BattleRoyaleGame
 from backend.multiplayer.base import GameState
@@ -45,8 +46,11 @@ def test_room_full(manager):
     assert player_id is None
     assert "full" in error.lower()
 
-def test_battle_royale_elimination(manager):
+@patch("backend.multiplayer.games.battle_royale.get_normalized_job")
+def test_battle_royale_elimination(mock_get_job, manager):
     """Test elimination logic in Battle Royale."""
+    mock_get_job.return_value = {"id": "test_job", "salary_real": 3000}
+    
     game = BattleRoyaleGame()
     code, host_id = manager.create_room("battle_royale", "Host", "sid_1")
     guest_id, _ = manager.join_room(code, "Guest", "sid_2")
