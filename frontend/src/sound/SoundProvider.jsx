@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useSettings } from "../context/SettingsContext";
 
 const SoundContext = createContext({
   volume: 0.5,
@@ -75,12 +76,7 @@ function playTone(audioCtx, { frequency, volume = 1, duration = 0.08, type = "si
  * @returns {JSX.Element}
  */
 export function SoundProvider({ children }) {
-  const [volume, setVolumeState] = useState(() => {
-    const stored = localStorage.getItem(SOUND_VOLUME_STORAGE_KEY);
-    const parsed = stored == null ? NaN : Number(stored);
-    if (!Number.isFinite(parsed)) return 0.5;
-    return Math.min(1, Math.max(0, parsed));
-  });
+  const { volume, setVolume: setVolumeState } = useSettings();
   const audioCtxRef = useRef(null);
 
   /**
@@ -216,10 +212,8 @@ export function SoundProvider({ children }) {
      * @param {number} nextVolume
      */
   const setVolume = useCallback((nextVolume) => {
-    const safeVolume = Math.min(1, Math.max(0, nextVolume));
-    setVolumeState(safeVolume);
-    localStorage.setItem(SOUND_VOLUME_STORAGE_KEY, String(safeVolume));
-  }, []);
+    setVolumeState(nextVolume);
+  }, [setVolumeState]);
 
   useEffect(() => {
     const onGlobalClick = (event) => {

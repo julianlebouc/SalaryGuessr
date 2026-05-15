@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import io from "socket.io-client";
 import "../styles/BattleRoyale.css";
 import { useSound } from "../sound/SoundProvider";
+import { useSettings } from "../context/SettingsContext";
 import logger from "../utils/logger";
 
 const SOCKET_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
@@ -73,6 +74,7 @@ function BrRoomCodeToolbar({ roomCode, revealed, onToggleReveal, onCopy, compact
 export default function BattleRoyale() {
   const navigate = useNavigate();
   const { play } = useSound();
+  const { convertToBase, convertFromBase, getSalaryLabel } = useSettings();
 
   const [view, setView] = useState("join");
   const [activeTab, setActiveTab] = useState("create");
@@ -272,9 +274,11 @@ export default function BattleRoyale() {
    */
   const submitGuess = () => {
     if (!guess || hasGuessed) return;
-    const val = parseInt(guess);
-    if (isNaN(val) || val <= 0) return setNotice({ variant: "error", message: "Entrez un salaire valide." });
-    socketRef.current.emit("game_action", { code: roomCode, action: "submit_guess", data: { guess: val } });
+    const displayVal = parseInt(guess);
+    if (isNaN(displayVal) || displayVal <= 0) return setNotice({ variant: "error", message: "Entrez un salaire valide." });
+    
+    const baseVal = convertToBase(displayVal);
+    socketRef.current.emit("game_action", { code: roomCode, action: "submit_guess", data: { guess: baseVal } });
   };
 
   const copyRoomCode = async () => {
@@ -460,8 +464,8 @@ export default function BattleRoyale() {
                 <div className="br-status-msg survived">VOUS AVEZ SURVÉCU</div>
               )}
               <div className="br-real-salary">
-                {roundResults.real_salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
-                <span className="br-real-label">Salaire Réel</span>
+                {convertFromBase(roundResults.real_salary)?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
+                <span className="br-real-label">Salaire Réel ({getSalaryLabel()})</span>
               </div>
               <div className="br-round-summary">
                 <div className="br-summary-box eliminated">
@@ -488,8 +492,8 @@ export default function BattleRoyale() {
                         <span className="br-rank-pos">#{i + 1}</span>
                         <span className="br-rank-name">{r.name}</span>
                         <div className="br-rank-data">
-                          <span className="br-rank-guess">{r.guess?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || "???"} €</span>
-                          <span className="br-rank-error">{Math.abs(r.error || 0).toFixed(0)}€ d'écart</span>
+                          <span className="br-rank-guess">{convertFromBase(r.guess)?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || "???"} €</span>
+                          <span className="br-rank-error">{convertFromBase(Math.abs(r.error || 0)).toFixed(0)}€ d'écart</span>
                         </div>
                         {isPlayerElim && <span className="br-elim-tag">ÉLIMINÉ</span>}
                       </div>
@@ -525,9 +529,15 @@ export default function BattleRoyale() {
                   <div className="br-waiting-card"><h3>Vous êtes éliminé</h3><p>Spectateur de l'arène...</p></div>
                 ) : !hasGuessed ? (
                   <div className="gp-input-area">
-                    <span className="gp-input-label">VOTRE ESTIMATION BRUTE</span>
+                    <span className="gp-input-label">ESTIMATION {getSalaryLabel().toUpperCase()}</span>
                     <div className="gp-input-wrap">
-                      <input type="number" placeholder="Ex: 3500" value={guess} onChange={e => setGuess(e.target.value)} onKeyDown={e => e.key === "Enter" && submitGuess()} />
+                      <input 
+                        type="number" 
+                        placeholder={`Ex: ${getSalaryLabel().toLowerCase().includes("annuel") ? "35000" : "3500"}`} 
+                        value={guess} 
+                        onChange={e => setGuess(e.target.value)} 
+                        onKeyDown={e => e.key === "Enter" && submitGuess()} 
+                      />
                       <span className="gp-currency">€</span>
                     </div>
                     <button className="hp-btn-primary" onClick={submitGuess} disabled={!guess}>VALIDER</button>

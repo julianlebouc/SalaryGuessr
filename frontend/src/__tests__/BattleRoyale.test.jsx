@@ -20,6 +20,18 @@ vi.mock('../sound/SoundProvider', () => ({
   useSound: () => ({ play: vi.fn() }),
 }));
 
+vi.mock('../context/SettingsContext', () => ({
+  useSettings: () => ({
+    volume: 0.5,
+    setVolume: vi.fn(),
+    salaryType: 'brut',
+    salaryPeriod: 'monthly',
+    convertToBase: (val) => val,
+    convertFromBase: (val) => val,
+    getSalaryLabel: () => 'Brut Mensuel',
+  }),
+}));
+
 describe('BattleRoyale Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();

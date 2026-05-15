@@ -9,6 +9,7 @@ import {
   validateComparison
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
+import { useSettings } from "../context/SettingsContext";
 import logger from "../utils/logger";
 
 /**
@@ -25,6 +26,7 @@ import logger from "../utils/logger";
 export default function HighLowGame() {
   const navigate = useNavigate();
   const { play } = useSound();
+  const { convertFromBase, getSalaryLabel } = useSettings();
 
   const [jobs, setJobs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -52,7 +54,7 @@ export default function HighLowGame() {
       const newJobs = await fetchMultipleJobs(2);
       if (newJobs.length > 0) {
         const reveal = await validateGuess(newJobs[0].id);
-        newJobs[0].salary = reveal.real_salary;
+        newJobs[0].baseSalary = reveal.real_salary;
       }
       setJobs(newJobs);
       logger.info("High/Low game started");
@@ -78,7 +80,7 @@ export default function HighLowGame() {
       const response = await validateComparison(rightJob.id, leftJob.id, guess);
 
       const updatedJobs = [...jobs];
-      updatedJobs[currentIndex + 1].salary = response.real_salary;
+      updatedJobs[currentIndex + 1].baseSalary = response.real_salary;
       setJobs(updatedJobs);
 
       setShowSalary(true);
@@ -170,7 +172,7 @@ export default function HighLowGame() {
                       {jobs[currentIndex]?.contractType && <span className="gp-badge">{jobs[currentIndex].contractType}</span>}
                       {jobs[currentIndex]?.contractHours && <span className="gp-badge">{jobs[currentIndex].contractHours}</span>}
                     </div>
-                    <div className="hl-salary-display">{jobs[currentIndex]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</div>
+                    <div className="hl-salary-display">{convertFromBase(jobs[currentIndex]?.baseSalary)?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</div>
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -225,7 +227,7 @@ export default function HighLowGame() {
                           animate={{ scale: 1, opacity: 1 }}
                           style={{ color: guessResult === "correct" ? "var(--accent-cyan)" : "#ff6b6b" }}
                         >
-                          {jobs[currentIndex + 1]?.salary?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
+                          {convertFromBase(jobs[currentIndex + 1]?.baseSalary)?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
                         </motion.span>
                       ) : (
                         <span className="hl-salary-placeholder">??? €</span>
