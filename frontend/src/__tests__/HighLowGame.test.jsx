@@ -70,8 +70,8 @@ describe('HighLowGame Component', () => {
       fireEvent.click(higherBtn);
     });
 
-    // Score should increment (skip the unit badge)
-    expect(screen.getByText(/SÉRIE ACTUELLE/i).nextSibling.nextSibling).toHaveTextContent('1');
+    // Score should increment
+    expect(screen.getByText(/SÉRIE ACTUELLE/i).nextSibling).toHaveTextContent('1');
   });
 
   test('wrong guess ends the game', async () => {
@@ -118,6 +118,6 @@ describe('HighLowGame Component', () => {
       fireEvent.click(lowerBtn);
     });
 
-    expect(screen.getByText(/SÉRIE ACTUELLE/i).nextSibling.nextSibling).toHaveTextContent('1');
+    expect(screen.getByText(/SÉRIE ACTUELLE/i).nextSibling).toHaveTextContent('1');
   });
 });
