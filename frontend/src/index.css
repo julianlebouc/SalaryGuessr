@@ -427,6 +427,56 @@ button {
   box-shadow: 0 0 20px rgba(157, 80, 187, 0.3);
 }
 
+.sg-top-right-nav {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  gap: 1rem;
+}
+
+.sg-settings-btn {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--ui-radius);
+  padding: 0.5rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  color: #fff;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  box-shadow: var(--glass-shadow);
+  transition: var(--trans-smooth);
+}
+
+.sg-settings-btn svg {
+  opacity: 0.8;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sg-settings-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 25px rgba(157, 80, 187, 0.5);
+}
+
+.sg-settings-btn:hover svg {
+  transform: rotate(90deg);
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .sg-settings-btn span {
+    display: none;
+  }
+}
+
 /* --- ANIMATIONS --- */
 @keyframes fadeInUp {
   from {
@@ -441,8 +491,13 @@ button {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes tileEntrance {
@@ -450,6 +505,7 @@ button {
     opacity: 0;
     transform: scale(0.96) translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);

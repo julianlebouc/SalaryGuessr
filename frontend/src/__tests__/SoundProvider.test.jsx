@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SoundProvider, useSound } from '../sound/SoundProvider';
+import { SettingsProvider } from '../context/SettingsContext';
 import { vi, describe, test, expect, beforeEach } from 'vitest';
 
 const SoundConsumer = () => {
@@ -19,15 +20,17 @@ describe('SoundProvider', () => {
 
   test('manages volume state and persistence', () => {
     render(
-      <SoundProvider>
-        <SoundConsumer />
-      </SoundProvider>
+      <SettingsProvider>
+        <SoundProvider>
+          <SoundConsumer />
+        </SoundProvider>
+      </SettingsProvider>
     );
     
     expect(screen.getByTestId('volume').textContent).toBe('0.5');
     
     fireEvent.click(screen.getByText(/Set Volume/i));
     expect(screen.getByTestId('volume').textContent).toBe('0.1');
-    expect(localStorage.getItem('salaryguessr_sound_volume')).toBe('0.1');
+    expect(localStorage.getItem('sg_volume')).toBe('0.1');
   });
 });

@@ -17,6 +17,7 @@ import {
   validateGuess
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
+import { useSettings } from "../context/SettingsContext";
 import logger from "../utils/logger";
 
 /**
@@ -50,6 +51,7 @@ const formatDate = (dateStr) => {
 export default function GamePage() {
   const navigate = useNavigate();
   const { play } = useSound();
+  const { convertToBase, convertFromBase, getSalaryLabel } = useSettings();
 
   const [page, setPage] = useState("settings");
   const [maxRounds, setMaxRounds] = useState(10);
@@ -176,18 +178,24 @@ export default function GamePage() {
    */
   const validate = async () => {
     if (!currentJob || !guess || loadingJob) return;
-    const user = Number(guess);
+    const userDisplayValue = Number(guess);
+    const userBaseValue = convertToBase(userDisplayValue);
+    
     setLoadingJob(true);
     try {
-      const response = await validateGuess(currentJob.id, user);
-      setScore(s => s + response.score);
+      const response = await validateGuess(currentJob.id, userBaseValue);
+      
+      const realDisplayValue = convertFromBase(response.real_salary);
+      const scoreValue = response.score;
+      
+      setScore(s => s + scoreValue);
       setHistory(h => [...h, {
         round: round + 1,
         title: currentJob.title,
-        estimated: user,
-        real: response.real_salary
+        estimatedBase: userBaseValue,
+        realBase: response.real_salary
       }]);
-      setResult({ user, real: response.real_salary, score: response.score });
+      setResult({ userBase: userBaseValue, realBase: response.real_salary, score: scoreValue });
       setShowResult(true);
 
       const roundScore = response.score;
@@ -337,14 +345,14 @@ export default function GamePage() {
               <div className="tile-content gp-action-side">
                 {!showResult ? (
                   <div className="gp-input-area">
-                    <span className="gp-input-label">ESTIMEZ LE SALAIRE MENSUEL BRUT</span>
+                    <span className="gp-input-label">ESTIMEZ LE SALAIRE {getSalaryLabel().toUpperCase()}</span>
                     <div className="gp-input-wrap">
                       <input
                         type="number"
                         value={guess}
                         onChange={e => setGuess(e.target.value)}
                         onKeyDown={e => e.key === "Enter" && validate()}
-                        placeholder="Ex: 3500"
+                        placeholder={`Ex: ${getSalaryLabel().toLowerCase().includes("annuel") ? "35000" : "3500"}`}
                       />
                       <span className="gp-currency">€</span>
                     </div>
@@ -357,11 +365,11 @@ export default function GamePage() {
                     <div className="gp-comparison">
                       <div className="gp-comp-item">
                         <span>VOTRE ESTIMATION</span>
-                        <strong>{result.user.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</strong>
+                        <strong>{convertFromBase(result.userBase).toLocaleString(undefined, { maximumFractionDigits: 0 })} €</strong>
                       </div>
                       <div className="gp-comp-item highlight">
                         <span>SALAIRE RÉEL</span>
-                        <strong className="accent">{result.real.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</strong>
+                        <strong className="accent">{convertFromBase(result.realBase).toLocaleString(undefined, { maximumFractionDigits: 0 })} €</strong>
                       </div>
                     </div>
                     <div className="gp-points-wrap">
@@ -396,11 +404,16 @@ export default function GamePage() {
                     <h3 className="gp-chart-title">Écart par Manche</h3>
                   </div>
                   <ResponsiveContainer width="100%" height={250}>
-                    <BarChart data={history}>
+                    <BarChart data={history.map(h => ({
+                      ...h,
+                      estimated: convertFromBase(h.estimatedBase),
+                      real: convertFromBase(h.realBase)
+                    }))}>
                       <XAxis dataKey="round" stroke="rgba(255,255,255,0.3)" />
                       <Tooltip
                         contentStyle={{ background: "#1a103d", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }}
                         itemStyle={{ color: "#fff" }}
+                        formatter={(value) => [`${value.toLocaleString()} €`]}
                       />
                       <Legend
                         verticalAlign="top"

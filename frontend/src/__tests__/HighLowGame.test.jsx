@@ -8,6 +8,18 @@ vi.mock('../sound/SoundProvider', () => ({
   useSound: () => ({ play: vi.fn() }),
 }));
 
+vi.mock('../context/SettingsContext', () => ({
+  useSettings: () => ({
+    volume: 0.5,
+    setVolume: vi.fn(),
+    salaryType: 'brut',
+    salaryPeriod: 'monthly',
+    convertToBase: (val) => val,
+    convertFromBase: (val) => val,
+    getSalaryLabel: () => 'Brut Mensuel',
+  }),
+}));
+
 describe('HighLowGame Component', () => {
   const mockJobs = [
     { id: '1', title: 'Job A', salary: 2000, company: 'C1', location: 'L1' },
@@ -58,8 +70,8 @@ describe('HighLowGame Component', () => {
       fireEvent.click(higherBtn);
     });
 
-    // Score should increment
-    expect(screen.getByText(/SÉRIE ACTUELLE/i).nextSibling).toHaveTextContent('1');
+    // Score should increment (skip the unit badge)
+    expect(screen.getByText(/SÉRIE ACTUELLE/i).nextSibling.nextSibling).toHaveTextContent('1');
   });
 
   test('wrong guess ends the game', async () => {
@@ -106,6 +118,6 @@ describe('HighLowGame Component', () => {
       fireEvent.click(lowerBtn);
     });
 
-    expect(screen.getByText(/SÉRIE ACTUELLE/i).nextSibling).toHaveTextContent('1');
+    expect(screen.getByText(/SÉRIE ACTUELLE/i).nextSibling.nextSibling).toHaveTextContent('1');
   });
 });
