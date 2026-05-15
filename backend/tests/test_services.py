@@ -59,20 +59,34 @@ def test_fetch_offers_401_retry(mock_get, mock_token):
 @patch("backend.services.offer_pool.parse_salary")
 def test_build_offer_pool(mock_parse, mock_fetch):
     """Test building the offer pool with valid and invalid salaries."""
-    mock_fetch.return_value = [
-        {"id": "j1", "salaire": {"libelle": "3000"}},
-        {"id": "j2", "salaire": {"libelle": "None"}},
+    from backend.services.offer_pool import OFFER_POOL, refill_in_progress
+    import backend.services.offer_pool as op
+    
+    # Reset pool state for testing
+    with op.pool_lock:
+        op.OFFER_POOL.clear()
+        op.refill_in_progress = False
+    
+    # Provide enough candidates to satisfy candidate_target = target_size * 5
+    # For target_size=1, we need 5 candidates.
+    mock_fetch.side_effect = [
+        [
+            {"id": "j1", "salaire": {"libelle": "1000"}},
+            {"id": "j2", "salaire": {"libelle": "2000"}},
+            {"id": "j3", "salaire": {"libelle": "3000"}},
+            {"id": "j4", "salaire": {"libelle": "4000"}},
+            {"id": "j5", "salaire": {"libelle": "5000"}},
+        ]
     ]
-    # Mock parse_salary to return 3000 for the first, None for the second
-    mock_parse.side_effect = [3000.0, None]
     
-    from backend.services.offer_pool import OFFER_POOL
-    OFFER_POOL.clear()
+    # Mock parse_salary for all 5 candidates
+    mock_parse.side_effect = [1000.0, 2000.0, 3000.0, 4000.0, 5000.0]
     
+    # Target size 1 means we need 5 candidates total (1 * 5)
     build_offer_pool(target_size=1)
     
     assert get_pool_size() == 1
     from backend.services.offer_pool import get_normalized_job
     job = get_normalized_job()
     assert job["id"] == "j1"
-    assert job["salary_real"] == 3000.0
+    assert job["salary_real"] == 1000.0
