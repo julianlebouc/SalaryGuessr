@@ -82,14 +82,14 @@ def normalize_job_for_client(job, salary_text, include_salary=False, salary_valu
 
 def build_offer_pool(target_size=POOL_TARGET_SIZE):
     """
-    Rebuild the job offer pool by fetching multiple pages from the API.
-    Filters offers that don't have a valid salary or have already been played.
+    Rebuild the job offer pool using Stratified Sampling to maximize salary diversity.
     
-    Args:
-        target_size (int): The number of offers to fetch.
-        
-    Returns:
-        int: The number of unique offers successfully added to the pool.
+    Logic:
+    1. Fetch a large batch of candidates (CANDIDATE_BATCH = target_size * 4).
+    2. Parse salaries and filter valid, unplayed offers.
+    3. Sort the candidates by salary value.
+    4. Pick 'target_size' offers by selecting evenly spaced indices from the sorted list.
+       This ensures we have a balanced distribution of low, medium, and high salaries.
     """
     global OFFER_POOL, refill_in_progress
     
@@ -100,73 +100,111 @@ def build_offer_pool(target_size=POOL_TARGET_SIZE):
         refill_in_progress = True
     
     try:
-        print(f"[POOL] Building pool (target: {target_size})...")
+        candidate_target = target_size * 4
+        print(f"[POOL] Building diverse pool (Goal: {target_size}, Candidates needed: {candidate_target})...")
         
-        new_offers = []
+        candidates = []
         seen_ids = set()
         
+        # Determine which jobs are currently in the pool or have been played
         with pool_lock:
             for existing_job in OFFER_POOL:
                 if existing_job.get("id"):
                     seen_ids.add(existing_job.get("id"))
         
-        # Priority pages (fresh offers)
-        primary_pages = list(range(0, 40))
-        random.shuffle(primary_pages)
-        # Fallback pages
-        fallback_pages = list(range(40, 120))
-        random.shuffle(fallback_pages)
+        # We fetch from a wider range of pages (up to 150 pages)
+        pages = list(range(0, 150))
+        random.shuffle(pages)
         
-        pages_to_fetch = primary_pages + fallback_pages
-        success_count = 0
-        
-        for page in pages_to_fetch:
-            if len(new_offers) >= target_size:
+        for page in pages:
+            if len(candidates) >= candidate_target:
                 break
                 
             offers = fetch_offers_from_page(page)
-            
             if not offers:
                 continue
                 
-            success_count += 1
-            print(f"[POOL] Page {page}: {len(offers)} offers (total: {len(new_offers)})")
-            
             for offer in offers:
-                if len(new_offers) >= target_size:
-                    break
-                    
                 offer_id = offer.get("id")
+                if not offer_id or offer_id in seen_ids or is_played(offer_id):
+                    continue
                 
+                # Parse salary to ensure it's valid and get numeric value for sorting
                 salaire = offer.get("salaire", {})
                 salary_text = salaire.get("libelle", "") or salaire.get("commentaire", "")
-                salary_value = parse_salary(salary_text)
+                val = parse_salary(salary_text)
                 
-                if not salary_value or salary_value <= 0:
-                    continue
-                
-                if is_played(offer_id) or offer_id in seen_ids:
-                    continue
-                
-                seen_ids.add(offer_id)
-                offer["description"] = clean_html(offer.get("description", ""))
-                new_offers.append(offer)
+                if val and val > 0:
+                    # Attach the parsed value for the selection math
+                    offer["_parsed_salary"] = val
+                    offer["description"] = clean_html(offer.get("description", ""))
+                    candidates.append(offer)
+                    seen_ids.add(offer_id)
+                    
+                    if len(candidates) >= candidate_target:
+                        break
         
-        if success_count == 0:
-            print("[POOL] ⚠️ No offers found, check your connection")
+        if not candidates:
+            print("[POOL] ⚠️ No candidates found")
             return 0
+            
+        # --- MATHEMATICAL SELECTION (Tail-Heavy Sampling) ---
+        # Sort by salary to allow stratified sampling
+        candidates.sort(key=lambda x: x["_parsed_salary"])
         
-        random.shuffle(new_offers)
+        selected_offers = []
+        n_candidates = len(candidates)
+        
+        if n_candidates <= target_size:
+            selected_offers = candidates
+        else:
+            import math
+            # We use a Cosine Distribution for the sampling indices.
+            # This 'pushes' the selection towards the extremes (lowest and highest) 
+            # and away from the dense center (most salaries are around 2000e).
+            # formula: index = (1 - cos(pi * t)) / 2 * (N - 1)
+            
+            selected_offers = []
+            for i in range(target_size):
+                t = i / (target_size - 1)
+                # Apply cosine curve to concentrate sampling at the borders
+                curved_t = (1 - math.cos(math.pi * t)) / 2
+                idx = int(curved_t * (n_candidates - 1))
+                selected_offers.append(candidates[idx])
+                
+            # Note: This may pick the same extreme candidate twice if target_size is large 
+            # or candidates are few. Deduplicate just in case.
+            unique_selected = []
+            seen_ids_final = set()
+            for o in selected_offers:
+                if o["id"] not in seen_ids_final:
+                    unique_selected.append(o)
+                    seen_ids_final.add(o["id"])
+            
+            selected_offers = unique_selected
+            
+        # Randomize the order for gameplay
+        random.shuffle(selected_offers)
         
         with pool_lock:
             OFFER_POOL.clear()
-            OFFER_POOL.extend(new_offers)
+            OFFER_POOL.extend(selected_offers)
         
-        print(f"[POOL] ✅ Pool built with {len(OFFER_POOL)} unique offers")
+        # Calculate diversity metric for logs
+        salaries = [o["_parsed_salary"] for o in selected_offers]
+        avg = sum(salaries) / len(salaries)
+        variance = sum((s - avg) ** 2 for s in salaries) / len(salaries)
+        std_dev = variance ** 0.5
+        
+        print(f"[POOL] ✅ Diverse pool built with {len(OFFER_POOL)} offers")
+        print(f"[POOL] Range: {min(salaries):.0f}€ - {max(salaries):.0f}€ | Diversity (StdDev): {std_dev:.2f}")
+        
         return len(OFFER_POOL)
         
     except Exception as e:
-        print(f"[POOL] ERROR: {e}")
+        print(f"[POOL] ERROR during diverse build: {e}")
+        import traceback
+        traceback.print_exc()
         return 0
     finally:
         with pool_lock:
