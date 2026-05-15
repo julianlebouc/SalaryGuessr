@@ -100,7 +100,7 @@ def build_offer_pool(target_size=POOL_TARGET_SIZE):
         refill_in_progress = True
     
     try:
-        candidate_target = target_size * 4
+        candidate_target = target_size * 5
         print(f"[POOL] Building diverse pool (Goal: {target_size}, Candidates needed: {candidate_target})...")
         
         candidates = []
@@ -115,6 +115,10 @@ def build_offer_pool(target_size=POOL_TARGET_SIZE):
         # We fetch from a wider range of pages (up to 150 pages)
         pages = list(range(0, 150))
         random.shuffle(pages)
+        
+        salary_counts = {}
+        # We cap each specific salary value to a small percentage of the target pool
+        max_per_salary = max(5, int(target_size * 0.01))
         
         for page in pages:
             if len(candidates) >= candidate_target:
@@ -135,17 +139,27 @@ def build_offer_pool(target_size=POOL_TARGET_SIZE):
                 val = parse_salary(salary_text)
                 
                 if val and val > 0:
+                    # DIVERSITY CHECK:
+                    # We round to avoid tiny floating point differences (e.g., 1823.07 vs 1823.46)
+                    val_int = int(val)
+                    count = salary_counts.get(val_int, 0)
+                    
+                    if count >= max_per_salary:
+                        # Skip this offer to preserve diversity
+                        continue
+                        
                     # Attach the parsed value for the selection math
                     offer["_parsed_salary"] = val
                     offer["description"] = clean_html(offer.get("description", ""))
                     candidates.append(offer)
                     seen_ids.add(offer_id)
+                    salary_counts[val_int] = count + 1
                     
                     if len(candidates) >= candidate_target:
                         break
         
         if not candidates:
-            print("[POOL] ⚠️ No candidates found")
+            print("[POOL] Warning: No candidates found")
             return 0
             
         # --- MATHEMATICAL SELECTION (Tail-Heavy Sampling) ---
@@ -165,23 +179,28 @@ def build_offer_pool(target_size=POOL_TARGET_SIZE):
             # formula: index = (1 - cos(pi * t)) / 2 * (N - 1)
             
             selected_offers = []
+            selected_indices = set()
+            
             for i in range(target_size):
                 t = i / (target_size - 1)
                 # Apply cosine curve to concentrate sampling at the borders
                 curved_t = (1 - math.cos(math.pi * t)) / 2
-                idx = int(curved_t * (n_candidates - 1))
-                selected_offers.append(candidates[idx])
+                base_idx = int(curved_t * (n_candidates - 1))
                 
-            # Note: This may pick the same extreme candidate twice if target_size is large 
-            # or candidates are few. Deduplicate just in case.
-            unique_selected = []
-            seen_ids_final = set()
-            for o in selected_offers:
-                if o["id"] not in seen_ids_final:
-                    unique_selected.append(o)
-                    seen_ids_final.add(o["id"])
-            
-            selected_offers = unique_selected
+                # If collision, find nearest unique index
+                idx = base_idx
+                if idx in selected_indices:
+                    # Search for nearest free index
+                    for offset in range(1, n_candidates):
+                        if (base_idx + offset) < n_candidates and (base_idx + offset) not in selected_indices:
+                            idx = base_idx + offset
+                            break
+                        if (base_idx - offset) >= 0 and (base_idx - offset) not in selected_indices:
+                            idx = base_idx - offset
+                            break
+                
+                selected_indices.add(idx)
+                selected_offers.append(candidates[idx])
             
         # Randomize the order for gameplay
         random.shuffle(selected_offers)
@@ -196,8 +215,13 @@ def build_offer_pool(target_size=POOL_TARGET_SIZE):
         variance = sum((s - avg) ** 2 for s in salaries) / len(salaries)
         std_dev = variance ** 0.5
         
-        print(f"[POOL] ✅ Diverse pool built with {len(OFFER_POOL)} offers")
+        print(f"[POOL] Done: Diverse pool built with {len(OFFER_POOL)} offers")
         print(f"[POOL] Range: {min(salaries):.0f}€ - {max(salaries):.0f}€ | Diversity (StdDev): {std_dev:.2f}")
+        
+        # Log top salary occurrences
+        top_salaries = sorted(salary_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+        top_str = ", ".join([f"{s}€ (x{c})" for s, c in top_salaries])
+        print(f"[POOL] Top salary clusters: {top_str}")
         
         return len(OFFER_POOL)
         

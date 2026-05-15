@@ -36,7 +36,7 @@ SEARCH_URL = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/se
 # POOL CONFIGURATION
 # ==========================================================
 POOL_TARGET_SIZE = 500
-POOL_MIN_SIZE = 400
+POOL_MIN_SIZE = 250
 PLAYED_IDS_MAXLEN = 1000
 
 # ==========================================================
