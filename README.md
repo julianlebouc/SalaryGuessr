@@ -23,6 +23,8 @@ SalaryGuessr is an interactive web game where you test your knowledge of salarie
 
 ## Game Modes
 
+![Mode Selection](screenshots/mode-select.png)
+
 ### Classic Mode
 Test your knowledge by estimating the monthly gross salary of real job offers. Score points based on your precision across multiple rounds.
 ![Classic Mode](screenshots/classic.png)
@@ -34,6 +36,18 @@ A fast-paced mode where you compare two job offers. Predict whether the next off
 ### Battle Royale
 Compete against other players in real-time. Everyone guesses the salary of the same job offer, and the player with the furthest estimate is eliminated each round.
 ![Battle Royale](screenshots/battleroyale.png)
+
+## Statistics & Settings
+
+SalaryGuessr now features a comprehensive statistics dashboard and a real-time settings system.
+
+### Global Statistics
+Track global trends and community performance with the new statistics dashboard.
+![Statistics](screenshots/stats.png)
+
+### Real-time Settings
+Customize your experience with adjustable volume and salary unit preferences (Monthly/Yearly).
+![Settings](screenshots/settings.png)
 
 ## Prerequisites
 

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0-beta] - 2026-05-15
+
+### Added
+- **Game Settings**: Implemented a real-time settings system allowing users to toggle between monthly/yearly salary units and adjust global volume.
+- **Backend Tests**: Comprehensive test suite using Pytest covering API endpoints, salary parsing logic, and offer pool management.
+
+### Improved
+- **Salary Parsing**: Refactored extraction logic to accurately handle hourly wages, multi-rate offers, and improved noise filtering (e.g., ignoring technical codes like "CCN 66").
+- **Offer Pool**: Optimized the job offer ingestion and filtering pipeline for better distribution and data quality.
+
 ## [0.1.1-beta] - 2026-05-15
 
 ### Fixed
