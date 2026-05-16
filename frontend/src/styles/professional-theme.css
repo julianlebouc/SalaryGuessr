@@ -1,0 +1,1240 @@
+/**
+ * Professional Theme Overrides
+ * Scoped to .theme-professional
+ * Inspired by LinkedIn's clean, light aesthetic.
+ */
+
+.theme-professional {
+  /* Variable Overrides - Light Mode */
+  --primary-purple: #0a66c2; /* LinkedIn Blue */
+  --primary-purple-glow: rgba(10, 102, 194, 0.2);
+  --accent-cyan: #0073b1; /* Lighter Blue */
+  --bg-midnight: #f3f2ef; /* Light Gray Background */
+  --bg-deep-purple: #ffffff; /* White card background */
+  --text-main: #000000;
+  --text-secondary: #666666;
+  --ui-radius: 8px;
+
+  --grad-purple: linear-gradient(135deg, #0a66c2 0%, #0073b1 100%);
+  --grad-midnight: radial-gradient(circle at center, #ffffff 0%, #f3f2ef 100%);
+  --grad-dark: linear-gradient(180deg, #ffffff 0%, #f3f2ef 100%);
+
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: #e0e0e0;
+  --glass-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  --accent-glow: 0 0 10px rgba(10, 102, 194, 0.15);
+  --accent-glow-cyan: 0 0 10px rgba(0, 115, 177, 0.15);
+  --accent-pink: #c37d16; /* Professional gold/brown instead of pink */
+  --accent-pink-glow: rgba(195, 125, 22, 0.1);
+
+  /* Ensure text and icons inherit the theme color */
+  color: var(--text-main);
+}
+
+/* Override Backgrounds & Effects */
+.theme-professional .page-wrapper {
+  background-color: var(--bg-midnight);
+  background-image: none; /* Remove retro gradients */
+}
+
+/* Remove retro-specific scanlines and overlays */
+.theme-professional .noise-overlay,
+.theme-professional .page-wrapper::before,
+.theme-professional .page-wrapper::after {
+  display: none !important;
+}
+
+/* ==========================================
+   TILE SYSTEM OVERRIDES (from index.css)
+   ========================================== */
+
+/* Tile grid background */
+.theme-professional .tile-grid {
+  background: var(--bg-midnight);
+  border-top-color: var(--glass-border);
+  border-left-color: var(--glass-border);
+}
+
+/* Tile base */
+.theme-professional .tile {
+  background: var(--bg-deep-purple);
+  border-color: var(--glass-border);
+}
+
+.theme-professional .tile:hover {
+  background: #f9f9f9;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-color: var(--primary-purple);
+  transform: translateY(-2px); /* Subtle lift instead of retro tilt */
+  z-index: 2;
+}
+
+.theme-professional .tile::before {
+  display: none;
+}
+
+/* Corner accents */
+.theme-professional .tile-corner {
+  border-color: #cccccc;
+  opacity: 0.3;
+}
+
+.theme-professional .tile:hover .tile-corner {
+  border-color: var(--primary-purple);
+  opacity: 1;
+  box-shadow: 0 0 5px var(--primary-purple-glow);
+}
+
+/* Tile grid background */
+.theme-professional .tile-grid-bg {
+  background-image:
+    linear-gradient(rgba(10, 102, 194, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 102, 194, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* Tile hover content scale */
+.theme-professional .tile:hover .tile-content {
+  transform: none;
+}
+
+/* ==========================================
+   TYPOGRAPHY OVERRIDES
+   ========================================== */
+.theme-professional h1,
+.theme-professional .gp-titleMain,
+.theme-professional .gp-final-score {
+  color: #000000;
+  text-shadow: none !important;
+  animation: none !important; /* Disable chromatic aberration */
+  letter-spacing: normal;
+  text-transform: none; /* Less aggressive than all-caps retro */
+  filter: none !important;
+}
+
+.theme-professional .gp-titleMain::after {
+  background: var(--grad-purple);
+}
+
+/* ==========================================
+   BUTTON OVERRIDES (from index.css)
+   ========================================== */
+
+/* Primary button */
+.theme-professional .hp-btn-primary {
+  background: #0a66c2;
+  border: none;
+  box-shadow: none;
+  border-radius: 24px; /* Pill shape for professional look */
+  font-weight: 600;
+  text-transform: none;
+  padding: 0.8rem 2rem;
+}
+
+.theme-professional .hp-btn-primary:hover {
+  background: #004182;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.theme-professional .hp-btn-primary::before,
+.theme-professional .hp-btn-primary::after {
+  display: none; /* Remove retro shimmer */
+}
+
+/* Secondary button */
+.theme-professional .hp-btn-secondary {
+  background: transparent;
+  border: 1px solid #0a66c2;
+  color: #0a66c2;
+  border-radius: 24px;
+  backdrop-filter: none;
+}
+
+.theme-professional .hp-btn-secondary:hover {
+  background: rgba(10, 102, 194, 0.05);
+  border-color: #004182;
+  color: #004182;
+  transform: translateY(-1px);
+}
+
+/* ==========================================
+   NAVIGATION BUTTONS
+   ========================================== */
+.theme-professional .gp-homeBtn {
+  background: #ffffff !important;
+  border: 1px solid #e0e0e0 !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+  border-radius: 8px !important;
+  color: #333333 !important;
+  backdrop-filter: none !important;
+}
+
+.theme-professional .gp-homeBtn:hover {
+  background: #f3f3f3 !important;
+  border-color: #0a66c2 !important;
+  color: #0a66c2 !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+  transform: none !important;
+}
+
+.theme-professional .gp-home-logo {
+  filter: none;
+}
+
+.theme-professional .sg-settings-btn {
+  background: #ffffff !important;
+  border: 1px solid #e0e0e0 !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+  color: #333333 !important;
+  border-radius: 8px !important;
+  backdrop-filter: none !important;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
+}
+
+.theme-professional .sg-settings-btn:hover {
+  background: #f3f3f3 !important;
+  border-color: #0a66c2 !important;
+  color: #0a66c2 !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+  transform: none !important;
+}
+
+.theme-professional .sg-settings-btn svg {
+  opacity: 0.6;
+}
+
+.theme-professional .sg-settings-btn:hover svg {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================
+   SETTINGS POPUP OVERRIDES (SettingsPopup.css)
+   ========================================== */
+
+.theme-professional .sg-settings-card {
+  background: #ffffff;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+}
+
+.theme-professional .sg-settings-header {
+  background: #fafafa;
+  border-bottom: 1px solid #e8e8e8;
+  border-radius: 12px 12px 0 0;
+}
+
+.theme-professional .sg-settings-title-group {
+  color: #0a66c2;
+}
+
+.theme-professional .sg-settings-header h3 {
+  color: #000000;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 700;
+}
+
+.theme-professional .sg-settings-close {
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  color: #666;
+  border-radius: 6px;
+}
+
+.theme-professional .sg-settings-close:hover {
+  color: #c00;
+  background: #fff0f0;
+  border-color: #e0b0b0;
+}
+
+.theme-professional .sg-settings-section label {
+  color: #333;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
+}
+
+.theme-professional .sg-settings-desc {
+  color: #888;
+  font-style: normal;
+}
+
+.theme-professional .sg-settings-volume-row {
+  color: #555;
+}
+
+.theme-professional .sg-sound-slider {
+  background: none;
+  border: 1px solid #e0e0e0;
+}
+
+.theme-professional .sg-sound-slider::-webkit-slider-thumb {
+  background: #0a66c2;
+  box-shadow: 0 2px 6px rgba(10, 102, 194, 0.3);
+}
+
+.theme-professional .sg-sound-slider:hover::-webkit-slider-thumb {
+  background: #004182;
+  box-shadow: 0 2px 8px rgba(10, 102, 194, 0.4);
+}
+
+.theme-professional .sg-settings-divider {
+  background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+}
+
+.theme-professional .sg-settings-switch-group {
+  border: 1px solid #e0e0e0;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.theme-professional .sg-settings-switch-group button {
+  color: #666;
+  background: transparent;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.theme-professional .sg-settings-switch-group button:hover:not(.active) {
+  color: #333;
+  background: rgba(0,0,0,0.03);
+}
+
+.theme-professional .sg-settings-switch-group button.active {
+  background: #0a66c2;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(10, 102, 194, 0.25);
+}
+
+.theme-professional .sg-settings-footer {
+  background: #fafafa;
+  border-top: 1px solid #e8e8e8;
+  border-radius: 0 0 12px 12px;
+}
+
+.theme-professional .sg-settings-backdrop {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+}
+
+/* ==========================================
+   HOME PAGE OVERRIDES (HomePage.css)
+   ========================================== */
+
+.theme-professional .hp-title {
+  color: #000000;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.theme-professional .hp-logo-img {
+  filter: none;
+}
+
+.theme-professional .hp-subtitle {
+  color: #555;
+}
+
+.theme-professional .hp-preview-tag {
+  color: #0a66c2;
+  letter-spacing: normal;
+}
+
+.theme-professional .hp-preview-title {
+  text-transform: none;
+  letter-spacing: normal;
+  color: #000000;
+}
+
+.theme-professional .hp-preview-bar {
+  background: #e0e0e0;
+}
+
+.theme-professional .hp-preview-fill {
+  background: var(--grad-purple);
+  box-shadow: none;
+}
+
+.theme-professional .hp-label {
+  color: #888;
+  letter-spacing: normal;
+}
+
+.theme-professional .hp-val {
+  color: #000000;
+}
+
+.theme-professional .hp-val.accent {
+  color: #0a66c2;
+}
+
+.theme-professional .hp-stat-val {
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  color: #0a66c2;
+}
+
+.theme-professional .hp-stat-lab {
+  color: #888;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Social links */
+.theme-professional .hp-social-links svg {
+  color: #666 !important;
+  opacity: 0.7;
+}
+
+.theme-professional .hp-social-links a:hover svg {
+  opacity: 1;
+  transform: scale(1.1);
+  color: #0a66c2 !important;
+  filter: none;
+}
+
+.theme-professional .hp-social-links a {
+  border-right-color: #e0e0e0;
+}
+
+.theme-professional .hp-social-links a:hover {
+  background: rgba(10, 102, 194, 0.04);
+}
+
+/* Legal tile */
+.theme-professional .hp-legal {
+  color: #888;
+}
+
+.theme-professional .hp-legal:hover {
+  color: #0a66c2;
+}
+
+/* Preview ::before */
+.theme-professional .hp-preview::before {
+  background: var(--grad-purple);
+}
+
+/* ==========================================
+   MODE SELECT PAGE OVERRIDES (ModeSelectPage.css)
+   ========================================== */
+
+.theme-professional .mode-intro {
+  color: #666;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.theme-professional .mode-card-new:hover {
+  background: #f9f9f9;
+}
+
+.theme-professional .mode-card-new::before {
+  background: var(--grad-purple);
+  height: 3px;
+}
+
+.theme-professional .mode-icon-wrap {
+  filter: none;
+}
+
+.theme-professional .mode-card-title {
+  text-transform: none;
+  letter-spacing: normal;
+  color: #000000;
+}
+
+.theme-professional .mode-card-desc {
+  color: #666;
+}
+
+.theme-professional .mode-footer-info {
+  color: #888;
+}
+
+.theme-professional .mode-enter-btn {
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  color: #333;
+  text-transform: none;
+  letter-spacing: normal;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.theme-professional .mode-card-new:hover .mode-enter-btn {
+  background: #0a66c2;
+  border-color: #0a66c2;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   GAME PAGE OVERRIDES (GamePage.css)
+   ========================================== */
+
+.theme-professional .gp-config-box {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+}
+
+.theme-professional .gp-config-label {
+  color: #555;
+}
+
+.theme-professional .gp-config-label strong {
+  color: #0a66c2;
+}
+
+.theme-professional .gp-range-input {
+  background: #e0e0e0;
+}
+
+.theme-professional .gp-range-input::-webkit-slider-thumb {
+  background: #ffffff;
+  border: 2px solid #0a66c2;
+}
+
+.theme-professional .gp-range-input:hover::-webkit-slider-thumb {
+  background: #0a66c2;
+  border-color: #ffffff;
+}
+
+/* Score badges */
+.theme-professional .gp-round-badge,
+.theme-professional .gp-score-badge {
+  background: #f3f2ef;
+  border: 1px solid #e0e0e0;
+  color: #0a66c2 !important;
+  text-shadow: none;
+  animation: none !important;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.theme-professional .gp-round-badge {
+  color: #333 !important;
+}
+
+.theme-professional .gp-score-badge {
+  color: #0a66c2 !important;
+}
+
+.theme-professional .gp-badgeSpecial {
+  background: #eef3f8;
+  border-color: #0a66c2;
+  color: #0a66c2 !important;
+}
+
+/* Progress bar */
+.theme-professional .gp-progress-bar {
+  background: #e0e0e0;
+}
+
+.theme-professional .gp-progress-fill {
+  background: var(--grad-purple);
+  box-shadow: none;
+}
+
+/* Job details */
+.theme-professional .gp-job-title {
+  color: #000000 !important;
+  text-transform: none;
+  letter-spacing: -0.5px;
+}
+
+.theme-professional .gp-job-side {
+  color: #000000;
+}
+
+.theme-professional .gp-badge {
+  background: #f3f2ef;
+  border: 1px solid #d0d0d0;
+  color: #555 !important;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.theme-professional .gp-badgePrimary .gp-badge {
+  background: #e8f0fe;
+  color: #0a66c2 !important;
+  border-color: #0a66c2;
+}
+
+.theme-professional .gp-badgeCompany {
+  color: #0a66c2 !important;
+  border-color: #0a66c2;
+}
+
+.theme-professional .gp-badgeLocation {
+  color: #0a66c2 !important;
+  border-color: #0a66c2;
+}
+
+.theme-professional .gp-job-desc {
+  color: #333;
+}
+
+.theme-professional .gp-job-desc::-webkit-scrollbar-thumb {
+  background: #cccccc;
+}
+
+/* Input area */
+.theme-professional .gp-input-label {
+  color: #0a66c2;
+  letter-spacing: normal;
+}
+
+.theme-professional .gp-input-wrap input {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  color: #000000;
+  border-radius: 8px;
+}
+
+.theme-professional .gp-input-wrap input:focus {
+  border-color: #0a66c2;
+  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.15);
+  background: #ffffff;
+}
+
+.theme-professional .gp-currency {
+  opacity: 0.3;
+  color: #666;
+}
+
+/* Comparison items */
+.theme-professional .gp-comp-item {
+  background: #f9f9f9;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+}
+
+.theme-professional .gp-comp-item.highlight {
+  background: #eef3f8;
+  border: 1px solid #0a66c2;
+}
+
+.theme-professional .gp-comp-item span {
+  color: #888;
+  letter-spacing: normal;
+}
+
+.theme-professional .gp-comp-item strong {
+  color: #000000;
+}
+
+.theme-professional .gp-comp-item strong.accent {
+  color: #0a66c2;
+}
+
+/* Points */
+.theme-professional .gp-points-label {
+  color: #888;
+  letter-spacing: normal;
+}
+
+.theme-professional .gp-points-val {
+  color: #0a66c2;
+}
+
+/* Final score */
+.theme-professional .gp-final-score {
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  color: #0a66c2;
+  text-shadow: none !important;
+  animation: none !important;
+}
+
+.theme-professional .gp-final-unit {
+  color: #888;
+  -webkit-text-fill-color: #888;
+}
+
+.theme-professional .gp-final-text {
+  color: #666;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Chart */
+.theme-professional .gp-chart-container {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+}
+
+.theme-professional .gp-chart-title {
+  color: #000;
+  opacity: 0.6;
+}
+
+/* ==========================================
+   HIGHLOW GAME PAGE OVERRIDES (HighLowGame.css)
+   ========================================== */
+
+.theme-professional .hl-job-item::after {
+  background: #e0e0e0;
+}
+
+.theme-professional .hl-tag {
+  color: #0a66c2;
+  letter-spacing: normal;
+}
+
+.theme-professional .hl-job-title {
+  color: #000000 !important;
+  text-transform: none;
+}
+
+.theme-professional .hl-salary-display {
+  color: #000000;
+}
+
+.theme-professional .hl-vs-text {
+  color: #cccccc;
+  opacity: 0.4;
+}
+
+.theme-professional .hl-vs-btn {
+  color: #000000;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.theme-professional .hl-vs-btn.up {
+  background: #f0f8ff;
+  border: 2px solid #0a66c2;
+  box-shadow: 0 2px 8px rgba(10, 102, 194, 0.15);
+}
+
+.theme-professional .hl-vs-btn.up:hover {
+  background: #0a66c2;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10, 102, 194, 0.3);
+}
+
+.theme-professional .hl-vs-btn.down {
+  background: #fff5f5;
+  border: 2px solid #d32f2f;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.15);
+  color: #d32f2f;
+}
+
+.theme-professional .hl-vs-btn.down:hover {
+  background: #d32f2f;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+
+.theme-professional .hl-gameover-view h1 {
+  color: #000000;
+}
+
+.theme-professional .hl-final-score {
+  color: #0a66c2;
+}
+
+.theme-professional .hl-final-score span {
+  color: #888;
+}
+
+.theme-professional .hl-final-unit {
+  color: #888;
+}
+
+.theme-professional .hl-series-value {
+  color: #0a66c2;
+}
+
+/* ==========================================
+   BATTLE ROYALE PAGE OVERRIDES (BattleRoyale.css)
+   ========================================== */
+
+.theme-professional .br-setup-form {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.theme-professional .br-tabs {
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  padding: 3px;
+  border-radius: 8px;
+}
+
+.theme-professional .br-tabs button {
+  color: #666;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.theme-professional .br-tabs button.active {
+  color: #ffffff;
+}
+
+.theme-professional .br-tab-indicator {
+  background: #0a66c2;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(10, 102, 194, 0.3);
+}
+
+.theme-professional .br-input-field {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  color: #000000;
+  border-radius: 8px;
+}
+
+.theme-professional .br-input-field:focus {
+  border-color: #0a66c2;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.15);
+}
+
+/* Lobby */
+.theme-professional .br-lobby-tag {
+  color: #0a66c2;
+  letter-spacing: normal;
+}
+
+.theme-professional .br-room-code-toolbar {
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.theme-professional .br-code-text {
+  color: #0a66c2;
+  letter-spacing: 2px;
+}
+
+.theme-professional .br-icon-btn {
+  color: #666;
+}
+
+.theme-professional .br-icon-btn:hover {
+  color: #0a66c2;
+  transform: scale(1.1);
+}
+
+.theme-professional .br-lobby-info {
+  color: #888;
+}
+
+.theme-professional .br-player-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.theme-professional .br-player-card.me {
+  border-color: #0a66c2;
+  background: #f0f7ff;
+}
+
+.theme-professional .br-player-name {
+  color: #000000;
+}
+
+.theme-professional .br-player-empty {
+  color: #999;
+  letter-spacing: normal;
+}
+
+.theme-professional .tile-empty-slot {
+  background: #fff5f5 !important;
+  border-color: #fcc !important;
+}
+
+/* Playing */
+.theme-professional .br-timer-badge,
+.theme-professional .br-round-badge,
+.theme-professional .br-alive-badge {
+  background: #f9f9f9;
+  letter-spacing: normal;
+  text-transform: none;
+  color: #000000;
+}
+
+.theme-professional .br-timer-badge.urgent {
+  color: #d32f2f;
+  border-color: rgba(211, 47, 47, 0.3);
+  background: #fff5f5;
+}
+
+.theme-professional .br-round-badge {
+  color: #000000;
+}
+
+.theme-professional .br-alive-badge {
+  color: #000000;
+}
+
+/* Summary boxes */
+.theme-professional .br-summary-box {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.theme-professional .br-summary-box .label {
+  color: #888;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.theme-professional .br-summary-box.eliminated .names {
+  color: #d32f2f;
+}
+
+.theme-professional .br-summary-box.alive .br-next-timer {
+  color: #888;
+}
+
+.theme-professional .br-summary-box.alive .count {
+  color: #0a66c2;
+}
+
+.theme-professional .br-next-timer {
+  color: #888;
+}
+
+.theme-professional .br-next-timer strong {
+  color: #0a66c2;
+}
+
+/* Verdict */
+.theme-professional .br-results-title {
+  color: #000;
+  opacity: 0.5;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.theme-professional .br-status-msg {
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.theme-professional .br-status-msg.eliminated {
+  color: #d32f2f;
+  text-shadow: none;
+}
+
+.theme-professional .br-status-msg.survived {
+  color: #0a66c2;
+  text-shadow: none;
+}
+
+.theme-professional .br-real-salary {
+  color: #0a66c2;
+}
+
+.theme-professional .br-real-label {
+  color: #888;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Ranking */
+.theme-professional .br-rank-item {
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+}
+
+.theme-professional .br-rank-item.me {
+  border-color: #0a66c2;
+  background: #f0f7ff;
+}
+
+.theme-professional .br-rank-item.eliminated {
+  opacity: 0.4;
+}
+
+.theme-professional .br-rank-pos {
+  color: #0a66c2;
+}
+
+.theme-professional .br-rank-name {
+  color: #000000;
+}
+
+.theme-professional .br-rank-guess {
+  color: #000000;
+}
+
+.theme-professional .br-rank-error {
+  color: #888;
+}
+
+.theme-professional .br-elim-tag {
+  background: #d32f2f;
+  color: #fff;
+  border-radius: 4px;
+}
+
+/* Winner */
+.theme-professional .br-winner-tag {
+  color: #0a66c2;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* ==========================================
+   STATS PAGE OVERRIDES (StatsPage.css)
+   ========================================== */
+
+.theme-professional .stats-hero-item::after {
+  background: var(--grad-purple);
+}
+
+.theme-professional .stats-hero-val {
+  color: #000000;
+}
+
+.theme-professional .stats-hero-lab {
+  color: #888;
+  letter-spacing: normal;
+}
+
+.theme-professional .stats-sub {
+  color: #000000;
+  text-transform: none;
+  letter-spacing: normal;
+  border-bottom-color: #e0e0e0;
+}
+
+.theme-professional .stats-mode-row {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.theme-professional .stats-mode-row:hover {
+  background: #f9f9f9;
+  border-color: #0a66c2;
+  transform: translateX(4px);
+}
+
+.theme-professional .mode-name {
+  color: #000000;
+}
+
+.theme-professional .mode-vals {
+  color: #888;
+}
+
+.theme-professional .mode-vals strong {
+  color: #0a66c2;
+}
+
+/* ==========================================
+   MENTIONS LÉGALES PAGE OVERRIDES (MentionsLegales.css)
+   ========================================== */
+
+.theme-professional .ml-title {
+  color: #000000;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.theme-professional .ml-header p {
+  color: #888;
+}
+
+.theme-professional .ml-section h2 {
+  color: #0a66c2;
+  text-transform: none;
+  letter-spacing: normal;
+  border-bottom-color: #e8e8e8;
+}
+
+.theme-professional .ml-section p,
+.theme-professional .ml-section li {
+  color: #333;
+}
+
+.theme-professional .ml-footer {
+  color: #888;
+}
+
+.theme-professional .ml-back-btn {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  color: #333;
+  border-radius: 8px;
+  backdrop-filter: none;
+}
+
+.theme-professional .ml-back-btn:hover {
+  background: #f5f5f5;
+  transform: translateX(-3px);
+}
+
+/* ==========================================
+   SPECIFIC COMPONENT TEXT VISIBILITY
+   ========================================== */
+
+.theme-professional .gp-comp-item span {
+  color: #888;
+}
+
+.theme-professional .gp-comp-item strong {
+  color: #000000;
+}
+
+.theme-professional .gp-points-label {
+  color: #888;
+}
+
+.theme-professional .gp-points-val {
+  color: #0a66c2;
+}
+
+.theme-professional .gp-final-unit {
+  color: #888;
+}
+
+.theme-professional .gp-final-text {
+  color: #666;
+}
+
+/* ==========================================
+   CHART / RECHARTS TEXT VISIBILITY
+   ========================================== */
+
+.theme-professional .recharts-legend-label {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+.theme-professional .recharts-cartesian-axis-tick {
+  color: #888 !important;
+  fill: #888 !important;
+}
+
+.theme-professional .recharts-text {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+.theme-professional .recharts-default-tooltip {
+  background: #ffffff !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+}
+
+/* ==========================================
+   SCROLLBAR FOR PROFESSIONAL THEME
+   ========================================== */
+
+.theme-professional ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.theme-professional ::-webkit-scrollbar-track {
+  background: #f3f2ef;
+}
+
+.theme-professional ::-webkit-scrollbar-thumb {
+  background: #cdcdcd;
+  border-radius: 4px;
+}
+
+.theme-professional ::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+/* ==========================================
+   SVG ICONS (EXCEPT GAME LOGO)
+   ========================================== */
+
+.theme-professional svg:not(.gp-home-logo):not(.hp-logo-img) {
+  stroke: #666;
+  color: #666;
+}
+
+.theme-professional button:hover svg:not(.gp-home-logo):not(.hp-logo-img) {
+  stroke: #0a66c2;
+  color: #0a66c2;
+}
+
+.theme-professional a svg:not(.gp-home-logo):not(.hp-logo-img) {
+  stroke: #666;
+}
+
+.theme-professional a:hover svg:not(.gp-home-logo):not(.hp-logo-img) {
+  stroke: #0a66c2;
+}
+
+/* ==========================================
+   STATS / CARDS
+   ========================================== */
+
+.theme-professional .stats-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  color: #000000;
+}
+
+/* ==========================================
+   TILE-ACCENT OVERRIDES
+   ========================================== */
+
+.theme-professional .tile.tile-accent-cyan:hover {
+  background: rgba(10, 102, 194, 0.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-color: var(--primary-purple);
+}
+
+.theme-professional .tile.tile-accent-pink:hover {
+  background: rgba(195, 125, 22, 0.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-color: #c37d16;
+}
+
+.theme-professional .tile-accent-cyan:hover .tile-corner {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 5px var(--primary-purple-glow);
+}
+
+/* ==========================================
+   BR TOP BAR / GAME HEADER
+   ========================================== */
+
+.theme-professional .br-top-bar>div {
+  border-right-color: #e0e0e0;
+}
+
+.theme-professional .gp-game-header .gp-round-badge,
+.theme-professional .gp-game-header .gp-score-badge {
+  border-right-color: #e0e0e0;
+}
+
+.theme-professional .br-top-bar .br-timer-badge,
+.theme-professional .br-top-bar .br-round-badge,
+.theme-professional .br-top-bar .br-alive-badge {
+  border-right-color: #e0e0e0;
+}

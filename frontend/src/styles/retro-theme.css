@@ -14,6 +14,7 @@
   --bg-deep-purple: #1a0b2e;
   --text-main: #ffffff;
   --text-secondary: rgba(220, 255, 255, 0.9);
+  --ui-radius: 6px;
 
   --grad-purple: linear-gradient(135deg, #ff00ff 0%, #ff8c00 100%);
   --grad-midnight: radial-gradient(circle at center, #1a0b2e 0%, #050510 100%);
@@ -24,6 +25,9 @@
 
   --accent-glow: 0 0 25px rgba(255, 0, 255, 0.5);
   --accent-glow-cyan: 0 0 25px rgba(0, 255, 255, 0.5);
+
+  /* Ensure text and icons inherit the theme color */
+  color: var(--text-main);
 }
 
 /* Pure CSS Synthwave Background */

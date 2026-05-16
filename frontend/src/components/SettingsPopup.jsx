@@ -19,7 +19,8 @@ export default function SettingsPopup({ isOpen, onClose }) {
   const { 
     volume, setVolume, 
     salaryType, setSalaryType, 
-    salaryPeriod, setSalaryPeriod 
+    salaryPeriod, setSalaryPeriod,
+    theme, setTheme
   } = useSettings();
 
   return (
@@ -66,10 +67,28 @@ export default function SettingsPopup({ isOpen, onClose }) {
                     onChange={(e) => setVolume(Number(e.target.value) / 100)}
                     className="sg-sound-slider"
                     style={{
-                      background: `linear-gradient(to right, #9d50bb 0%, #6e48aa ${Math.round(volume * 100)}%, rgba(255, 255, 255, 0.05) ${Math.round(volume * 100)}%)`
+                      background: `linear-gradient(to right, var(--primary-purple) 0%, var(--primary-purple) ${Math.round(volume * 100)}%, rgba(255, 255, 255, 0.05) ${Math.round(volume * 100)}%)`
                     }}
                   />
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                </div>
+              </div>
+
+              <div className="sg-settings-section">
+                <label>Thème</label>
+                <div className="sg-settings-switch-group">
+                  <button 
+                    className={theme === "retro" ? "active" : ""} 
+                    onClick={() => setTheme("retro")}
+                  >
+                    Retro
+                  </button>
+                  <button 
+                    className={theme === "professional" ? "active" : ""} 
+                    onClick={() => setTheme("professional")}
+                  >
+                    Pro
+                  </button>
                 </div>
               </div>
 

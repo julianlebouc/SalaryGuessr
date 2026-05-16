@@ -25,8 +25,8 @@
 .sg-settings-card {
   position: relative;
   z-index: 10;
-  background: rgba(11, 10, 26, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-deep-purple);
+  border: 1px solid var(--glass-border);
   width: 100%;
   max-width: 480px;
   padding: 0;
@@ -38,11 +38,11 @@
 
 .sg-settings-header {
   padding: 20px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--glass-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--glass-bg);
 }
 
 .sg-settings-title-group {
@@ -57,7 +57,7 @@
   font-size: 0.95rem;
   text-transform: uppercase;
   letter-spacing: 3px;
-  color: #fff;
+  color: var(--text-main);
   font-weight: 900;
 }
 
@@ -89,7 +89,7 @@
   display: block;
   margin-bottom: 12px;
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 2px;
   font-weight: 800;
@@ -155,14 +155,14 @@
 
 .sg-settings-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
   margin: 8px 0;
 }
 
 .sg-settings-desc {
   margin-top: 10px;
   font-size: 0.7rem;
-  color: #444;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
@@ -174,9 +174,9 @@
 
 .sg-settings-switch-group {
   display: flex;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
   padding: 3px;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--glass-bg);
   border-radius: 4px;
 }
 
@@ -184,7 +184,7 @@
   flex: 1;
   background: none;
   border: none;
-  color: #555;
+  color: var(--text-secondary);
   padding: 10px;
   font-size: 0.8rem;
   cursor: pointer;
@@ -208,10 +208,10 @@
 
 .sg-settings-footer {
   padding: 20px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--glass-border);
   display: flex;
   justify-content: flex-end;
-  background: rgba(255, 255, 255, 0.01);
+  background: var(--glass-bg);
 }
 
 .no-margin {

@@ -7,9 +7,13 @@ import BattleRoyale from "./BattleRoyale";
 import StatsPage from "./StatsPage";
 import MentionsLegales from "./MentionsLegales";
 import { SoundProvider } from "../sound/SoundProvider";
-import { SettingsProvider } from "../context/SettingsContext";
+import { SettingsProvider, useSettings } from "../context/SettingsContext";
 import SettingsPopup from "../components/SettingsPopup";
 import { useState } from "react";
+
+// Themes
+import "../styles/retro-theme.css";
+import "../styles/professional-theme.css";
 
 /**
  * GlobalNavigation component.
@@ -59,25 +63,40 @@ function GlobalNav() {
  * @component
  * @returns {JSX.Element}
  */
+function AppContent() {
+  const { theme } = useSettings();
+  
+  return (
+    <Router>
+      <div className={`theme-${theme}`}>
+        {theme === 'retro' && <div className="noise-overlay" />}
+        <GlobalNav />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/mode-select" element={<ModeSelectPage />} />
+          <Route path="/game" element={<GamePage />} />
+          <Route path="/highlow" element={<HighLowGame />} />
+          <Route path="/battleroyale" element={<BattleRoyale />} />
+          <Route path="/stats" element={<StatsPage />} />
+          <Route path="/mentions-legales" element={<MentionsLegales />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+/**
+ * Root Application component.
+ * Sets up routing, global providers (Sound), and common navigation elements.
+ * 
+ * @component
+ * @returns {JSX.Element}
+ */
 function App() {
   return (
     <SettingsProvider>
       <SoundProvider>
-        <Router>
-          <div className="theme-retro">
-            <div className="noise-overlay" />
-            <GlobalNav />
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/mode-select" element={<ModeSelectPage />} />
-              <Route path="/game" element={<GamePage />} />
-              <Route path="/highlow" element={<HighLowGame />} />
-              <Route path="/battleroyale" element={<BattleRoyale />} />
-              <Route path="/stats" element={<StatsPage />} />
-              <Route path="/mentions-legales" element={<MentionsLegales />} />
-            </Routes>
-          </div>
-        </Router>
+        <AppContent />
       </SoundProvider>
     </SettingsProvider>
   );
