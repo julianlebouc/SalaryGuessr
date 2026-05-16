@@ -9,7 +9,8 @@ import MentionsLegales from "./MentionsLegales";
 import { SoundProvider } from "../sound/SoundProvider";
 import { SettingsProvider, useSettings } from "../context/SettingsContext";
 import SettingsPopup from "../components/SettingsPopup";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import TutorialPopup from "../components/TutorialPopup";
 
 // Themes
 import "../styles/retro-theme.css";
@@ -65,12 +66,27 @@ function GlobalNav() {
  */
 function AppContent() {
   const { theme } = useSettings();
-  
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  // Check if tutorial has been completed before
+  useEffect(() => {
+    const tutorialDone = localStorage.getItem("sg_tutorial_done");
+    if (!tutorialDone) {
+      setShowTutorial(true);
+    }
+  }, []);
+
+  const handleTutorialComplete = () => {
+    localStorage.setItem("sg_tutorial_done", "true");
+    setShowTutorial(false);
+  };
+
   return (
     <Router>
       <div className={`theme-${theme}`}>
         {(theme === 'classic' || theme === 'retro') && <div className="noise-overlay" />}
         <GlobalNav />
+        <TutorialPopup isOpen={showTutorial} onComplete={handleTutorialComplete} />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/mode-select" element={<ModeSelectPage />} />
