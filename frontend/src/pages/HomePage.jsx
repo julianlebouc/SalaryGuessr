@@ -133,7 +133,7 @@ export default function HomePage() {
               <a href="https://github.com/julianlebouc/SalaryGuessr" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                 <GithubIcon />
               </a>
-              <a href="https://discordapp.com/users/321002968218337289" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+              <a href="https://discord.gg/RYPb3VC7aQ" target="_blank" rel="noopener noreferrer" aria-label="Discord">
                 <DiscordIcon />
               </a>
               <a href="https://www.linkedin.com/in/julian-lebouc-851619134/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
