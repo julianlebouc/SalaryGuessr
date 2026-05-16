@@ -27,7 +27,7 @@ export default function MentionsLegales() {
             <h2>1. Éditeur du site</h2>
             <p>
               Le site <strong>SalaryGuessr</strong> est un projet personnel édité par Julian Lebouc.<br />
-              Contact : via Discord,GitHub ou LinkedIn.
+              Contact : via Discord, GitHub ou LinkedIn.
             </p>
           </section>
         </div>
