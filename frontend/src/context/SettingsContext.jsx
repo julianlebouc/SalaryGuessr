@@ -30,9 +30,9 @@ export function SettingsProvider({ children }) {
     return localStorage.getItem("sg_salary_period") || "monthly";
   });
 
-  // Theme: 'retro' or 'professional'
+  // Theme: 'classic', 'retro' or 'professional'
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem("sg_theme") || "retro";
+    return localStorage.getItem("sg_theme") || "classic";
   });
 
   // Persist settings
@@ -57,7 +57,7 @@ export function SettingsProvider({ children }) {
   useEffect(() => {
     try {
       const root = document.documentElement;
-      root.classList.remove('theme-retro', 'theme-professional');
+      root.classList.remove('theme-classic', 'theme-retro', 'theme-professional');
       root.classList.add(`theme-${theme}`);
     } catch (e) {
       // Server-side render or test environment may not have document; ignore.

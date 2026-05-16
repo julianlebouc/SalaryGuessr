@@ -219,6 +219,13 @@
   width: 100%;
 }
 
+/* Triple switch group for theme selector */
+.sg-settings-switch-group--triple button {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  padding: 10px 6px;
+}
+
 @media (max-width: 480px) {
   .sg-settings-grid {
     grid-template-columns: 1fr;

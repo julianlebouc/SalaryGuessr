@@ -69,7 +69,7 @@ function AppContent() {
   return (
     <Router>
       <div className={`theme-${theme}`}>
-        {theme === 'retro' && <div className="noise-overlay" />}
+        {(theme === 'classic' || theme === 'retro') && <div className="noise-overlay" />}
         <GlobalNav />
         <Routes>
           <Route path="/" element={<HomePage />} />

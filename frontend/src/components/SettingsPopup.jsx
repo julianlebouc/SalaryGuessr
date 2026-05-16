@@ -76,7 +76,13 @@ export default function SettingsPopup({ isOpen, onClose }) {
 
               <div className="sg-settings-section">
                 <label>Thème</label>
-                <div className="sg-settings-switch-group">
+                <div className="sg-settings-switch-group sg-settings-switch-group--triple">
+                  <button 
+                    className={theme === "classic" ? "active" : ""} 
+                    onClick={() => setTheme("classic")}
+                  >
+                    Classique
+                  </button>
                   <button 
                     className={theme === "retro" ? "active" : ""} 
                     onClick={() => setTheme("retro")}
