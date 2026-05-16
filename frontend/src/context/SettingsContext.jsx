@@ -30,6 +30,11 @@ export function SettingsProvider({ children }) {
     return localStorage.getItem("sg_salary_period") || "monthly";
   });
 
+  // Theme: 'classic', 'retro' or 'professional'
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("sg_theme") || "classic";
+  });
+
   // Persist settings
   useEffect(() => {
     localStorage.setItem("sg_volume", volume);
@@ -42,6 +47,22 @@ export function SettingsProvider({ children }) {
   useEffect(() => {
     localStorage.setItem("sg_salary_period", salaryPeriod);
   }, [salaryPeriod]);
+
+  useEffect(() => {
+    localStorage.setItem("sg_theme", theme);
+  }, [theme]);
+
+  // Ensure the theme class is applied on the document root so CSS variables
+  // defined inside .theme-... selectors affect global elements (html, body).
+  useEffect(() => {
+    try {
+      const root = document.documentElement;
+      root.classList.remove('theme-classic', 'theme-retro', 'theme-professional');
+      root.classList.add(`theme-${theme}`);
+    } catch (e) {
+      // Server-side render or test environment may not have document; ignore.
+    }
+  }, [theme]);
 
   /**
    * Converts a base salary (Brut Monthly) to the user's preferred unit for display.
@@ -110,6 +131,8 @@ export function SettingsProvider({ children }) {
         setSalaryType,
         salaryPeriod,
         setSalaryPeriod,
+        theme,
+        setTheme,
         convertFromBase,
         convertToBase,
         getSalaryLabel

@@ -422,7 +422,7 @@ export default function GamePage() {
                         wrapperStyle={{ top: -20, left: 0, fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', paddingBottom: '10px' }}
                       />
                       <Bar dataKey="real" name="Réel" fill="var(--primary-purple)" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="estimated" name="Estimé" fill="rgba(255,255,255,0.15)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="estimated" name="Estimé" fill="rgba(150,150,255,0.5)" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
