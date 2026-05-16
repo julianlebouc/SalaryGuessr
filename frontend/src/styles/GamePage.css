@@ -256,12 +256,6 @@
   letter-spacing: 0.5px;
 }
 
-.gp-badgePrimary .gp-badge {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
 .gp-badgeCompany {
   border-color: var(--primary-purple);
 }
