@@ -128,6 +128,12 @@
     letter-spacing: 1px;
     padding: 0.5rem;
   }
+  .gp-input-area,
+  .gp-result-area {
+    padding: 0rem !important;
+    border-radius: 12px !important;
+    gap: 0.10rem !important;
+  }
 }
 
 .gp-score-badge {
