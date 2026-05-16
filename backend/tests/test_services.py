@@ -90,3 +90,18 @@ def test_build_offer_pool(mock_parse, mock_fetch):
     job = get_normalized_job()
     assert job["id"] == "j1"
     assert job["salary_real"] == 1000.0
+
+
+def test_clean_html_masks_salaries():
+    """Ensure text_cleaner.clean_html masks salary numbers next to currency tokens."""
+    from backend.services.text_cleaner import clean_html
+    import re
+
+    html = "<p>Offre: 2 500 € par mois, prime: 1.200,50€ et bonus 3000 euros</p>"
+    out = clean_html(html)
+
+    # There should be no raw digit sequences directly adjacent to currency tokens
+    assert re.search(r"\d+\s*€", out) is None
+    assert re.search(r"\d+\s*euros?", out, re.IGNORECASE) is None
+    # Ensure we replaced numbers with bullet characters
+    assert "•" in out
