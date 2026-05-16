@@ -567,12 +567,6 @@
   letter-spacing: normal;
 }
 
-.theme-professional .gp-badgePrimary .gp-badge {
-  background: #e8f0fe;
-  color: #0a66c2 !important;
-  border-color: #0a66c2;
-}
-
 .theme-professional .gp-badgeCompany {
   color: #0a66c2 !important;
   border-color: #0a66c2;
@@ -842,17 +836,6 @@
   color: #888;
 }
 
-.theme-professional .br-player-card {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-}
-
-.theme-professional .br-player-card.me {
-  border-color: #0a66c2;
-  background: #f0f7ff;
-}
-
 .theme-professional .br-player-name {
   color: #000000;
 }
@@ -1080,47 +1063,6 @@
   color: #888;
 }
 
-.theme-professional .ml-back-btn {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  color: #333;
-  border-radius: 8px;
-  backdrop-filter: none;
-}
-
-.theme-professional .ml-back-btn:hover {
-  background: #f5f5f5;
-  transform: translateX(-3px);
-}
-
-/* ==========================================
-   SPECIFIC COMPONENT TEXT VISIBILITY
-   ========================================== */
-
-.theme-professional .gp-comp-item span {
-  color: #888;
-}
-
-.theme-professional .gp-comp-item strong {
-  color: #000000;
-}
-
-.theme-professional .gp-points-label {
-  color: #888;
-}
-
-.theme-professional .gp-points-val {
-  color: #0a66c2;
-}
-
-.theme-professional .gp-final-unit {
-  color: #888;
-}
-
-.theme-professional .gp-final-text {
-  color: #666;
-}
-
 /* ==========================================
    CHART / RECHARTS TEXT VISIBILITY
    ========================================== */
@@ -1187,37 +1129,6 @@
 
 .theme-professional a:hover svg:not(.gp-home-logo):not(.hp-logo-img) {
   stroke: #0a66c2;
-}
-
-/* ==========================================
-   STATS / CARDS
-   ========================================== */
-
-.theme-professional .stats-card {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  color: #000000;
-}
-
-/* ==========================================
-   TILE-ACCENT OVERRIDES
-   ========================================== */
-
-.theme-professional .tile.tile-accent-cyan:hover {
-  background: rgba(10, 102, 194, 0.03);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  border-color: var(--primary-purple);
-}
-
-.theme-professional .tile.tile-accent-pink:hover {
-  background: rgba(195, 125, 22, 0.03);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  border-color: #c37d16;
-}
-
-.theme-professional .tile-accent-cyan:hover .tile-corner {
-  border-color: var(--primary-purple);
-  box-shadow: 0 0 5px var(--primary-purple-glow);
 }
 
 /* ==========================================

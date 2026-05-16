@@ -112,12 +112,6 @@
     margin-bottom: 1rem;
   }
 
-  .mode-grid {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-    padding: 0 0.5rem;
-  }
-
   .mode-card-new {
     padding: 1rem;
     border-radius: 16px;

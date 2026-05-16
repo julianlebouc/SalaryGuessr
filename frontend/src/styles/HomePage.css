@@ -247,23 +247,6 @@
   letter-spacing: 3px;
 }
 
-/* Footer handled by tiles */
-
-.hp-socials {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.hp-socials a {
-  color: var(--text-secondary);
-  transition: var(--trans-smooth);
-}
-
-.hp-socials a:hover {
-  color: white;
-  transform: translateY(-2px);
-}
-
 .hp-social-links {
   display: flex;
   width: 100%;
