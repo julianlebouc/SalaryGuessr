@@ -394,6 +394,11 @@ button {
 }
 
 @media (max-width: 480px) {
+  .sg-top-right-nav {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
   .sg-settings-btn span {
     display: none;
   }
@@ -436,11 +441,21 @@ button {
   .gp-homeBtn span {
     display: none;
   }
+  .gp-homeBtn {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
 }
 
 @media (max-width: 768px) {
   .page-wrapper {
     padding: 5rem 0 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 3rem 0 0;
   }
 }
 
