@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0-beta] - 2026-05-16
+
+### Added
+- **Theme System**: Three visual themes — Classic (default purple dark), Retro (neon synthwave), Professional (light LinkedIn-inspired).
+- **Theme Switcher**: Settings popup now offers a 3-way toggle between Classic / Retro / Pro themes.
+- **Onboarding Tutorial**: First-time visitors see a 4-step guided tour covering website intro, game modes explanation, live theme/settings customization, and where to find settings.
+- **Classic Theme**: New base theme that restores the original clean dark look without retro neon overrides.
+
+### Changed
+- **Default Theme**: Changed from `retro` to `classic` for new users.
+- **Settings Volume Slider**: Now uses CSS variables (`--primary-purple`) instead of hardcoded retro colors, adapting to the active theme.
+
 ## [0.2.1-beta] - 2026-05-16
 
 ### Fixed
