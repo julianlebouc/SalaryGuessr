@@ -100,8 +100,7 @@ def build_offer_pool(target_size=POOL_TARGET_SIZE):
         refill_in_progress = True
     
     try:
-        candidate_target = target_size * 5
-        print(f"[POOL] Building diverse pool (Goal: {target_size}, Candidates needed: {candidate_target})...")
+        print(f"[POOL] Building diverse pool (Goal: {target_size})...")
         
         candidates = []
         seen_ids = set()
@@ -112,116 +111,100 @@ def build_offer_pool(target_size=POOL_TARGET_SIZE):
                 if existing_job.get("id"):
                     seen_ids.add(existing_job.get("id"))
         
-        # We fetch from a wider range of pages (up to 150 pages)
-        pages = list(range(0, 150))
-        random.shuffle(pages)
-        
-        salary_counts = {}
-        # We cap each specific salary value to a small percentage of the target pool
-        max_per_salary = max(5, int(target_size * 0.01))
-        
-        for page in pages:
-            if len(candidates) >= candidate_target:
-                break
-                
+        page = 0
+        while True:
             offers = fetch_offers_from_page(page)
             if not offers:
-                continue
+                print(f"[POOL] Reached end of available offers at page {page}")
+                break
                 
             for offer in offers:
                 offer_id = offer.get("id")
                 if not offer_id or offer_id in seen_ids or is_played(offer_id):
                     continue
                 
-                # Parse salary to ensure it's valid and get numeric value for sorting
+                # Check ALL salaire fields: libelle, commentaire, libre
                 salaire = offer.get("salaire", {})
-                salary_text = salaire.get("libelle", "") or salaire.get("commentaire", "")
+                salary_text = f"{salaire.get('libelle', '')} {salaire.get('commentaire', '')} {salaire.get('libre', '')}".strip()
                 val = parse_salary(salary_text)
                 
                 if val and val > 0:
-                    # DIVERSITY CHECK:
-                    # We round to avoid tiny floating point differences (e.g., 1823.07 vs 1823.46)
-                    val_int = int(val)
-                    count = salary_counts.get(val_int, 0)
-                    
-                    if count >= max_per_salary:
-                        # Skip this offer to preserve diversity
-                        continue
-                        
-                    # Attach the parsed value for the selection math
                     offer["_parsed_salary"] = val
                     offer["description"] = clean_html(offer.get("description", ""))
                     candidates.append(offer)
                     seen_ids.add(offer_id)
-                    salary_counts[val_int] = count + 1
-                    
-                    if len(candidates) >= candidate_target:
-                        break
+            
+            page += 1
         
         if not candidates:
             print("[POOL] Warning: No candidates found")
             return 0
             
-        # --- MATHEMATICAL SELECTION (Tail-Heavy Sampling) ---
-        # Sort by salary to allow stratified sampling
-        candidates.sort(key=lambda x: x["_parsed_salary"])
+        # --- MATHEMATICAL SELECTION (Dynamic Bins) ---
+        import math
+        num_candidates = len(candidates)
         
+        bin_size = 50
+        bins_dict = {}
+        for c in candidates:
+            bin_key = int(c["_parsed_salary"] / bin_size) * bin_size
+            if bin_key not in bins_dict:
+                bins_dict[bin_key] = []
+            bins_dict[bin_key].append(c)
+            
+        bins = list(bins_dict.items())
+        # Sort bins by their salary value for logical round-robin and logging
+        bins.sort(key=lambda x: x[0])
+        
+        num_bins = len(bins)
+        
+        print(f"[POOL] Total candidates retrieved: {num_candidates}")
+        print(f"[POOL] Created {num_bins} natural bins (size: {bin_size}€) excluding empty ranges")
+        
+        # Dynamically create and fill to meet target_size
         selected_offers = []
-        n_candidates = len(candidates)
+        bin_indices = [0] * num_bins
         
-        if n_candidates <= target_size:
-            selected_offers = candidates
-        else:
-            import math
-            # We use a Cosine Distribution for the sampling indices.
-            # This 'pushes' the selection towards the extremes (lowest and highest) 
-            # and away from the dense center (most salaries are around 2000e).
-            # formula: index = (1 - cos(pi * t)) / 2 * (N - 1)
+        for _, b in bins:
+            random.shuffle(b)
             
-            selected_offers = []
-            selected_indices = set()
-            
-            for i in range(target_size):
-                t = i / (target_size - 1) if target_size > 1 else 0
-                # Apply cosine curve to concentrate sampling at the borders
-                curved_t = (1 - math.cos(math.pi * t)) / 2
-                base_idx = int(curved_t * (n_candidates - 1))
+        # Round-robin selection to maximize diversity and ensure target_size is met
+        while len(selected_offers) < target_size:
+            added_in_round = False
+            for i in range(num_bins):
+                bin_key, b = bins[i]
+                if bin_indices[i] < len(b) and len(selected_offers) < target_size:
+                    selected_offers.append(b[bin_indices[i]])
+                    bin_indices[i] += 1
+                    added_in_round = True
+                    
+            if not added_in_round:
+                # All candidates exhausted before reaching target_size
+                break
                 
-                # If collision, find nearest unique index
-                idx = base_idx
-                if idx in selected_indices:
-                    # Search for nearest free index
-                    for offset in range(1, n_candidates):
-                        if (base_idx + offset) < n_candidates and (base_idx + offset) not in selected_indices:
-                            idx = base_idx + offset
-                            break
-                        if (base_idx - offset) >= 0 and (base_idx - offset) not in selected_indices:
-                            idx = base_idx - offset
-                            break
-                
-                selected_indices.add(idx)
-                selected_offers.append(candidates[idx])
-            
-        # Randomize the order for gameplay
+        for i in range(num_bins):
+            bin_key, b = bins[i]
+            if len(b) > 0:
+                print(f"  - Bin {i+1} ({bin_key}€ - {bin_key + bin_size}€): {len(b)} salaries available, selected {bin_indices[i]}")
+        
+        # Shuffle to ensure gameplay is random and salaries aren't strictly increasing
         random.shuffle(selected_offers)
-        
+            
         with pool_lock:
             OFFER_POOL.clear()
             OFFER_POOL.extend(selected_offers)
-        
+            
         # Calculate diversity metric for logs
-        salaries = [o["_parsed_salary"] for o in selected_offers]
-        avg = sum(salaries) / len(salaries)
-        variance = sum((s - avg) ** 2 for s in salaries) / len(salaries)
-        std_dev = variance ** 0.5
-        
-        print(f"[POOL] Done: Diverse pool built with {len(OFFER_POOL)} offers")
-        print(f"[POOL] Range: {min(salaries):.0f}€ - {max(salaries):.0f}€ | Diversity (StdDev): {std_dev:.2f}")
-        
-        # Log top salary occurrences
-        top_salaries = sorted(salary_counts.items(), key=lambda x: x[1], reverse=True)[:5]
-        top_str = ", ".join([f"{s}€ (x{c})" for s, c in top_salaries])
-        print(f"[POOL] Top salary clusters: {top_str}")
+        final_salaries = [o["_parsed_salary"] for o in selected_offers]
+        if final_salaries:
+            avg = sum(final_salaries) / len(final_salaries)
+            variance = sum((s - avg) ** 2 for s in final_salaries) / len(final_salaries)
+            std_dev = variance ** 0.5
+        else:
+            std_dev = 0
+            
+        print(f"[POOL] Done: Diverse pool refilled with {len(OFFER_POOL)} offers")
+        print(f"[POOL] Final Diversity (StdDev): {std_dev:.2f}")
         
         return len(OFFER_POOL)
         
