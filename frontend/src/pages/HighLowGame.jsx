@@ -6,7 +6,9 @@ import {
   fetchJob,
   fetchMultipleJobs,
   validateGuess,
-  validateComparison
+  validateComparison,
+  startSession,
+  reportGameOver,
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
 import { useSettings } from "../context/SettingsContext";
@@ -36,6 +38,7 @@ export default function HighLowGame() {
   const [showSalary, setShowSalary] = useState(false);
   const [guessResult, setGuessResult] = useState(null);
   const [isWaiting, setIsWaiting] = useState(false);
+  const sessionTokenRef = useRef(null);
   /**
    * Initializes the game state and fetches the first set of jobs.
    * 
@@ -49,11 +52,16 @@ export default function HighLowGame() {
     setShowSalary(false);
     setGuessResult(null);
     setIsWaiting(false);
+    sessionTokenRef.current = null;
 
     try {
+      // Start an anti-cheat session
+      const token = await startSession("highlow");
+      sessionTokenRef.current = token;
+
       const newJobs = await fetchMultipleJobs(2);
       if (newJobs.length > 0) {
-        const reveal = await validateGuess(newJobs[0].id);
+        const reveal = await validateGuess(newJobs[0].id, null, token);
         newJobs[0].baseSalary = reveal.real_salary;
       }
       setJobs(newJobs);
@@ -77,7 +85,7 @@ export default function HighLowGame() {
     const rightJob = jobs[currentIndex + 1];
 
     try {
-      const response = await validateComparison(rightJob.id, leftJob.id, guess);
+      const response = await validateComparison(rightJob.id, leftJob.id, guess, sessionTokenRef.current);
 
       const updatedJobs = [...jobs];
       updatedJobs[currentIndex + 1].baseSalary = response.real_salary;
@@ -109,7 +117,8 @@ export default function HighLowGame() {
       } else {
         play("gameEnd");
         setGuessResult("wrong");
-        logger.info("High/Low game over", { finalScore: score });
+        // Anti-cheat: server computes and logs the authoritative final score
+        reportGameOver(sessionTokenRef.current);
         setTimeout(() => setGameOver(true), 1500);
       }
     } catch (err) {
