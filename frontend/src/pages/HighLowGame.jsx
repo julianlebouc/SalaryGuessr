@@ -166,7 +166,7 @@ export default function HighLowGame() {
                   >
                     <span className="hl-tag">DÉJÀ RÉVÉLÉ</span>
                     <h2 className="hl-job-title">{jobs[currentIndex]?.title}</h2>
-                    <div className="gp-badgeGroup" style={{ justifyContent: 'center', marginTop: '1rem' }}>
+                    <div className="gp-badgeGroup" style={{ justifyContent: 'center', marginTop: '0.5rem' }}>
                       <span className="gp-badge">{jobs[currentIndex]?.company || "Confidentiel"}</span>
                       <span className="gp-badge">{jobs[currentIndex]?.location || "France"}</span>
                       {jobs[currentIndex]?.contractType && <span className="gp-badge">{jobs[currentIndex].contractType}</span>}
@@ -214,7 +214,7 @@ export default function HighLowGame() {
                   >
                     <span className="hl-tag">EST-CE PLUS OU MOINS ?</span>
                     <h2 className="hl-job-title">{jobs[currentIndex + 1]?.title}</h2>
-                    <div className="gp-badgeGroup" style={{ justifyContent: 'center', marginTop: '1rem' }}>
+                    <div className="gp-badgeGroup" style={{ justifyContent: 'center', marginTop: '0.5rem' }}>
                       <span className="gp-badge">{jobs[currentIndex + 1]?.company || "Confidentiel"}</span>
                       <span className="gp-badge">{jobs[currentIndex + 1]?.location || "France"}</span>
                       {jobs[currentIndex + 1]?.contractType && <span className="gp-badge">{jobs[currentIndex + 1].contractType}</span>}

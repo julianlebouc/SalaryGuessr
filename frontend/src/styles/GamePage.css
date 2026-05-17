@@ -178,8 +178,8 @@
   }
 
   .badgesContainer {
-    gap: 0.5rem !important;
-    margin-bottom: 1rem !important;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .gp-badge {
@@ -242,6 +242,13 @@
   margin-bottom: 1rem;
 }
 
+@media (max-width: 640px) {
+  .badgesContainer {
+    gap: 0.1rem;
+    margin-bottom: 0.25rem;
+  }
+}
+
 .gp-badgeGroup {
   display: flex;
   gap: 0.4rem;
@@ -276,7 +283,7 @@
   font-size: 0.95rem;
   line-height: 1.5;
   color: var(--text-secondary);
-  max-height: 250px;
+
   overflow-y: auto;
   padding-right: 1rem;
   max-width: 100%;
@@ -377,6 +384,14 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--ui-radius);
 }
+
+@media (max-width: 640px) {
+  .gp-comp-item {
+    gap: 0.1rem;
+    padding: 0.25rem;
+  }
+}
+
 
 .gp-comp-item.highlight {
   background: rgba(0, 242, 254, 0.03);

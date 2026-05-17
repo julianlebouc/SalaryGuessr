@@ -279,6 +279,12 @@ button {
   }
 }
 
+@media (max-width: 480px) {
+  .tile-content {
+    padding: 0.5rem;
+  }
+}
+
 .tile:hover .tile-content {
   transform: scale(1.01);
   transition: var(--trans-smooth);
