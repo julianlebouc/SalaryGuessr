@@ -92,16 +92,61 @@ export async function fetchMultipleJobs(count) {
 }
 
 /**
+ * Start a new anti-cheat game session on the server.
+ * @param {"classic"|"highlow"} mode
+ * @returns {Promise<string>} The session_token to include in validate calls.
+ */
+export async function startSession(mode) {
+  try {
+    const res = await fetch(`${API_URL}/session/start`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.session_token ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Finalize a game session. Server computes the authoritative score and logs it.
+ * @param {string} sessionToken
+ * @returns {Promise<object|null>} { mode, score } or null on failure.
+ */
+export async function reportGameOver(sessionToken) {
+  if (!sessionToken) return null;
+  try {
+    const res = await fetch(`${API_URL}/game_over`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_token: sessionToken }),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Validate a salary guess with the backend (Anti-Cheat).
- * @param {string} jobId 
- * @param {number} guess 
+ * @param {string} jobId
+ * @param {number} guess
+ * @param {string|null} sessionToken
  * @returns {Promise<object>}
  */
-export async function validateGuess(jobId, guess) {
+export async function validateGuess(jobId, guess, sessionToken = null) {
+  const body = { job_id: jobId };
+  if (guess !== undefined && guess !== null) body.guess = Number(guess);
+  if (sessionToken) body.session_token = sessionToken;
+
   const res = await fetch(`${API_URL}/validate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ job_id: jobId, guess: Number(guess) }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return await res.json();
@@ -109,20 +154,24 @@ export async function validateGuess(jobId, guess) {
 
 /**
  * Validate a higher/lower comparison between two jobs (Anti-Cheat).
- * @param {string} jobIdToGuess 
- * @param {string} knownJobId 
+ * @param {string} jobIdToGuess
+ * @param {string} knownJobId
  * @param {string} guess "higher" or "lower"
+ * @param {string|null} sessionToken
  * @returns {Promise<object>}
  */
-export async function validateComparison(jobIdToGuess, knownJobId, guess) {
+export async function validateComparison(jobIdToGuess, knownJobId, guess, sessionToken = null) {
+  const body = {
+    job_id: jobIdToGuess,
+    other_job_id: knownJobId,
+    guess,
+  };
+  if (sessionToken) body.session_token = sessionToken;
+
   const res = await fetch(`${API_URL}/validate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      job_id: jobIdToGuess,
-      other_job_id: knownJobId,
-      guess
-    }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return await res.json();

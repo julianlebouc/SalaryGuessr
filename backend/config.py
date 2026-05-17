@@ -46,5 +46,10 @@ LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 LOG_RETENTION_DAYS = int(os.getenv("LOG_RETENTION_DAYS", 30))
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
+# ==========================================================
+# SECURITY / ANTI-CHEAT CONFIGURATION
+# ==========================================================
+ADMIN_SECRET_KEY = os.getenv("ADMIN_SECRET_KEY", "")
+
 if not FRANCE_TRAVAIL_CLIENT_ID or not FRANCE_TRAVAIL_CLIENT_SECRET:
     raise ValueError("FRANCE_TRAVAIL_CLIENT_ID et FRANCE_TRAVAIL_CLIENT_SECRET requis")

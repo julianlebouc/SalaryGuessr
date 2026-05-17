@@ -14,7 +14,9 @@ import "../styles/GamePage.css";
 import {
   fetchJob,
   hasValidSalary,
-  validateGuess
+  validateGuess,
+  startSession,
+  reportGameOver,
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
 import { useSettings } from "../context/SettingsContext";
@@ -73,6 +75,7 @@ export default function GamePage() {
   const jobBufferRef = useRef([]);
   const refillPromiseRef = useRef(null);
   const seenIdsRef = useRef(new Set());
+  const sessionTokenRef = useRef(null);
 
   /**
    * Fetches a single job from the API and ensures it has a valid salary
@@ -153,12 +156,17 @@ export default function GamePage() {
     setScore(0);
     setHistory([]);
     seenIdsRef.current.clear();
+    sessionTokenRef.current = null;
 
     setGuess("");
     setResult(null);
     setShowResult(false);
 
     try {
+      // Start an anti-cheat session before fetching jobs
+      const token = await startSession("classic");
+      sessionTokenRef.current = token;
+
       const firstJob = await fetchNormalizedJobWithSalary();
       seenIdsRef.current.add(firstJob.id);
       setCurrentJob(firstJob);
@@ -183,7 +191,7 @@ export default function GamePage() {
     
     setLoadingJob(true);
     try {
-      const response = await validateGuess(currentJob.id, userBaseValue);
+      const response = await validateGuess(currentJob.id, userBaseValue, sessionTokenRef.current);
       
       const realDisplayValue = convertFromBase(response.real_salary);
       const scoreValue = response.score;
@@ -234,7 +242,8 @@ export default function GamePage() {
       } else {
         play("gameEnd3");
       }
-      logger.info("Classic game finished", { score: avgScore });
+      // Anti-cheat: server computes and logs the authoritative final score
+      reportGameOver(sessionTokenRef.current);
       return;
     }
 

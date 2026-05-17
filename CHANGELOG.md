@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.3-beta] - 2026-05-17
+
+### Added
+- **Server-side Score Tracking**: Scores are no longer submitted by the client. The server now issues a session token at game start, accumulates per-round scores on each `/validate` call, and computes the final score on `/game_over`.
+- **Rate Limiting**: Added per-IP rate limits on all game endpoints (`/job`, `/validate`, `/log`, `/game_over`) via `slowapi`.
+- **Admin Key Protection**: The `/reset` endpoint now requires a secret `X-Admin-Key` header.
+
+### Fixed
+- **Log Injection**: The `/log` endpoint now rejects any message not in an explicit allowlist and strips score-related fields from the context, preventing stat manipulation via crafted requests.
+
+### Security
+- Socket.IO CORS origin changed from `*` to the configured `CORS_ORIGINS` value.
+
 ## [0.3.2-beta] - 2026-05-17
 
 ### Added
