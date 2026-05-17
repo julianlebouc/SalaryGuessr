@@ -409,10 +409,10 @@ export default function GamePage() {
                       estimated: convertFromBase(h.estimatedBase),
                       real: convertFromBase(h.realBase)
                     }))}>
-                      <XAxis dataKey="round" stroke="rgba(255,255,255,0.3)" />
+                      <XAxis dataKey="round" stroke="rgba(180,180,180,0.4)" />
                       <Tooltip
                         contentStyle={{ background: "#1a103d", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }}
-                        itemStyle={{ color: "#fff" }}
+                        itemStyle={{ color: "#aaa" }}
                         formatter={(value) => [`${value.toLocaleString()} €`]}
                       />
                       <Legend
@@ -421,8 +421,8 @@ export default function GamePage() {
                         iconType="circle"
                         wrapperStyle={{ top: -20, left: 0, fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', paddingBottom: '10px' }}
                       />
-                      <Bar dataKey="real" name="Réel" fill="var(--primary-purple)" radius={[4, 4, 0, 0]} />
                       <Bar dataKey="estimated" name="Estimé" fill="rgba(150,150,255,0.5)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="real" name="Réel" fill="var(--primary-purple)" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

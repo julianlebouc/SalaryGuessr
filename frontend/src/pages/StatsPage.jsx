@@ -87,19 +87,19 @@ export default function StatsPage() {
                 <XAxis 
                   dataKey="day" 
                   tickFormatter={formatDateFr}
-                  stroke="rgba(255,255,255,0.3)"
+                  stroke="rgba(180,180,180,0.4)"
                   fontSize={12}
                   tickMargin={10}
                 />
                 <YAxis 
-                  stroke="rgba(255,255,255,0.3)"
+                  stroke="rgba(180,180,180,0.4)"
                   fontSize={12}
                   tickMargin={10}
                 />
                 <Tooltip 
                   labelFormatter={formatDateFr}
                   contentStyle={{ background: "#1a103d", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px" }} 
-                  itemStyle={{ color: "#fff" }}
+                  itemStyle={{ color: "#aaa" }}
                 />
                 <Bar dataKey="count" name="Parties" fill="var(--primary-purple)" radius={[4, 4, 0, 0]} />
               </BarChart>
