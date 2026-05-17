@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2-beta] - 2026-05-17
+
+### Added
+- **Salary Distribution**: Implemented natural pool binning logic (50€ intervals) to ensure a more even and diverse mathematical distribution of job offers across the entire salary range.
+
+### Improved
+- **Responsive Layouts**: Optimized content display, container gaps, margins, paddings, and heights to maximize screen real estate and fit more content cleanly on both mobile and desktop views.
+- **Salary Masking**: Simplified the salary censoring in job descriptions by masking all numeric characters to prevent edge case leaks, and added strict masking for all "smic" references.
+
+### Fixed
+- **Pro Theme Legibility**: Fixed an issue in `GamePage` and `StatsPage` where graph legends and values were not visible when using the Professional theme.
+
 ## [0.3.1-beta] - 2026-05-16
 
 ### Improved
