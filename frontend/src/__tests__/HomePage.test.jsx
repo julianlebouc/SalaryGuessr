@@ -50,7 +50,7 @@ describe('HomePage Component', () => {
     );
     
     const discordLink = screen.getByRole('link', { name: /Discord/i });
-    expect(discordLink).toHaveAttribute('href', expect.stringContaining('discordapp.com'));
+    expect(discordLink).toHaveAttribute('href', expect.stringContaining('discord.gg'));
   });
 
   test('renders stat boxes', () => {

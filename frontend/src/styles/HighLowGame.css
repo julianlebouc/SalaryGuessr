@@ -45,6 +45,13 @@
   color: var(--primary-purple);
 }
 
+@media (max-width: 640px) {
+  .hl-tag {
+    display: None;
+  }
+}
+
+
 .hl-job-title {
   font-size: clamp(1.2rem, 3vw, 2.5rem);
   font-weight: 900;
@@ -213,8 +220,8 @@
   }
 
   .hl-tag {
-    font-size: 0.8rem !important;
-    letter-spacing: 2px !important;
+    font-size: 0.8rem ;
+    letter-spacing: 2px;
   }
 
   .hl-vs-btn {

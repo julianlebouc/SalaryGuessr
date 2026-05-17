@@ -80,7 +80,7 @@ def fetch_offers_from_page(page_number, retry=0):
         
         params = {
             "range": f"{page_number * 150}-{(page_number * 150) + 149}",
-            "tri": random.choice(["DATE", "SCORE"])
+            "tri": "DATE"
         }
         
         r = requests.get(SEARCH_URL, headers=headers, params=params, timeout=15)
@@ -89,8 +89,15 @@ def fetch_offers_from_page(page_number, retry=0):
             print(f"[401] Token expired, renewing...")
             get_access_token(force_refresh=True)
             return fetch_offers_from_page(page_number, retry + 1)
+            
+        if r.status_code in [400, 416]:
+            # Range not satisfiable or Bad Request usually means we hit the pagination limit (3000 results)
+            print(f"[{r.status_code}] End of pagination reached for page {page_number}")
+            return []
         
         r.raise_for_status()
+        
+        # 206 Partial Content is normally returned when using range, 200 is also fine.
         data = r.json()
         return data.get("resultats", [])
         
