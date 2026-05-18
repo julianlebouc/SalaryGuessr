@@ -10,14 +10,18 @@ def parse_salary(text):
 
     text_lower = text.lower()
     
+    # Reject daily rates
+    if any(k in text_lower for k in ['par jour', '/jour', '/ jour', 'journalier']):
+        return None
+    
     # Remove "sur X mois" to avoid confusion with salary values
     # e.g., "Mensuel de 2000 Euros sur 13 mois" -> "Mensuel de 2000 Euros"
     clean_text = re.sub(r"sur\s*\d+(?:[.,]\d+)?\s*mois", "", text_lower)
     
-    # Detect period
-    is_hourly = any(k in text_lower for k in ['horaire', 'heure', '/h'])
-    is_annual = any(k in text_lower for k in ['annuel', '/an', 'par an']) or ' an ' in f" {text_lower} "
-    is_monthly = any(k in text_lower for k in ['mensuel', '/mois', 'par mois']) or ' mois ' in f" {text_lower} "
+    # Detect period using clean_text to avoid "sur 12 mois" triggering is_monthly
+    is_hourly = any(k in clean_text for k in ['horaire', 'heure', '/h'])
+    is_annual = any(k in clean_text for k in ['annuel', '/an', 'par an']) or ' an ' in f" {clean_text} "
+    is_monthly = any(k in clean_text for k in ['mensuel', '/mois', 'par mois']) or ' mois ' in f" {clean_text} "
     
     # Normalize spaces: remove spaces between digits (e.g., "2 500" -> "2500")
     # but keep spaces between words and numbers (e.g., "CCN 66" -> "CCN 66")
@@ -26,6 +30,11 @@ def parse_salary(text):
     # Find numbers (supporting decimals with . or ,)
     # Using \b to ensure we don't catch numbers inside words like "CCN66"
     nums = re.findall(r"\b\d+(?:[.,]\d+)?\b", text_norm)
+    
+    # Ignore offers with too many numbers to avoid wrong parsing
+    if len(nums) > 2:
+        return None
+        
     all_vals = [float(n.replace(",", ".")) for n in nums]
     
     if not all_vals:
