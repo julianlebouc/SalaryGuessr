@@ -46,11 +46,12 @@ def test_stats():
         assert response.json()["played_count"] == 10
         assert response.json()["pool_size"] == 50
 
+@patch("backend.main.ADMIN_SECRET_KEY", "test-secret-key")
 @patch("backend.main.build_offer_pool")
 @patch("backend.main.clear_played")
 def test_reset(mock_clear, mock_build):
     """Test the /reset endpoint."""
-    response = client.post("/reset")
+    response = client.post("/reset", headers={"x-admin-key": "test-secret-key"})
     assert response.status_code == 200
     assert response.json()["message"] == "Full reset complete"
     assert mock_clear.called
