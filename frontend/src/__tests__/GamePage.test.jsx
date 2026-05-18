@@ -40,6 +40,8 @@ vi.mock('../utils/gameUtils', () => ({
   })),
   hasValidSalary: vi.fn(() => true),
   validateGuess: vi.fn(() => Promise.resolve({ score: 90, real_salary: 4000 })),
+  startSession: vi.fn(() => Promise.resolve("mock-session-token")),
+  reportGameOver: vi.fn(() => Promise.resolve()),
 }));
 
 describe('GamePage Component', () => {
@@ -69,10 +71,10 @@ describe('GamePage Component', () => {
         <GamePage />
       </MemoryRouter>
     );
-    
+
     const startButton = screen.getByText(/LANCER LA PARTIE/i);
     fireEvent.click(startButton);
-    
+
     // Wait for the transition to playing view
     const badge = await screen.findByText(/MANCHE 1/i);
     expect(badge).toBeInTheDocument();
