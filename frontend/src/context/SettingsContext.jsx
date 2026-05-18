@@ -107,7 +107,7 @@ export function SettingsProvider({ children }) {
       result = result / 0.77;
     }
     
-    return Math.round(result);
+    return result;
   };
 
   /**
