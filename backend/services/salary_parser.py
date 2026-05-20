@@ -3,15 +3,15 @@ import re
 def parse_salary(text):
     """
     Extract and normalize a salary value from raw text.
-    Handles annual/monthly/hourly detection and calculates the monthly equivalent.
+    Handles annual/monthly detection and calculates the monthly equivalent.
     """
     if not text:
         return None
 
     text_lower = text.lower()
     
-    # Reject daily rates
-    if any(k in text_lower for k in ['par jour', '/jour', '/ jour', 'journalier']):
+    # Reject daily AND hourly rates
+    if any(k in text_lower for k in ['par jour', '/jour', '/ jour', 'journalier', 'horaire', 'heure', '/h']):
         return None
     
     # Remove "sur X mois" to avoid confusion with salary values
@@ -19,7 +19,6 @@ def parse_salary(text):
     clean_text = re.sub(r"sur\s*\d+(?:[.,]\d+)?\s*mois", "", text_lower)
     
     # Detect period using clean_text to avoid "sur 12 mois" triggering is_monthly
-    is_hourly = any(k in clean_text for k in ['horaire', 'heure', '/h'])
     is_annual = any(k in clean_text for k in ['annuel', '/an', 'par an']) or ' an ' in f" {clean_text} "
     is_monthly = any(k in clean_text for k in ['mensuel', '/mois', 'par mois']) or ' mois ' in f" {clean_text} "
     
@@ -45,28 +44,15 @@ def parse_salary(text):
     # Noise exclusion for technical codes
     if any(k in text_lower for k in ['ccn', 'convention', 'indice', 'grille']):
         # If it looks like a technical code, we REQUIRE a currency or clear period marker
-        if not has_currency and not is_hourly and not is_annual and not is_monthly:
+        if not has_currency and not is_annual and not is_monthly:
             return None
 
     is_net = bool(re.search(r"\bnet\b", text_lower))
     
     # Filter for realistic ranges
-    # 1. Check for hourly if explicitly mentioned or if values are very low
     result = None
-    if is_hourly or (not is_annual and not is_monthly and all(10 <= v <= 100 for v in all_vals)):
-        # Safety: if no hourly keyword AND no currency, it's too risky to assume hourly (except for very specific ranges)
-        if not is_hourly and not has_currency:
-            # Maybe it's a False Positive like a date or a small code
-            pass 
-        else:
-            vals = [v for v in all_vals if 10 <= v <= 100]
-            if vals:
-                avg_hourly = sum(vals) / len(vals)
-                result = avg_hourly * 151.67
-            
-    # 2. Check for monthly/annual if hourly didn't match
     if result is None:
-        vals = [v for v in all_vals if 400 <= v <= 100000]
+        vals = [v for v in all_vals if 300 <= v <= 100000]
         if vals:
             avg_val = sum(vals) / len(vals)
             
