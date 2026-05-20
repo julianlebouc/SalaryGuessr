@@ -146,10 +146,8 @@ export default function HomePage() {
         {/* LEGAL TILE */}
         <div className="tile span-6 tile-grid-bg tile-animate" style={{ animationDelay: '0.28s' }}>
           {renderCorners()}
-          <div className="tile-content" style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <a href="/mentions-legales" className="hp-legal" onClick={(e) => { e.preventDefault(); navigate('/mentions-legales'); }}>
+          <div className="tile-content hp-legal" style={{ justifyContent: 'center', alignItems: 'center' }} href="/mentions-legales" onClick={(e) => { e.preventDefault(); navigate('/mentions-legales'); }}>
               Mentions Légales • © 2026 SalaryGuessr
-            </a>
           </div>
         </div>
       </div>
