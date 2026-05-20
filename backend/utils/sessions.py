@@ -73,15 +73,20 @@ def finalize_session(token: str) -> dict | None:
         if not s or s["finalized"]:
             return None
         s["finalized"] = True
+        s["score_submitted"] = False
 
         mode = s["mode"]
         if mode == "classic":
             rounds = s["round_scores"]
-            avg = sum(rounds) / len(rounds) if rounds else 0
-            return {"mode": mode, "score": round(avg, 2), "rounds": len(rounds)}
+            score = round(sum(rounds) / len(rounds), 2) if rounds else 0.0
+            s["final_score"] = score
+            return {"mode": mode, "score": score, "rounds": len(rounds)}
         elif mode == "highlow":
-            return {"mode": mode, "score": s["streak"]}
+            score = s["streak"]
+            s["final_score"] = score
+            return {"mode": mode, "score": score}
         else:
+            s["final_score"] = 0
             return {"mode": mode, "score": 0}
 
 

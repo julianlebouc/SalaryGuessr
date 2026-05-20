@@ -9,6 +9,7 @@ import {
   validateComparison,
   startSession,
   reportGameOver,
+  submitLeaderboardScore,
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
 import { useSettings } from "../context/SettingsContext";
@@ -39,6 +40,12 @@ export default function HighLowGame() {
   const [guessResult, setGuessResult] = useState(null);
   const [isWaiting, setIsWaiting] = useState(false);
   const sessionTokenRef = useRef(null);
+
+  const [isTop3Eligible, setIsTop3Eligible] = useState(false);
+  const [leaderboardSubmitted, setLeaderboardSubmitted] = useState(false);
+  const [leaderboardPseudo, setLeaderboardPseudo] = useState("");
+  const [leaderboardSubmitting, setLeaderboardSubmitting] = useState(false);
+
   /**
    * Initializes the game state and fetches the first set of jobs.
    * 
@@ -53,6 +60,11 @@ export default function HighLowGame() {
     setGuessResult(null);
     setIsWaiting(false);
     sessionTokenRef.current = null;
+
+    setIsTop3Eligible(false);
+    setLeaderboardSubmitted(false);
+    setLeaderboardPseudo("");
+    setLeaderboardSubmitting(false);
 
     try {
       // Start an anti-cheat session
@@ -118,11 +130,30 @@ export default function HighLowGame() {
         play("gameEnd");
         setGuessResult("wrong");
         // Anti-cheat: server computes and logs the authoritative final score
-        reportGameOver(sessionTokenRef.current);
+        reportGameOver(sessionTokenRef.current).then((res) => {
+          if (res && res.is_top_3) {
+            setIsTop3Eligible(true);
+          }
+        });
         setTimeout(() => setGameOver(true), 1500);
       }
     } catch (err) {
       console.error("Guess validation failed", err);
+    }
+  };
+
+  const handleLeaderboardSubmit = async () => {
+    if (!sessionTokenRef.current || !leaderboardPseudo.trim() || leaderboardSubmitting) return;
+    setLeaderboardSubmitting(true);
+    try {
+      await submitLeaderboardScore(sessionTokenRef.current, leaderboardPseudo.trim());
+      setLeaderboardSubmitted(true);
+      play("success");
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'enregistrement du score. Veuillez réessayer.");
+    } finally {
+      setLeaderboardSubmitting(false);
     }
   };
 
@@ -147,6 +178,42 @@ export default function HighLowGame() {
                   {score}
                   <span>Série de victoires</span>
                 </div>
+
+                {isTop3Eligible && (
+                  <div className="leaderboard-prompt-box" style={{ marginBottom: "1.5rem" }}>
+                    <h3 className="leaderboard-prompt-title">Nouveau Record !</h3>
+                    <p className="leaderboard-prompt-desc">Vous êtes dans le Top 3 mondial. Saisissez votre pseudo :</p>
+                    {!leaderboardSubmitted ? (
+                      <div className="leaderboard-prompt-form">
+                        <input
+                          type="text"
+                          value={leaderboardPseudo}
+                          onChange={(e) => setLeaderboardPseudo(e.target.value.slice(0, 15))}
+                          placeholder="Pseudo (max 15 chars)"
+                          disabled={leaderboardSubmitting}
+                          className="leaderboard-pseudo-input"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && leaderboardPseudo.trim()) {
+                              handleLeaderboardSubmit();
+                            }
+                          }}
+                        />
+                        <button
+                          onClick={handleLeaderboardSubmit}
+                          disabled={leaderboardSubmitting || !leaderboardPseudo.trim()}
+                          className="hp-btn-primary leaderboard-submit-btn"
+                        >
+                          {leaderboardSubmitting ? "Enregistrement..." : "Enregistrer"}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="leaderboard-prompt-success">
+                        Score enregistré !
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="hl-result-actions">
                   <button className="hp-btn-primary" onClick={startGame}>Rejouer</button>
                   <button className="hp-btn-secondary" onClick={() => navigate("/")}>Retour Accueil</button>

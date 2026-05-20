@@ -17,6 +17,7 @@ import {
   validateGuess,
   startSession,
   reportGameOver,
+  submitLeaderboardScore,
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
 import { useSettings } from "../context/SettingsContext";
@@ -71,6 +72,11 @@ export default function GamePage() {
   const [loadingJob, setLoadingJob] = useState(false);
 
   const [history, setHistory] = useState([]);
+
+  const [isTop3Eligible, setIsTop3Eligible] = useState(false);
+  const [leaderboardSubmitted, setLeaderboardSubmitted] = useState(false);
+  const [leaderboardPseudo, setLeaderboardPseudo] = useState("");
+  const [leaderboardSubmitting, setLeaderboardSubmitting] = useState(false);
 
   const jobBufferRef = useRef([]);
   const refillPromiseRef = useRef(null);
@@ -158,6 +164,11 @@ export default function GamePage() {
     seenIdsRef.current.clear();
     sessionTokenRef.current = null;
 
+    setIsTop3Eligible(false);
+    setLeaderboardSubmitted(false);
+    setLeaderboardPseudo("");
+    setLeaderboardSubmitting(false);
+
     setGuess("");
     setResult(null);
     setShowResult(false);
@@ -188,14 +199,14 @@ export default function GamePage() {
     if (!currentJob || !guess || loadingJob) return;
     const userDisplayValue = Number(guess);
     const userBaseValue = convertToBase(userDisplayValue);
-    
+
     setLoadingJob(true);
     try {
       const response = await validateGuess(currentJob.id, userBaseValue, sessionTokenRef.current);
-      
+
       const realDisplayValue = convertFromBase(response.real_salary);
       const scoreValue = response.score;
-      
+
       setScore(s => s + scoreValue);
       setHistory(h => [...h, {
         round: round + 1,
@@ -222,6 +233,21 @@ export default function GamePage() {
     }
   };
 
+  const handleLeaderboardSubmit = async () => {
+    if (!sessionTokenRef.current || !leaderboardPseudo.trim() || leaderboardSubmitting) return;
+    setLeaderboardSubmitting(true);
+    try {
+      await submitLeaderboardScore(sessionTokenRef.current, leaderboardPseudo.trim());
+      setLeaderboardSubmitted(true);
+      play("success");
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'enregistrement du score. Veuillez réessayer.");
+    } finally {
+      setLeaderboardSubmitting(false);
+    }
+  };
+
   /**
    * Moves to the next round or finishes the game if max rounds reached.
    * 
@@ -243,7 +269,11 @@ export default function GamePage() {
         play("gameEnd3");
       }
       // Anti-cheat: server computes and logs the authoritative final score
-      reportGameOver(sessionTokenRef.current);
+      reportGameOver(sessionTokenRef.current).then((res) => {
+        if (res && res.is_top_3) {
+          setIsTop3Eligible(true);
+        }
+      });
       return;
     }
 
@@ -407,6 +437,41 @@ export default function GamePage() {
                   </div>
                   <p className="gp-final-text">Score Final</p>
                 </div>
+
+                {isTop3Eligible && (
+                  <div className="leaderboard-prompt-box">
+                    <h3 className="leaderboard-prompt-title">Nouveau Record !</h3>
+                    <p className="leaderboard-prompt-desc">Vous êtes dans le Top 3 mondial. Saisissez votre pseudo pour entrer dans la légende :</p>
+                    {!leaderboardSubmitted ? (
+                      <div className="leaderboard-prompt-form">
+                        <input
+                          type="text"
+                          value={leaderboardPseudo}
+                          onChange={(e) => setLeaderboardPseudo(e.target.value.slice(0, 15))}
+                          placeholder="Votre pseudo (max 15 chars)"
+                          disabled={leaderboardSubmitting}
+                          className="leaderboard-pseudo-input"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && leaderboardPseudo.trim()) {
+                              handleLeaderboardSubmit();
+                            }
+                          }}
+                        />
+                        <button
+                          onClick={handleLeaderboardSubmit}
+                          disabled={leaderboardSubmitting || !leaderboardPseudo.trim()}
+                          className="hp-btn-primary leaderboard-submit-btn"
+                        >
+                          {leaderboardSubmitting ? "Enregistrement..." : "Enregistrer"}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="leaderboard-prompt-success">
+                        Score enregistré avec succès !
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="gp-chart-container">
                   <div className="gp-chart-header">

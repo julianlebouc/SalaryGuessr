@@ -524,3 +524,86 @@
     width: 100%;
   }
 }
+
+/* All-Time Leaderboard Score Submission Prompt */
+.leaderboard-prompt-box {
+  margin: 1.5rem auto;
+  padding: 1.8rem;
+  width: 100%;
+  max-width: 550px;
+  background: rgba(157, 80, 187, 0.08);
+  border: 1px solid rgba(157, 80, 187, 0.25);
+  border-radius: var(--ui-radius);
+  text-align: center;
+  box-shadow: 0 8px 32px 0 rgba(157, 80, 187, 0.15);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.leaderboard-prompt-title {
+  font-size: 1.3rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+}
+
+.leaderboard-prompt-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+
+.leaderboard-prompt-form {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.leaderboard-pseudo-input {
+  flex: 1;
+  padding: 0.9rem 1.2rem;
+  font-size: 1rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--ui-radius);
+  color: #fff;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.leaderboard-pseudo-input:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 15px var(--primary-purple-glow);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.leaderboard-pseudo-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.leaderboard-submit-btn {
+  padding: 0.9rem 1.8rem !important;
+  font-size: 0.95rem !important;
+  height: 100%;
+  white-space: nowrap;
+}
+
+.leaderboard-prompt-success {
+  font-size: 1.1rem;
+  font-weight: 850;
+  color: #00f2fe;
+  padding: 0.5rem;
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+  animation: fadeIn 0.4s ease;
+}
