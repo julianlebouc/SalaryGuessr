@@ -213,3 +213,52 @@
   opacity: 0.15;
   mix-blend-mode: overlay;
 }
+
+.theme-retro .leaderboard-item {
+  font-family: var(--font-mono) !important;
+  font-size: 0.85rem;
+}
+
+.theme-retro .leaderboard-score {
+  color: var(--accent-cyan);
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+/* Retro Prompt Box Overrides */
+.theme-retro .leaderboard-prompt-box {
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--primary-purple);
+  border-radius: 0; /* Sharp corner style for retro vibe */
+  box-shadow: 5px 5px 0px var(--accent-cyan);
+}
+
+.theme-retro .leaderboard-prompt-title {
+  color: #fff;
+  font-family: var(--font-mono) !important;
+  text-shadow: 3px 3px 0px var(--primary-purple);
+  animation: chromatic-retro 3s infinite;
+}
+
+.theme-retro .leaderboard-prompt-desc {
+  font-family: var(--font-mono) !important;
+  color: var(--text-secondary);
+}
+
+.theme-retro .leaderboard-pseudo-input {
+  background: rgba(11, 10, 26, 0.9);
+  border: 2px solid var(--accent-cyan);
+  border-radius: 0;
+  color: #fff;
+  font-family: var(--font-mono) !important;
+}
+
+.theme-retro .leaderboard-pseudo-input:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 20px var(--primary-purple-glow);
+}
+
+.theme-retro .leaderboard-prompt-success {
+  font-family: var(--font-mono) !important;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 10px var(--accent-cyan);
+}

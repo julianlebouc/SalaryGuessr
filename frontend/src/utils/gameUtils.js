@@ -258,3 +258,45 @@ export function evaluateHigherLowerGuess(leftJob, rightJob, guess) {
 
   return false;
 }
+
+// ==========================================================
+// LEADERBOARD API
+// ==========================================================
+/**
+ * Fetch the top 3 leaderboard entries for all modes.
+ * @returns {Promise<object|null>} { classic: Array, highlow: Array } or null on failure.
+ */
+export async function fetchLeaderboard() {
+  try {
+    const res = await fetch(`${API_URL}/api/leaderboard`, { cache: "no-store" });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Submit a top 3 score securely using the completed session token.
+ * @param {string} sessionToken
+ * @param {string} pseudo
+ * @returns {Promise<object|null>} The result or null on failure.
+ */
+export async function submitLeaderboardScore(sessionToken, pseudo) {
+  if (!sessionToken || !pseudo) return null;
+  try {
+    const res = await fetch(`${API_URL}/api/leaderboard/submit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_token: sessionToken, pseudo }),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.detail || `HTTP ${res.status}`);
+    }
+    return await res.json();
+  } catch (err) {
+    console.error("Score submission failed:", err);
+    throw err;
+  }
+}

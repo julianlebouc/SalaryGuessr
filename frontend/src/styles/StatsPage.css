@@ -159,3 +159,63 @@
     font-size: 0.9rem;
   }
 }
+
+/* All-Time Leaderboard Widget */
+.mode-leaderboard {
+  margin: 0.5rem 0;
+  width: 100%;
+}
+
+.leaderboard-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-main);
+  padding: 0.3rem 0;
+}
+
+.leaderboard-rank {
+  font-size: 1.1rem;
+  width: 1.5rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.leaderboard-pseudo {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-date {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.leaderboard-score {
+  font-family: var(--font-mono) !important;
+  font-weight: 800;
+  color: var(--accent-cyan);
+}
+
+.leaderboard-empty-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  padding: 0.5rem 0;
+  list-style: none;
+}

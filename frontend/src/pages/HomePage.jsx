@@ -4,6 +4,7 @@ import { ReactComponent as DiscordIcon } from '../assets/discord.svg';
 import { ReactComponent as GithubIcon } from '../assets/github.svg';
 import { ReactComponent as LinkedinIcon } from '../assets/linkedin.svg';
 import logger from "../utils/logger";
+import packageJson from "../../package.json";
 import "../styles/HomePage.css";
 
 /**
@@ -146,8 +147,9 @@ export default function HomePage() {
         {/* LEGAL TILE */}
         <div className="tile span-6 tile-grid-bg tile-animate" style={{ animationDelay: '0.28s' }}>
           {renderCorners()}
-          <div className="tile-content hp-legal" style={{ justifyContent: 'center', alignItems: 'center' }} href="/mentions-legales" onClick={(e) => { e.preventDefault(); navigate('/mentions-legales'); }}>
-              Mentions Légales • © 2026 SalaryGuessr
+          <div className="tile-content hp-legal" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '0.25rem', cursor: 'pointer' }} href="/mentions-legales" onClick={(e) => { e.preventDefault(); navigate('/mentions-legales'); }}>
+              <span>Mentions Légales • © 2026 SalaryGuessr</span>
+              <span style={{ fontSize: '0.75rem', opacity: 0.6 }}>v{packageJson.version}</span>
           </div>
         </div>
       </div>

@@ -49,3 +49,7 @@ frontend/dist/
 # Logs
 frontend/logs/
 logs/
+
+# Leaderboard
+leaderboard.json
+backend/data/leaderboard.json

@@ -1149,3 +1149,70 @@
 .theme-professional .br-top-bar .br-alive-badge {
   border-right-color: #e0e0e0;
 }
+
+/* ==========================================
+   ALL-TIME LEADERBOARD PROFESSIONAL OVERRIDES
+   ========================================== */
+
+.theme-professional .leaderboard-item {
+  font-family: inherit !important;
+  font-size: 0.9rem;
+  color: #333333;
+}
+
+.theme-professional .leaderboard-score {
+  color: #0a66c2 !important;
+  font-family: inherit !important;
+  font-weight: 700;
+}
+
+/* ==========================================
+   LEADERBOARD PROMPT BOX PROFESSIONAL OVERRIDES
+   ========================================== */
+
+.theme-professional .leaderboard-prompt-box {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  backdrop-filter: none;
+}
+
+.theme-professional .leaderboard-prompt-title {
+  color: #0a66c2;
+  text-shadow: none !important;
+  font-weight: 700;
+  text-transform: none;
+  animation: none !important;
+}
+
+.theme-professional .leaderboard-prompt-desc {
+  font-family: inherit !important;
+  color: #666666;
+}
+
+.theme-professional .leaderboard-pseudo-input {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  color: #000000;
+  border-radius: 24px; /* Matches pill layout of primary buttons */
+  padding: 0.8rem 1.2rem;
+  font-family: inherit !important;
+}
+
+.theme-professional .leaderboard-pseudo-input:focus {
+  border-color: #0a66c2;
+  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.15);
+  background: #ffffff;
+}
+
+.theme-professional .leaderboard-submit-btn {
+  border-radius: 24px !important;
+  font-family: inherit !important;
+}
+
+.theme-professional .leaderboard-prompt-success {
+  font-family: inherit !important;
+  color: #2e7d32;
+  text-shadow: none !important;
+}

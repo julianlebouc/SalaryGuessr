@@ -33,6 +33,7 @@ from .utils.sessions import (
     finalize_session,
     cleanup_old_sessions,
 )
+from .utils.leaderboard import is_top_score, submit_score, load_leaderboard
 import time
 
 # Import multiplayer system
@@ -270,14 +271,72 @@ def game_over(request: Request, data: dict):
     mode = result["mode"]
     score = result["score"]
 
+    # Check if the authoritative score qualifies for the top 3 all-time
+    is_top_3 = is_top_score(mode, score)
+
     # Write the authoritative log entry server-side
     if mode == "classic":
         frontend_logger.info("Classic game finished", extra={"extra_data": {"score": score, "rounds": result.get("rounds", 0)}})
     elif mode == "highlow":
         frontend_logger.info("High/Low game over", extra={"extra_data": {"finalScore": score}})
 
-    logger.info(f"[ANTI-CHEAT] Game over logged server-side: mode={mode}, score={score}")
-    return {"mode": mode, "score": score}
+    logger.info(f"[ANTI-CHEAT] Game over logged server-side: mode={mode}, score={score}, is_top_3={is_top_3}")
+    return {"mode": mode, "score": score, "is_top_3": is_top_3}
+
+
+@app.get("/api/leaderboard")
+def get_leaderboard():
+    """
+    Retrieve the all-time top 3 leaderboard for Classic and High/Low game modes.
+    """
+    return load_leaderboard()
+
+
+@app.post("/api/leaderboard/submit")
+@limiter.limit("30/minute")
+def submit_leaderboard(request: Request, data: dict):
+    """
+    Submit a top 3 high score securely using the completed session token.
+    """
+    session_token = data.get("session_token")
+    pseudo = data.get("pseudo")
+
+    if not session_token:
+        raise HTTPException(status_code=400, detail="Missing session_token")
+
+    if not pseudo or not isinstance(pseudo, str) or not pseudo.strip():
+        raise HTTPException(status_code=400, detail="Invalid or empty pseudo")
+
+    cleaned_pseudo = pseudo.strip()
+    if len(cleaned_pseudo) > 15:
+        raise HTTPException(status_code=400, detail="Pseudo exceeds 15 characters limit")
+
+    # Fetch the session
+    session = get_session(session_token)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found or expired")
+
+    # Ensure session is finalized
+    if not session.get("finalized"):
+        raise HTTPException(status_code=400, detail="Session is not completed yet")
+
+    # Ensure score was not already submitted to prevent replay
+    if session.get("score_submitted"):
+        raise HTTPException(status_code=400, detail="Score has already been submitted for this session")
+
+    mode = session.get("mode")
+    score = session.get("final_score", 0.0)
+
+    # Double check eligibility
+    if not is_top_score(mode, score):
+        raise HTTPException(status_code=400, detail="Score does not qualify for top 3 all-time")
+
+    # Mark score as submitted to prevent replaying submission
+    session["score_submitted"] = True
+
+    # Submit score to leaderboard file
+    updated_top_3 = submit_score(mode, cleaned_pseudo, score)
+    return {"status": "success", "leaderboard": updated_top_3}
 
 
 @app.post("/log")
