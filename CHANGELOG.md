@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0-beta] - 2026-05-21
+
+### Added
+- **Global Leaderboard**: Implemented a leaderboard where top 3 players in Classic and High/Low game modes can enter their name.
+- **Stats Page**: Displayed the global leaderboard in the statistics page alongside existing metrics.
+- **Score Storage**: Integrated JSON-file based persistent storage for the leaderboard.
+- **Automated Tests**: Added frontend and backend tests for the new leaderboard feature.
+
+### Changed
+- **Styling**: Cleaned up and simplified leaderboard styling in the Stats page and across themes.
+
 ## [0.3.6-beta] - 2026-05-20
 
 ### Fixed
