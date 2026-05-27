@@ -2,10 +2,58 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/ModeSelectPage.css";
 import { useSound } from "../sound/SoundProvider";
+import { useSettings } from "../context/SettingsContext";
 
 /**
  * @module Pages/ModeSelectPage
  */
+
+const T = {
+  fr: {
+    title: "Défis",
+    intro: "Choisissez votre arène",
+    enter: "Entrer",
+    modes: [
+      {
+        title: "CLASSIQUE",
+        description: "Devine le salaire exact d'une offre d'emploi réelle.",
+        features: ["Estimation précise", "Score sur 100 points"],
+      },
+      {
+        title: "HIGH / LOW",
+        description: "Compare deux offres et devine laquelle est la mieux payée.",
+        features: ["Comparaison rapide", "Série de victoires"],
+      },
+      {
+        title: "BATTLE ROYALE",
+        description: "Affronte d'autres joueurs dans une élimination directe.",
+        features: ["Multijoueur en ligne", "Dernier survivant"],
+      },
+    ],
+  },
+  en: {
+    title: "Challenges",
+    intro: "Choose your arena",
+    enter: "Enter",
+    modes: [
+      {
+        title: "CLASSIC",
+        description: "Guess the exact salary of a real job offer.",
+        features: ["Precise estimation", "Score out of 100"],
+      },
+      {
+        title: "HIGH / LOW",
+        description: "Compare two offers and guess which one pays more.",
+        features: ["Quick comparison", "Win streak"],
+      },
+      {
+        title: "BATTLE ROYALE",
+        description: "Face other players in a direct elimination.",
+        features: ["Online multiplayer", "Last one standing"],
+      },
+    ],
+  },
+};
 
 /**
  * ModeSelectPage component.
@@ -17,6 +65,8 @@ import { useSound } from "../sound/SoundProvider";
 export default function ModeSelectPage() {
   const navigate = useNavigate();
   const { play } = useSound();
+  const { language } = useSettings();
+  const t = T[language] || T.fr;
 
   const handleMouseMove = (e) => {
     const grid = e.currentTarget;
@@ -37,36 +87,12 @@ export default function ModeSelectPage() {
   );
 
   const modes = [
-    {
-      id: "classic",
-      title: "CLASSIQUE",
-      icon: "",
-      description: "Devine le salaire exact d'une offre d'emploi réelle.",
-      features: ["Estimation précise", "Score sur 100 points"],
-      route: "/game",
-    },
-    {
-      id: "highlow",
-      title: "HIGH / LOW",
-      icon: "",
-      description: "Compare deux offres et devine laquelle est la mieux payée.",
-      features: ["Comparaison rapide", "Série de victoires"],
-      route: "/highlow",
-    },
-    {
-      id: "battleroyale",
-      title: "BATTLE ROYALE",
-      icon: "",
-      description: "Affronte d'autres joueurs dans une élimination directe.",
-      features: ["Multijoueur en ligne", "Dernier survivant"],
-      route: "/battleroyale",
-    },
+    { id: "classic", route: "/game" },
+    { id: "highlow", route: "/highlow" },
+    { id: "battleroyale", route: "/battleroyale" },
   ];
 
-  const handleModeSelect = (route) => {
-    play("click");
-    navigate(route);
-  };
+  const handleModeSelect = (route) => { play("click"); navigate(route); };
 
   return (
     <div className="page-wrapper mode-page">
@@ -74,25 +100,21 @@ export default function ModeSelectPage() {
         <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
           {renderCorners()}
           <div className="tile-content mode-hero">
-            <h1 className="gp-titleMain" style={{ marginBottom: '1rem' }}>Défis</h1>
-            <p className="mode-intro">Choisissez votre arène</p>
+            <h1 className="gp-titleMain" style={{ marginBottom: '1rem' }}>{t.title}</h1>
+            <p className="mode-intro">{t.intro}</p>
           </div>
         </div>
 
         {modes.map((mode, i) => (
-          <div key={mode.id} className="tile span-4 tile-grid-bg tile-animate" style={{ animationDelay: `${0.08 + (i * 0.04)}s` }}>
+          <div key={mode.id} className="tile span-4 tile-grid-bg tile-animate" style={{ animationDelay: `${0.08 + i * 0.04}s` }}>
             {renderCorners()}
-            <div
-              className="tile-content mode-card-new"
-              onClick={() => handleModeSelect(mode.route)}
-            >
-              {mode.icon && <div className="mode-icon-wrap">{mode.icon}</div>}
-              <h2 className="mode-card-title">{mode.title}</h2>
-              <p className="mode-card-desc">{mode.description}</p>
+            <div className="tile-content mode-card-new" onClick={() => handleModeSelect(mode.route)}>
+              <h2 className="mode-card-title">{t.modes[i].title}</h2>
+              <p className="mode-card-desc">{t.modes[i].description}</p>
               <div className="mode-footer-info">
-                {mode.features.map((f, idx) => <span key={idx}>• {f}</span>)}
+                {t.modes[i].features.map((f, idx) => <span key={idx}>• {f}</span>)}
               </div>
-              <button className="mode-enter-btn">Entrer</button>
+              <button className="mode-enter-btn">{t.enter}</button>
             </div>
           </div>
         ))}

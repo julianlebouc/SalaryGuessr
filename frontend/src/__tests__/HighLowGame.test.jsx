@@ -14,9 +14,10 @@ vi.mock('../context/SettingsContext', () => ({
     setVolume: vi.fn(),
     salaryType: 'brut',
     salaryPeriod: 'monthly',
+    language: 'fr',
     convertToBase: (val) => val,
     convertFromBase: (val) => val,
-    getSalaryLabel: () => 'Brut Mensuel',
+    getSalaryLabel: (lang) => (lang === 'en' ? 'Gross Monthly' : 'Brut Mensuel'),
   }),
 }));
 

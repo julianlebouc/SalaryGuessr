@@ -35,6 +35,11 @@ export function SettingsProvider({ children }) {
     return localStorage.getItem("sg_theme") || "classic";
   });
 
+  // Language: 'fr' or 'en'
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem("sg_language") || "fr";
+  });
+
   // Persist settings
   useEffect(() => {
     localStorage.setItem("sg_volume", volume);
@@ -51,6 +56,10 @@ export function SettingsProvider({ children }) {
   useEffect(() => {
     localStorage.setItem("sg_theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem("sg_language", language);
+  }, [language]);
 
   // Ensure the theme class is applied on the document root so CSS variables
   // defined inside .theme-... selectors affect global elements (html, body).
@@ -116,7 +125,12 @@ export function SettingsProvider({ children }) {
    * 
    * @returns {string}
    */
-  const getSalaryLabel = () => {
+  const getSalaryLabel = (language = "fr") => {
+    if (language === "en") {
+      const typeLabel = salaryType === "net" ? "Net" : "Gross";
+      const periodLabel = salaryPeriod === "annual" ? "Annual" : "Monthly";
+      return `${typeLabel} ${periodLabel}`;
+    }
     const typeLabel = salaryType === "net" ? "Net" : "Brut";
     const periodLabel = salaryPeriod === "annual" ? "Annuel" : "Mensuel";
     return `${typeLabel} ${periodLabel}`;
@@ -133,6 +147,8 @@ export function SettingsProvider({ children }) {
         setSalaryPeriod,
         theme,
         setTheme,
+        language,
+        setLanguage,
         convertFromBase,
         convertToBase,
         getSalaryLabel

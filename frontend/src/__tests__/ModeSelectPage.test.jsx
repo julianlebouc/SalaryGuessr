@@ -19,6 +19,19 @@ vi.mock('../sound/SoundProvider', () => ({
   useSound: () => ({ play: mockPlay }),
 }));
 
+vi.mock('../context/SettingsContext', () => ({
+  useSettings: () => ({
+    volume: 0.5,
+    setVolume: vi.fn(),
+    salaryType: 'brut',
+    salaryPeriod: 'monthly',
+    language: 'fr',
+    convertToBase: (val) => val,
+    convertFromBase: (val) => val,
+    getSalaryLabel: (lang) => (lang === 'en' ? 'Gross Monthly' : 'Brut Mensuel'),
+  }),
+}));
+
 describe('ModeSelectPage Component', () => {
   beforeEach(() => {
     mockNavigate.mockClear();

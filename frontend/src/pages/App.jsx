@@ -17,27 +17,36 @@ import "../styles/retro-theme.css";
 import "../styles/professional-theme.css";
 
 /**
- * GlobalNavigation component.
- * Handles the persistent "Home" button and the sound volume slider.
- * 
+ * @module Pages/App
+ */
+
+const NAV_T = {
+  fr: { settings: "Paramètres", settingsTitle: "Paramètres", home: "Accueil" },
+  en: { settings: "Settings", settingsTitle: "Settings", home: "Home" },
+};
+
+/**
+ * GlobalNavigation component with bilingual support.
  * @component
  */
 function GlobalNav() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { language } = useSettings();
+  const t = NAV_T[language] || NAV_T.fr;
   const isHome = location.pathname === "/";
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
     <>
       <div className="sg-top-right-nav">
-        <button 
+        <button
           className="sg-settings-btn tile-animate"
           onClick={() => setIsSettingsOpen(true)}
-          title="Paramètres"
+          title={t.settingsTitle}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-          <span>Paramètres</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
+          <span>{t.settings}</span>
         </button>
       </div>
 
@@ -50,7 +59,7 @@ function GlobalNav() {
           style={{ animationDelay: '0s' }}
         >
           <img src="/logo512.svg" alt="Logo" className="gp-home-logo" />
-          <span>Accueil</span>
+          <span>{t.home}</span>
         </button>
       )}
     </>
@@ -60,7 +69,6 @@ function GlobalNav() {
 /**
  * Root Application component.
  * Sets up routing, global providers (Sound), and common navigation elements.
- * 
  * @component
  * @returns {JSX.Element}
  */
@@ -68,12 +76,9 @@ function AppContent() {
   const { theme } = useSettings();
   const [showTutorial, setShowTutorial] = useState(false);
 
-  // Check if tutorial has been completed before
   useEffect(() => {
     const tutorialDone = localStorage.getItem("sg_tutorial_done");
-    if (!tutorialDone) {
-      setShowTutorial(true);
-    }
+    if (!tutorialDone) setShowTutorial(true);
   }, []);
 
   const handleTutorialComplete = () => {

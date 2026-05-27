@@ -3,13 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import "../styles/HighLowGame.css";
 import {
-  fetchJob,
-  fetchMultipleJobs,
-  validateGuess,
-  validateComparison,
-  startSession,
-  reportGameOver,
-  submitLeaderboardScore,
+  fetchJob, fetchMultipleJobs, validateGuess, validateComparison,
+  startSession, reportGameOver, submitLeaderboardScore,
 } from "../utils/gameUtils";
 import { useSound } from "../sound/SoundProvider";
 import { useSettings } from "../context/SettingsContext";
@@ -18,6 +13,51 @@ import logger from "../utils/logger";
 /**
  * @module Pages/HighLowGame
  */
+
+const T = {
+  fr: {
+    loading: "Chargement des offres...",
+    alreadyRevealed: "DÉJÀ RÉVÉLÉ",
+    guessLabel: "EST-CE PLUS OU MOINS ?",
+    higher: "PLUS",
+    lower: "MOINS",
+    vs: "VS",
+    currentStreak: "SÉRIE ACTUELLE",
+    gameOver: "PARTIE TERMINÉE",
+    streakLabel: "Série de victoires",
+    newRecord: "Nouveau Record !",
+    leaderboardDesc: "Vous êtes dans le Top 3 mondial. Saisissez votre pseudo :",
+    pseudoPlaceholder: "Pseudo (max 15 chars)",
+    save: "Enregistrer",
+    saving: "Enregistrement...",
+    saved: "Score enregistré !",
+    replay: "Rejouer",
+    home: "Retour Accueil",
+    errorSubmit: "Erreur lors de l'enregistrement du score.",
+    unknown: "Inconnu",
+  },
+  en: {
+    loading: "Loading offers...",
+    alreadyRevealed: "ALREADY REVEALED",
+    guessLabel: "HIGHER OR LOWER?",
+    higher: "HIGHER",
+    lower: "LOWER",
+    vs: "VS",
+    currentStreak: "CURRENT STREAK",
+    gameOver: "GAME OVER",
+    streakLabel: "Win Streak",
+    newRecord: "New Record!",
+    leaderboardDesc: "You're in the Top 3 worldwide. Enter your nickname:",
+    pseudoPlaceholder: "Nickname (max 15 chars)",
+    save: "Save",
+    saving: "Saving...",
+    saved: "Score saved!",
+    replay: "Play Again",
+    home: "Back to Home",
+    errorSubmit: "Error submitting score.",
+    unknown: "Unknown",
+  },
+};
 
 /**
  * HighLowGame component.
@@ -29,7 +69,8 @@ import logger from "../utils/logger";
 export default function HighLowGame() {
   const navigate = useNavigate();
   const { play } = useSound();
-  const { convertFromBase, getSalaryLabel } = useSettings();
+  const { convertFromBase, getSalaryLabel, language } = useSettings();
+  const t = T[language] || T.fr;
 
   const [jobs, setJobs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -40,50 +81,42 @@ export default function HighLowGame() {
   const [guessResult, setGuessResult] = useState(null);
   const [isWaiting, setIsWaiting] = useState(false);
   const sessionTokenRef = useRef(null);
-
+  const hasStartedRef = useRef(false);
   const [isTop3Eligible, setIsTop3Eligible] = useState(false);
   const [leaderboardSubmitted, setLeaderboardSubmitted] = useState(false);
   const [leaderboardPseudo, setLeaderboardPseudo] = useState("");
   const [leaderboardSubmitting, setLeaderboardSubmitting] = useState(false);
 
-  /**
+    /**
    * Initializes the game state and fetches the first set of jobs.
    * 
    * @async
    */
   const startGame = async () => {
-    setLoading(true);
-    setScore(0);
-    setGameOver(false);
-    setCurrentIndex(0);
-    setShowSalary(false);
-    setGuessResult(null);
-    setIsWaiting(false);
+    setLoading(true); setScore(0); setGameOver(false); setCurrentIndex(0);
+    setShowSalary(false); setGuessResult(null); setIsWaiting(false);
     sessionTokenRef.current = null;
-
-    setIsTop3Eligible(false);
-    setLeaderboardSubmitted(false);
-    setLeaderboardPseudo("");
-    setLeaderboardSubmitting(false);
-
+    setIsTop3Eligible(false); setLeaderboardSubmitted(false); setLeaderboardPseudo("");
     try {
-      // Start an anti-cheat session
-      const token = await startSession("highlow");
-      sessionTokenRef.current = token;
-
-      const newJobs = await fetchMultipleJobs(2);
+      sessionTokenRef.current = await startSession("highlow", language);
+      const newJobs = await fetchMultipleJobs(2, language);
       if (newJobs.length > 0) {
-        const reveal = await validateGuess(newJobs[0].id, null, token);
+        const reveal = await validateGuess(newJobs[0].id, null, sessionTokenRef.current, language);
         newJobs[0].baseSalary = reveal.real_salary;
       }
       setJobs(newJobs);
       logger.info("High/Low game started");
-    } catch (err) {
-      console.error("Start game failed", err);
-    } finally {
-      setLoading(false);
-    }
+    } catch {} finally { setLoading(false); }
   };
+
+  useEffect(() => {
+    if (!hasStartedRef.current) {
+      hasStartedRef.current = true;
+      startGame();
+    }
+  }, []);
+
+  
   /**
    * Processes the user's guess (higher or lower).
    * 
@@ -92,54 +125,25 @@ export default function HighLowGame() {
    */
   const handleGuess = async (guess) => {
     if (isWaiting || showSalary || !jobs[currentIndex] || !jobs[currentIndex + 1]) return;
-
-    const leftJob = jobs[currentIndex];
-    const rightJob = jobs[currentIndex + 1];
-
     try {
-      const response = await validateComparison(rightJob.id, leftJob.id, guess, sessionTokenRef.current);
-
+      const response = await validateComparison(jobs[currentIndex + 1].id, jobs[currentIndex].id, guess, sessionTokenRef.current, language);
       const updatedJobs = [...jobs];
       updatedJobs[currentIndex + 1].baseSalary = response.real_salary;
       setJobs(updatedJobs);
-
       setShowSalary(true);
-
       if (response.correct) {
-        play("success");
-        setGuessResult("correct");
-        setScore(s => s + 1);
-        setIsWaiting(true);
-
-        setTimeout(async () => {
+        play("success"); setGuessResult("correct"); setScore(s => s + 1); setIsWaiting(true);
+        setTimeout(() => {
           if (gameOver) return;
-
-          setCurrentIndex(c => c + 1);
-          setShowSalary(false);
-          setGuessResult(null);
-          setIsWaiting(false);
-
-          try {
-            const nextJob = await fetchJob();
-            setJobs(prev => [...prev, nextJob]);
-          } catch (e) {
-            console.error("Fetch next job failed", e);
-          }
+          setCurrentIndex(c => c + 1); setShowSalary(false); setGuessResult(null); setIsWaiting(false);
+          fetchJob(language).then(job => setJobs(prev => [...prev, job])).catch(() => {});
         }, 1500);
       } else {
-        play("gameEnd");
-        setGuessResult("wrong");
-        // Anti-cheat: server computes and logs the authoritative final score
-        reportGameOver(sessionTokenRef.current).then((res) => {
-          if (res && res.is_top_3) {
-            setIsTop3Eligible(true);
-          }
-        });
+        play("gameEnd"); setGuessResult("wrong");
+        reportGameOver(sessionTokenRef.current).then(res => { if (res?.is_top_3) setIsTop3Eligible(true); });
         setTimeout(() => setGameOver(true), 1500);
       }
-    } catch (err) {
-      console.error("Guess validation failed", err);
-    }
+    } catch {}
   };
 
   const handleLeaderboardSubmit = async () => {
@@ -147,24 +151,11 @@ export default function HighLowGame() {
     setLeaderboardSubmitting(true);
     try {
       await submitLeaderboardScore(sessionTokenRef.current, leaderboardPseudo.trim());
-      setLeaderboardSubmitted(true);
-      play("success");
-    } catch (err) {
-      console.error(err);
-      alert("Erreur lors de l'enregistrement du score. Veuillez réessayer.");
-    } finally {
-      setLeaderboardSubmitting(false);
-    }
+      setLeaderboardSubmitted(true); play("success");
+    } catch { alert(t.errorSubmit); } finally { setLeaderboardSubmitting(false); }
   };
 
-  const hasStarted = useRef(false);
-  useEffect(() => {
-    if (hasStarted.current) return;
-    hasStarted.current = true;
-    startGame();
-  }, []);
-
-  if (loading) return <div className="page-wrapper" style={{ justifyContent: 'center', alignItems: 'center' }}>Chargement des offres...</div>;
+  if (loading) return <div className="page-wrapper" style={{ justifyContent: 'center', alignItems: 'center' }}>{t.loading}</div>;
 
   return (
     <div className="page-wrapper hl-page">
@@ -173,50 +164,23 @@ export default function HighLowGame() {
           <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
             <div className="tile-content hl-gameover-view">
               <div className="hl-gameover-inner">
-                <h1>PARTIE TERMINÉE</h1>
-                <div className="hl-final-score">
-                  {score}
-                  <span>Série de victoires</span>
-                </div>
-
+                <h1>{t.gameOver}</h1>
+                <div className="hl-final-score">{score}<span>{t.streakLabel}</span></div>
                 {isTop3Eligible && (
                   <div className="leaderboard-prompt-box" style={{ marginBottom: "1.5rem" }}>
-                    <h3 className="leaderboard-prompt-title">Nouveau Record !</h3>
-                    <p className="leaderboard-prompt-desc">Vous êtes dans le Top 3 mondial. Saisissez votre pseudo :</p>
+                    <h3 className="leaderboard-prompt-title">{t.newRecord}</h3>
+                    <p className="leaderboard-prompt-desc">{t.leaderboardDesc}</p>
                     {!leaderboardSubmitted ? (
                       <div className="leaderboard-prompt-form">
-                        <input
-                          type="text"
-                          value={leaderboardPseudo}
-                          onChange={(e) => setLeaderboardPseudo(e.target.value.slice(0, 15))}
-                          placeholder="Pseudo (max 15 chars)"
-                          disabled={leaderboardSubmitting}
-                          className="leaderboard-pseudo-input"
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" && leaderboardPseudo.trim()) {
-                              handleLeaderboardSubmit();
-                            }
-                          }}
-                        />
-                        <button
-                          onClick={handleLeaderboardSubmit}
-                          disabled={leaderboardSubmitting || !leaderboardPseudo.trim()}
-                          className="hp-btn-primary leaderboard-submit-btn"
-                        >
-                          {leaderboardSubmitting ? "Enregistrement..." : "Enregistrer"}
-                        </button>
+                        <input type="text" value={leaderboardPseudo} onChange={(e) => setLeaderboardPseudo(e.target.value.slice(0, 15))} placeholder={t.pseudoPlaceholder} disabled={leaderboardSubmitting} className="leaderboard-pseudo-input" onKeyDown={(e) => { if (e.key === "Enter" && leaderboardPseudo.trim()) handleLeaderboardSubmit(); }} />
+                        <button onClick={handleLeaderboardSubmit} disabled={leaderboardSubmitting || !leaderboardPseudo.trim()} className="hp-btn-primary leaderboard-submit-btn">{leaderboardSubmitting ? t.saving : t.save}</button>
                       </div>
-                    ) : (
-                      <div className="leaderboard-prompt-success">
-                        Score enregistré !
-                      </div>
-                    )}
+                    ) : <div className="leaderboard-prompt-success">{t.saved}</div>}
                   </div>
                 )}
-
                 <div className="hl-result-actions">
-                  <button className="hp-btn-primary" onClick={startGame}>Rejouer</button>
-                  <button className="hp-btn-secondary" onClick={() => navigate("/")}>Retour Accueil</button>
+                  <button className="hp-btn-primary" onClick={startGame}>{t.replay}</button>
+                  <button className="hp-btn-secondary" onClick={() => navigate("/")}>{t.home}</button>
                 </div>
               </div>
             </div>
@@ -225,7 +189,7 @@ export default function HighLowGame() {
           <>
             <div className="tile span-12 tile-animate" style={{ animationDelay: '0.04s' }}>
               <div className="tile-content hl-game-header no-padding">
-                <div className="gp-round-badge">SÉRIE ACTUELLE</div>
+                <div className="gp-round-badge">{t.currentStreak}</div>
                 <div className="gp-score-badge">{score}</div>
               </div>
             </div>
@@ -233,20 +197,13 @@ export default function HighLowGame() {
             <div className="tile span-5 tile-grid-bg tile-animate" style={{ animationDelay: '0.08s' }}>
               <div className="tile-content hl-job-item">
                 <AnimatePresence mode="wait">
-                  <motion.div
-                    key={jobs[currentIndex]?.id}
-                    initial={{ x: -50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: 50, opacity: 0 }}
-                    style={{ textAlign: 'center' }}
-                  >
-                    <span className="hl-tag">DÉJÀ RÉVÉLÉ</span>
+                  <motion.div key={jobs[currentIndex]?.id} initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 50, opacity: 0 }} style={{ textAlign: 'center' }}>
+                    <span className="hl-tag">{t.alreadyRevealed}</span>
                     <h2 className="hl-job-title">{jobs[currentIndex]?.title}</h2>
                     <div className="gp-badgeGroup" style={{ justifyContent: 'center', marginTop: '0.5rem' }}>
-                      <span className="gp-badge">{jobs[currentIndex]?.company || "Confidentiel"}</span>
-                      <span className="gp-badge">{jobs[currentIndex]?.location || "France"}</span>
+                      <span className="gp-badge">{jobs[currentIndex]?.company || t.unknown}</span>
+                      <span className="gp-badge">{jobs[currentIndex]?.location || (language === "en" ? "Unknown" : "France")}</span>
                       {jobs[currentIndex]?.contractType && <span className="gp-badge">{jobs[currentIndex].contractType}</span>}
-                      {jobs[currentIndex]?.contractHours && <span className="gp-badge">{jobs[currentIndex].contractHours}</span>}
                     </div>
                     <div className="hl-salary-display">{convertFromBase(jobs[currentIndex]?.baseSalary)?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €</div>
                   </motion.div>
@@ -256,58 +213,29 @@ export default function HighLowGame() {
 
             <div className="tile span-2 tile-animate" style={{ animationDelay: '0.1s' }}>
               <div className="tile-content hl-vs-zone">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="hl-vs-btn up"
-                  onClick={() => handleGuess("higher")}
-                  disabled={isWaiting || showSalary}
-                >
-                  PLUS
-                </motion.button>
-                <div className="hl-vs-text">VS</div>
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="hl-vs-btn down"
-                  onClick={() => handleGuess("lower")}
-                  disabled={isWaiting || showSalary}
-                >
-                  MOINS
-                </motion.button>
+                <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="hl-vs-btn up" onClick={() => handleGuess("higher")} disabled={isWaiting || showSalary}>{t.higher}</motion.button>
+                <div className="hl-vs-text">{t.vs}</div>
+                <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="hl-vs-btn down" onClick={() => handleGuess("lower")} disabled={isWaiting || showSalary}>{t.lower}</motion.button>
               </div>
             </div>
 
             <div className="tile span-5 tile-grid-bg tile-animate" style={{ animationDelay: '0.12s' }}>
               <div className="tile-content hl-job-item">
                 <AnimatePresence mode="wait">
-                  <motion.div
-                    key={jobs[currentIndex + 1]?.id}
-                    initial={{ x: 50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: -50, opacity: 0 }}
-                    style={{ textAlign: 'center' }}
-                  >
-                    <span className="hl-tag">EST-CE PLUS OU MOINS ?</span>
+                  <motion.div key={jobs[currentIndex + 1]?.id} initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }} style={{ textAlign: 'center' }}>
+                    <span className="hl-tag">{t.guessLabel}</span>
                     <h2 className="hl-job-title">{jobs[currentIndex + 1]?.title}</h2>
                     <div className="gp-badgeGroup" style={{ justifyContent: 'center', marginTop: '0.5rem' }}>
-                      <span className="gp-badge">{jobs[currentIndex + 1]?.company || "Confidentiel"}</span>
-                      <span className="gp-badge">{jobs[currentIndex + 1]?.location || "France"}</span>
+                      <span className="gp-badge">{jobs[currentIndex + 1]?.company || t.unknown}</span>
+                      <span className="gp-badge">{jobs[currentIndex + 1]?.location || (language === "en" ? "Unknown" : "France")}</span>
                       {jobs[currentIndex + 1]?.contractType && <span className="gp-badge">{jobs[currentIndex + 1].contractType}</span>}
-                      {jobs[currentIndex + 1]?.contractHours && <span className="gp-badge">{jobs[currentIndex + 1].contractHours}</span>}
                     </div>
                     <div className="hl-salary-display">
                       {showSalary ? (
-                        <motion.span
-                          initial={{ scale: 1.5, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          style={{ color: guessResult === "correct" ? "var(--accent-cyan)" : "#ff6b6b" }}
-                        >
+                        <motion.span initial={{ scale: 1.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{ color: guessResult === "correct" ? "var(--accent-cyan)" : "#ff6b6b" }}>
                           {convertFromBase(jobs[currentIndex + 1]?.baseSalary)?.toLocaleString(undefined, { maximumFractionDigits: 0 })} €
                         </motion.span>
-                      ) : (
-                        <span className="hl-salary-placeholder">??? €</span>
-                      )}
+                      ) : <span className="hl-salary-placeholder">??? €</span>}
                     </div>
                   </motion.div>
                 </AnimatePresence>

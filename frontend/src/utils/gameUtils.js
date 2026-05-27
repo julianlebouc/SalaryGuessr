@@ -71,10 +71,11 @@ export function hasValidSalary(job) {
 
 /**
  * Fetch a single normalized job from the API.
+ * @param {string} [language="fr"] - "fr" or "en"
  * @returns {Promise<object>}
  */
-export async function fetchJob() {
-  const res = await fetch(`${API_URL}/job`, { cache: "no-store" });
+export async function fetchJob(language = "fr") {
+  const res = await fetch(`${API_URL}/job?language=${language}`, { cache: "no-store" });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = await res.json();
   return normalizeJob(data);
@@ -83,10 +84,11 @@ export async function fetchJob() {
 /**
  * Fetch multiple jobs concurrently and return only successful results.
  * @param {number} count
+ * @param {string} [language="fr"] - "fr" or "en"
  * @returns {Promise<object[]>}
  */
-export async function fetchMultipleJobs(count) {
-  const promises = Array.from({ length: count }, () => fetchJob().catch(() => null));
+export async function fetchMultipleJobs(count, language = "fr") {
+  const promises = Array.from({ length: count }, () => fetchJob(language).catch(() => null));
   const results = await Promise.all(promises);
   return results.filter(Boolean);
 }
@@ -94,14 +96,15 @@ export async function fetchMultipleJobs(count) {
 /**
  * Start a new anti-cheat game session on the server.
  * @param {"classic"|"highlow"} mode
+ * @param {string} [language="fr"] - "fr" or "en"
  * @returns {Promise<string>} The session_token to include in validate calls.
  */
-export async function startSession(mode) {
+export async function startSession(mode, language = "fr") {
   try {
     const res = await fetch(`${API_URL}/session/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mode }),
+      body: JSON.stringify({ mode, language }),
     });
     if (!res.ok) return null;
     const data = await res.json();

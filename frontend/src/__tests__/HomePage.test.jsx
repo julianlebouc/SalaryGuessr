@@ -3,6 +3,19 @@ import { MemoryRouter } from 'react-router-dom';
 import HomePage from '../pages/HomePage';
 import { vi } from 'vitest';
 
+vi.mock('../context/SettingsContext', () => ({
+  useSettings: () => ({
+    volume: 0.5,
+    setVolume: vi.fn(),
+    salaryType: 'brut',
+    salaryPeriod: 'monthly',
+    language: 'fr',
+    convertToBase: (val) => val,
+    convertFromBase: (val) => val,
+    getSalaryLabel: (lang) => (lang === 'en' ? 'Gross Monthly' : 'Brut Mensuel'),
+  }),
+}));
+
 // Use Vitest's mocking
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
