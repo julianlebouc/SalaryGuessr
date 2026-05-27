@@ -125,7 +125,12 @@ export function SettingsProvider({ children }) {
    * 
    * @returns {string}
    */
-  const getSalaryLabel = () => {
+  const getSalaryLabel = (language = "fr") => {
+    if (language === "en") {
+      const typeLabel = salaryType === "net" ? "Net" : "Gross";
+      const periodLabel = salaryPeriod === "annual" ? "Annual" : "Monthly";
+      return `${typeLabel} ${periodLabel}`;
+    }
     const typeLabel = salaryType === "net" ? "Net" : "Brut";
     const periodLabel = salaryPeriod === "annual" ? "Annuel" : "Mensuel";
     return `${typeLabel} ${periodLabel}`;

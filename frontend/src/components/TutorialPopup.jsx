@@ -7,69 +7,107 @@ import "./TutorialPopup.css";
  * @module Components/TutorialPopup
  */
 
+const T = {
+  fr: {
+    welcome: {
+      title: "Bienvenue sur SalaryGuessr",
+      desc1: "SalaryGuessr est un jeu où vous devez <strong>estimer les salaires</strong> d'offres d'emploi réelles.",
+      desc2: "Testez votre connaissance du marché du travail, marquez des points et défiez vos amis !",
+    },
+    gamemodes: {
+      title: "Les modes de jeu",
+      classic: { name: "Classique", desc: "Devinez le salaire exact d'une offre d'emploi. Gagnez jusqu'à 100 points." },
+      highlow: { name: "High / Low", desc: "Comparez deux offres et dites laquelle est la mieux payée. Enchaînez les victoires !" },
+      br: { name: "Battle Royale", desc: "Affrontez d'autres joueurs en ligne. Le dernier survivant remporte la partie !" },
+    },
+    themes: {
+      title: "Personnalisez votre expérience",
+      desc: "Choisissez le thème visuel qui vous plaît. Vous pourrez le changer à tout moment.",
+      classic: "Classique",
+      retro: "Retro",
+      pro: "Pro",
+      language: "Langue / Language",
+      french: "Français",
+      english: "English",
+      salaryType: "Type de salaire",
+      brut: "Brut",
+      net: "Net",
+      period: "Période",
+      monthly: "Mensuel",
+      annual: "Annuel",
+    },
+    ready: {
+      title: "Prêt à jouer ?",
+      desc: "Vous pouvez à tout moment modifier vos réglages en cliquant sur le bouton <strong>Paramètres</strong> (icône d'engrenage en haut à droite).",
+      hint: "Bonne chance, et que le meilleur Salary Guessr gagne !",
+    },
+    nav: { skip: "Passer", back: "Retour", next: "Suivant", start: "Commencer !" },
+  },
+  en: {
+    welcome: {
+      title: "Welcome to SalaryGuessr",
+      desc1: "SalaryGuessr is a game where you <strong>estimate salaries</strong> from real job listings.",
+      desc2: "Test your knowledge of the job market, score points, and challenge your friends!",
+    },
+    gamemodes: {
+      title: "Game Modes",
+      classic: { name: "Classic", desc: "Guess the exact salary of a job offer. Earn up to 100 points." },
+      highlow: { name: "High / Low", desc: "Compare two offers and guess which one pays more. Chain your victories!" },
+      br: { name: "Battle Royale", desc: "Face other players online. Last one standing wins the game!" },
+    },
+    themes: {
+      title: "Customize your experience",
+      desc: "Pick the visual theme you like. You can change it anytime.",
+      classic: "Classic",
+      retro: "Retro",
+      pro: "Pro",
+      language: "Language",
+      french: "Français",
+      english: "English",
+      salaryType: "Salary Type",
+      brut: "Gross",
+      net: "Net",
+      period: "Period",
+      monthly: "Monthly",
+      annual: "Annual",
+    },
+    ready: {
+      title: "Ready to play?",
+      desc: "You can change your settings anytime by clicking the <strong>Settings</strong> button (gear icon in the top right).",
+      hint: "Good luck, and may the best Salary Guessr win!",
+    },
+    nav: { skip: "Skip", back: "Back", next: "Next", start: "Let's Go!" },
+  },
+};
+
 const STEPS = [
-  {
-    id: "welcome",
-    title: "Bienvenue sur SalaryGuessr",
-    subtitle: "Devinez les salaires, testez votre instinct",
-  },
-  {
-    id: "gamemodes",
-    title: "Les modes de jeu",
-    subtitle: "Trois façons de jouer",
-  },
-  {
-    id: "themes",
-    title: "Personnalisez votre expérience",
-    subtitle: "Choisissez le thème qui vous correspond",
-  },
-  {
-    id: "ready",
-    title: "Prêt à jouer ?",
-    subtitle: "Vous pouvez modifier ces réglages à tout moment",
-  },
+  { id: "welcome", key: "welcome" },
+  { id: "gamemodes", key: "gamemodes" },
+  { id: "themes", key: "themes" },
+  { id: "ready", key: "ready" },
 ];
 
-/**
- * Tutorial popup shown on first visit.
- * Guides the user through the website, game modes, and theme selection.
- *
- * @param {Object} props
- * @param {boolean} props.isOpen
- * @param {Function} props.onComplete
- * @returns {JSX.Element}
- */
 export default function TutorialPopup({ isOpen, onComplete }) {
   const [stepIndex, setStepIndex] = useState(0);
-  const { 
-    volume, setVolume, 
-    salaryType, setSalaryType, 
+  const {
+    salaryType, setSalaryType,
     salaryPeriod, setSalaryPeriod,
     theme, setTheme,
-    language, setLanguage
+    language, setLanguage,
   } = useSettings();
 
   const step = STEPS[stepIndex];
   const isLastStep = stepIndex === STEPS.length - 1;
   const isFirstStep = stepIndex === 0;
+  const t = T[language] || T.fr;
 
   const handleNext = () => {
-    if (isLastStep) {
-      onComplete();
-    } else {
-      setStepIndex((prev) => prev + 1);
-    }
+    if (isLastStep) { onComplete(); }
+    else { setStepIndex((prev) => prev + 1); }
   };
 
-  const handleBack = () => {
-    if (!isFirstStep) {
-      setStepIndex((prev) => prev - 1);
-    }
-  };
-
-  const handleSkip = () => {
-    onComplete();
-  };
+  const handleBack = () => { if (!isFirstStep) setStepIndex((prev) => prev - 1); };
+  const handleSkip = () => { onComplete(); };
 
   return (
     <AnimatePresence>
@@ -82,188 +120,105 @@ export default function TutorialPopup({ isOpen, onComplete }) {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="tutorial-card"
           >
-            {/* Progress bar */}
             <div className="tutorial-progress">
               {STEPS.map((s, i) => (
-                <div
-                  key={s.id}
-                  className={`tutorial-progress-dot ${i <= stepIndex ? "active" : ""}`}
-                />
+                <div key={s.id} className={`tutorial-progress-dot ${i <= stepIndex ? "active" : ""}`} />
               ))}
             </div>
 
-            {/* Close / Skip */}
-            <button
-              className="tutorial-skip"
-              onClick={handleSkip}
-              aria-label="Passer le tutoriel"
-            >
+            <button className="tutorial-skip" onClick={handleSkip} aria-label={t.nav.skip}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
 
-            {/* Step 1: Welcome */}
             {step.id === "welcome" && (
               <div className="tutorial-content">
                 <div className="tutorial-welcome-icon">
                   <img src="/logo512.svg" alt="SalaryGuessr Logo" className="tutorial-logo" />
                 </div>
-                <h2 className="tutorial-title">Bienvenue sur SalaryGuessr</h2>
-                <p className="tutorial-desc">
-                  SalaryGuessr est un jeu où vous devez <strong>estimer les salaires</strong> d'offres d'emploi réelles.
-                </p>
-                <p className="tutorial-desc">
-                  Testez votre connaissance du marché du travail, marquez des points et
-                  défiez vos amis !
-                </p>
+                <h2 className="tutorial-title">{t.welcome.title}</h2>
+                <p className="tutorial-desc" dangerouslySetInnerHTML={{ __html: t.welcome.desc1 }} />
+                <p className="tutorial-desc">{t.welcome.desc2}</p>
               </div>
             )}
 
-            {/* Step 2: Game Modes */}
             {step.id === "gamemodes" && (
               <div className="tutorial-content">
-                <h2 className="tutorial-title">Les modes de jeu</h2>
+                <h2 className="tutorial-title">{t.gamemodes.title}</h2>
                 <div className="tutorial-modes-list">
-                  <div className="tutorial-mode-item">
-                    <div className="tutorial-mode-icon tutorial-mode-icon--classic">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                      </svg>
-                    </div>
-                    <div className="tutorial-mode-text">
-                      <strong>Classique</strong>
-                      <span>Devinez le salaire exact d'une offre d'emploi. Gagnez jusqu'à 100 points.</span>
-                    </div>
-                  </div>
-                  <div className="tutorial-mode-item">
-                    <div className="tutorial-mode-icon tutorial-mode-icon--highlow">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19" /><polyline points="19 12 12 19 5 12" />
-                      </svg>
-                    </div>
-                    <div className="tutorial-mode-text">
-                      <strong>High / Low</strong>
-                      <span>Comparez deux offres et dites laquelle est la mieux payée. Enchaînez les victoires !</span>
-                    </div>
-                  </div>
-                  <div className="tutorial-mode-item">
-                    <div className="tutorial-mode-icon tutorial-mode-icon--br">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                      </svg>
-                    </div>
-                    <div className="tutorial-mode-text">
-                      <strong>Battle Royale</strong>
-                      <span>Affrontez d'autres joueurs en ligne. Le dernier survivant remporte la partie !</span>
-                    </div>
-                  </div>
+                  {["classic", "highlow", "br"].map((mode) => {
+                    const m = t.gamemodes[mode];
+                    const icon = mode === "classic" ? (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+                    ) : mode === "highlow" ? (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><polyline points="19 12 12 19 5 12" /></svg>
+                    ) : (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                    );
+                    return (
+                      <div key={mode} className="tutorial-mode-item">
+                        <div className={`tutorial-mode-icon tutorial-mode-icon--${mode === "br" ? "br" : mode}`}>{icon}</div>
+                        <div className="tutorial-mode-text">
+                          <strong>{m.name}</strong>
+                          <span>{m.desc}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
 
-            {/* Step 3: Theme + Settings */}
             {step.id === "themes" && (
               <div className="tutorial-content">
-                <h2 className="tutorial-title">Personnalisez votre expérience</h2>
-                <p className="tutorial-desc tutorial-desc--small">
-                  Choisissez le thème visuel qui vous plaît. Vous pourrez le changer à tout moment.
-                </p>
+                <h2 className="tutorial-title">{t.themes.title}</h2>
+                <p className="tutorial-desc tutorial-desc--small">{t.themes.desc}</p>
 
-                {/* Theme Preview Cards */}
                 <div className="tutorial-themes-row">
-                  <button
-                    className={`tutorial-theme-card ${theme === "classic" ? "active" : ""}`}
-                    onClick={() => setTheme("classic")}
-                  >
-                    <div className="tutorial-theme-preview tutorial-theme-preview--classic">
-                      <span className="tutorial-theme-preview-text">Aa</span>
-                    </div>
-                    <span className="tutorial-theme-label">Classique</span>
-                  </button>
-                  <button
-                    className={`tutorial-theme-card ${theme === "retro" ? "active" : ""}`}
-                    onClick={() => setTheme("retro")}
-                  >
-                    <div className="tutorial-theme-preview tutorial-theme-preview--retro">
-                      <span className="tutorial-theme-preview-text">Aa</span>
-                    </div>
-                    <span className="tutorial-theme-label">Retro</span>
-                  </button>
-                  <button
-                    className={`tutorial-theme-card ${theme === "professional" ? "active" : ""}`}
-                    onClick={() => setTheme("professional")}
-                  >
-                    <div className="tutorial-theme-preview tutorial-theme-preview--pro">
-                      <span className="tutorial-theme-preview-text">Aa</span>
-                    </div>
-                    <span className="tutorial-theme-label">Pro</span>
-                  </button>
+                  {["classic", "retro", "professional"].map((th) => (
+                    <button
+                      key={th}
+                      className={`tutorial-theme-card ${theme === th ? "active" : ""}`}
+                      onClick={() => setTheme(th)}
+                    >
+                      <div className={`tutorial-theme-preview tutorial-theme-preview--${th === "professional" ? "pro" : th}`}>
+                        <span className="tutorial-theme-preview-text">Aa</span>
+                      </div>
+                      <span className="tutorial-theme-label">{t.themes[th === "professional" ? "pro" : th]}</span>
+                    </button>
+                  ))}
                 </div>
 
-                {/* Language Setting */}
                 <div className="tutorial-settings-panel">
                   <div className="tutorial-settings-row">
-                    <label>Langue / Language</label>
+                    <label>{t.themes.language}</label>
                     <div className="tutorial-settings-toggles">
-                      <button
-                        className={language === "fr" ? "active" : ""}
-                        onClick={() => setLanguage("fr")}
-                      >
-                        Français
-                      </button>
-                      <button
-                        className={language === "en" ? "active" : ""}
-                        onClick={() => setLanguage("en")}
-                      >
-                        English
-                      </button>
+                      <button className={language === "fr" ? "active" : ""} onClick={() => setLanguage("fr")}>{t.themes.french}</button>
+                      <button className={language === "en" ? "active" : ""} onClick={() => setLanguage("en")}>{t.themes.english}</button>
                     </div>
                   </div>
                 </div>
 
-                {/* Salary Settings */}
                 <div className="tutorial-settings-panel">
                   <div className="tutorial-settings-row">
-                    <label>Type de salaire</label>
+                    <label>{t.themes.salaryType}</label>
                     <div className="tutorial-settings-toggles">
-                      <button
-                        className={salaryType === "brut" ? "active" : ""}
-                        onClick={() => setSalaryType("brut")}
-                      >
-                        Brut
-                      </button>
-                      <button
-                        className={salaryType === "net" ? "active" : ""}
-                        onClick={() => setSalaryType("net")}
-                      >
-                        Net
-                      </button>
+                      <button className={salaryType === "brut" ? "active" : ""} onClick={() => setSalaryType("brut")}>{t.themes.brut}</button>
+                      <button className={salaryType === "net" ? "active" : ""} onClick={() => setSalaryType("net")}>{t.themes.net}</button>
                     </div>
                   </div>
                   <div className="tutorial-settings-row">
-                    <label>Période</label>
+                    <label>{t.themes.period}</label>
                     <div className="tutorial-settings-toggles">
-                      <button
-                        className={salaryPeriod === "monthly" ? "active" : ""}
-                        onClick={() => setSalaryPeriod("monthly")}
-                      >
-                        Mensuel
-                      </button>
-                      <button
-                        className={salaryPeriod === "annual" ? "active" : ""}
-                        onClick={() => setSalaryPeriod("annual")}
-                      >
-                        Annuel
-                      </button>
+                      <button className={salaryPeriod === "monthly" ? "active" : ""} onClick={() => setSalaryPeriod("monthly")}>{t.themes.monthly}</button>
+                      <button className={salaryPeriod === "annual" ? "active" : ""} onClick={() => setSalaryPeriod("annual")}>{t.themes.annual}</button>
                     </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Step 4: Ready */}
             {step.id === "ready" && (
               <div className="tutorial-content">
                 <div className="tutorial-ready-icon">
@@ -271,35 +226,25 @@ export default function TutorialPopup({ isOpen, onComplete }) {
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
                 </div>
-                <h2 className="tutorial-title">Prêt à jouer ?</h2>
-                <p className="tutorial-desc">
-                  Vous pouvez à tout moment modifier vos réglages en cliquant sur le bouton
-                  <strong> Paramètres</strong> (icône d'engrenage en haut à droite).
-                </p>
-                <p className="tutorial-desc tutorial-desc--hint">
-                  Bonne chance, et que le meilleur Salary Guessr gagne !
-                </p>
+                <h2 className="tutorial-title">{t.ready.title}</h2>
+                <p className="tutorial-desc" dangerouslySetInnerHTML={{ __html: t.ready.desc }} />
+                <p className="tutorial-desc tutorial-desc--hint">{t.ready.hint}</p>
               </div>
             )}
 
-            {/* Navigation */}
             <div className="tutorial-nav">
               <div className="tutorial-nav-left">
                 {!isFirstStep && (
                   <button className="tutorial-btn tutorial-btn--back" onClick={handleBack}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="15 18 9 12 15 6" />
-                    </svg>
-                    Retour
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+                    {t.nav.back}
                   </button>
                 )}
               </div>
               <button className="tutorial-btn tutorial-btn--primary" onClick={handleNext}>
-                {isLastStep ? "Commencer !" : "Suivant"}
+                {isLastStep ? t.nav.start : t.nav.next}
                 {!isLastStep && (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
                 )}
               </button>
             </div>
