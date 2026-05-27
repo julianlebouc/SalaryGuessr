@@ -20,7 +20,8 @@ export default function SettingsPopup({ isOpen, onClose }) {
     volume, setVolume, 
     salaryType, setSalaryType, 
     salaryPeriod, setSalaryPeriod,
-    theme, setTheme
+    theme, setTheme,
+    language, setLanguage
   } = useSettings();
 
   return (
@@ -94,6 +95,25 @@ export default function SettingsPopup({ isOpen, onClose }) {
                     onClick={() => setTheme("professional")}
                   >
                     Pro
+                  </button>
+                </div>
+              </div>
+
+              {/* Language Switch */}
+              <div className="sg-settings-section">
+                <label>Langue / Language</label>
+                <div className="sg-settings-switch-group">
+                  <button 
+                    className={language === "fr" ? "active" : ""} 
+                    onClick={() => setLanguage("fr")}
+                  >
+                    Français
+                  </button>
+                  <button 
+                    className={language === "en" ? "active" : ""} 
+                    onClick={() => setLanguage("en")}
+                  >
+                    English
                   </button>
                 </div>
               </div>

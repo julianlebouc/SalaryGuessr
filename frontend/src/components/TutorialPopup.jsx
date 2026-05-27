@@ -45,7 +45,8 @@ export default function TutorialPopup({ isOpen, onComplete }) {
     volume, setVolume, 
     salaryType, setSalaryType, 
     salaryPeriod, setSalaryPeriod,
-    theme, setTheme
+    theme, setTheme,
+    language, setLanguage
   } = useSettings();
 
   const step = STEPS[stepIndex];
@@ -199,6 +200,27 @@ export default function TutorialPopup({ isOpen, onComplete }) {
                     </div>
                     <span className="tutorial-theme-label">Pro</span>
                   </button>
+                </div>
+
+                {/* Language Setting */}
+                <div className="tutorial-settings-panel">
+                  <div className="tutorial-settings-row">
+                    <label>Langue / Language</label>
+                    <div className="tutorial-settings-toggles">
+                      <button
+                        className={language === "fr" ? "active" : ""}
+                        onClick={() => setLanguage("fr")}
+                      >
+                        Français
+                      </button>
+                      <button
+                        className={language === "en" ? "active" : ""}
+                        onClick={() => setLanguage("en")}
+                      >
+                        English
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Salary Settings */}
