@@ -4,6 +4,7 @@ import GamePage from "./GamePage";
 import HighLowGame from "./HighLowGame";
 import ModeSelectPage from "./ModeSelectPage";
 import BattleRoyale from "./BattleRoyale";
+import SalaryOrderGame from "./SalaryOrderGame";
 import StatsPage from "./StatsPage";
 import MentionsLegales from "./MentionsLegales";
 import { SoundProvider } from "../sound/SoundProvider";
@@ -93,6 +94,7 @@ function AppContent() {
           <Route path="/game" element={<GamePage />} />
           <Route path="/highlow" element={<HighLowGame />} />
           <Route path="/battleroyale" element={<BattleRoyale />} />
+          <Route path="/salary-order" element={<SalaryOrderGame />} />
           <Route path="/stats" element={<StatsPage />} />
           <Route path="/mentions-legales" element={<MentionsLegales />} />
         </Routes>

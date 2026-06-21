@@ -40,6 +40,7 @@ describe('ModeSelectPage Component', () => {
     expect(screen.getByText(/CLASSIQUE/i)).toBeInTheDocument();
     expect(screen.getByText(/HIGH \/ LOW/i)).toBeInTheDocument();
     expect(screen.getByText(/BATTLE ROYALE/i)).toBeInTheDocument();
+    expect(screen.getByText(/SALARY ORDER/i)).toBeInTheDocument();
   });
 
   test('navigates to classic mode when clicked', () => {
@@ -70,5 +71,17 @@ describe('ModeSelectPage Component', () => {
     expect(mockPlay).toHaveBeenCalledWith('click');
     
     expect(mockNavigate).toHaveBeenCalledWith('/highlow');
+  });
+
+  test('navigates to salary order mode and plays click sound', () => {
+    render(
+      <MemoryRouter>
+        <ModeSelectPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByText(/SALARY ORDER/i));
+    expect(mockPlay).toHaveBeenCalledWith('click');
+    expect(mockNavigate).toHaveBeenCalledWith('/salary-order');
   });
 });

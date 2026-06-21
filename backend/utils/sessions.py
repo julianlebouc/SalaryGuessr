@@ -17,6 +17,7 @@ ALLOWED_LOG_MESSAGES = {
     "landing page visit",
     "classic game started",
     "high/low game started",
+    "salary order game started",
     "battle royale game started",
 }
 
@@ -30,6 +31,8 @@ def create_session(mode: str) -> str:
             "created_at": time.time(),
             "round_scores": [],  # list of per-round scores (Classic mode)
             "streak": 0,         # consecutive correct answers (High/Low mode)
+            "ordering_current_count": 3,
+            "ordering_best": 0,
             "finalized": False,
         }
     return token
@@ -83,6 +86,10 @@ def finalize_session(token: str) -> dict | None:
             return {"mode": mode, "score": score, "rounds": len(rounds)}
         elif mode == "highlow":
             score = s["streak"]
+            s["final_score"] = score
+            return {"mode": mode, "score": score}
+        elif mode == "ordering":
+            score = int(s.get("ordering_best", 0))
             s["final_score"] = score
             return {"mode": mode, "score": score}
         else:

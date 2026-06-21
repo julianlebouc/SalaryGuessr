@@ -27,9 +27,9 @@ def load_leaderboard() -> Dict[str, List[Dict[str, Any]]]:
     Load all-time leaderboards from the persistent JSON file.
     
     Returns:
-        Dict[str, List[Dict]]: Dictionary mapping game modes ("classic", "highlow") to lists of score entries.
+        Dict[str, List[Dict]]: Dictionary mapping game modes ("classic", "highlow", "ordering") to lists of score entries.
     """
-    default_structure = {"classic": [], "highlow": []}
+    default_structure = {"classic": [], "highlow": [], "ordering": []}
     
     with _leaderboard_lock:
         if not os.path.exists(LEADERBOARD_PATH):
@@ -44,7 +44,7 @@ def load_leaderboard() -> Dict[str, List[Dict[str, Any]]]:
                 return default_structure
             
             validated = {}
-            for mode in ["classic", "highlow"]:
+            for mode in ["classic", "highlow", "ordering"]:
                 entries = data.get(mode, [])
                 if not isinstance(entries, list):
                     entries = []
@@ -112,7 +112,7 @@ def is_top_score(mode: str, score: float) -> bool:
     Returns:
         bool: True if the score is in the top 3 all-time, False otherwise.
     """
-    if mode not in ["classic", "highlow"]:
+    if mode not in ["classic", "highlow", "ordering"]:
         return False
         
     leaderboard = load_leaderboard()
@@ -139,7 +139,7 @@ def submit_score(mode: str, pseudo: str, score: float) -> List[Dict[str, Any]]:
     Returns:
         List[Dict]: The updated list of top 3 entries for that mode.
     """
-    if mode not in ["classic", "highlow"]:
+    if mode not in ["classic", "highlow", "ordering"]:
         raise ValueError(f"Invalid game mode for leaderboard: {mode}")
         
     cleaned_pseudo = str(pseudo).strip()

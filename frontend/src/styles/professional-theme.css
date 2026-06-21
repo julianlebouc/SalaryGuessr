@@ -359,6 +359,50 @@
   background: #e0e0e0;
 }
 
+/* Salary Order mode */
+.theme-professional .so-offer-row {
+  background: #ffffff;
+  border-color: #e2e2e2;
+}
+
+.theme-professional .so-offer-main h3 {
+  color: #111111;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.theme-professional .so-rank-chip {
+  color: #0a66c2;
+}
+
+.theme-professional .so-move-btn {
+  border-color: #d0d0d0;
+  color: #334;
+  background: #f7f7f7;
+}
+
+.theme-professional .so-move-btn:hover:not(:disabled) {
+  border-color: #0a66c2;
+  color: #0a66c2;
+  background: #eef5fc;
+}
+
+.theme-professional .so-feedback.success {
+  border-color: rgba(10, 102, 194, 0.35);
+  background: rgba(10, 102, 194, 0.08);
+  color: #0a66c2;
+}
+
+.theme-professional .so-correct-order-box,
+.theme-professional .so-order-item {
+  background: #ffffff;
+  border-color: #e2e2e2;
+}
+
+.theme-professional .so-order-salary {
+  color: #0a66c2;
+}
+
 .theme-professional .hp-preview-fill {
   background: var(--grad-purple);
   box-shadow: none;
@@ -1215,4 +1259,4 @@
   font-family: inherit !important;
   color: #2e7d32;
   text-shadow: none !important;
-}
+}

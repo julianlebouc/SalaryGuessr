@@ -20,7 +20,7 @@ def temp_leaderboard(tmp_path, monkeypatch):
 def test_empty_leaderboard_load(temp_leaderboard):
     """Test loading from a non-existent file returns the default structure."""
     data = leaderboard.load_leaderboard()
-    assert data == {"classic": [], "highlow": []}
+    assert data == {"classic": [], "highlow": [], "ordering": []}
 
 
 def test_leaderboard_save_and_load(temp_leaderboard):
@@ -30,13 +30,15 @@ def test_leaderboard_save_and_load(temp_leaderboard):
             {"pseudo": "Alice", "score": 90.0, "date": "2026-05-20"},
             {"pseudo": "Bob", "score": 80.0, "date": "2026-05-20"}
         ],
-        "highlow": []
+        "highlow": [],
+        "ordering": []
     }
     
     assert leaderboard.save_leaderboard(test_data) is True
     loaded = leaderboard.load_leaderboard()
     assert loaded["classic"] == test_data["classic"]
     assert loaded["highlow"] == []
+    assert loaded["ordering"] == []
 
 
 def test_corrupt_leaderboard_load(temp_leaderboard):
@@ -45,7 +47,7 @@ def test_corrupt_leaderboard_load(temp_leaderboard):
         f.write("NOT JSON DATA")
         
     data = leaderboard.load_leaderboard()
-    assert data == {"classic": [], "highlow": []}
+    assert data == {"classic": [], "highlow": [], "ordering": []}
 
 
 def test_is_top_score(temp_leaderboard):

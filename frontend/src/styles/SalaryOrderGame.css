@@ -1,0 +1,242 @@
+.so-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.so-header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+}
+
+.so-grid {
+  grid-template-rows: auto 1fr;
+}
+
+.so-offers-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  justify-content: center;
+}
+
+.so-order-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 850;
+}
+
+.so-order-less {
+  color: var(--accent-cyan);
+}
+
+.so-order-more {
+  color: var(--primary-purple);
+}
+
+.so-offer-row {
+  display: grid;
+  grid-template-columns: 62px 1fr 70px;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--ui-radius);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.so-offer-row:active {
+  cursor: grabbing;
+}
+
+.so-offer-row.is-dragging {
+  border-color: var(--accent-cyan);
+  background: rgba(0, 242, 254, 0.08);
+  box-shadow: 0 0 0 1px rgba(0, 242, 254, 0.35), 0 10px 20px rgba(0, 0, 0, 0.35);
+}
+
+.so-rank-chip {
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 1rem;
+  color: var(--accent-cyan);
+  text-align: center;
+}
+
+.so-offer-main h3 {
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.so-drag-handle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  color: var(--text-secondary);
+}
+
+.so-drag-handle span {
+  font-size: 1.1rem;
+  line-height: 1;
+  letter-spacing: 1px;
+  font-weight: 900;
+}
+
+.so-drag-handle small {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.so-action-zone {
+  justify-content: center;
+  gap: 1rem;
+}
+
+.so-instruction {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.so-instruction-sub {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.so-label {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--primary-purple);
+  font-weight: 800;
+}
+
+.so-feedback {
+  padding: 0.8rem 1rem;
+  border-radius: var(--ui-radius);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.so-feedback.success {
+  border: 1px solid rgba(0, 242, 254, 0.45);
+  background: rgba(0, 242, 254, 0.1);
+  color: var(--accent-cyan);
+}
+
+.so-result-view {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1rem;
+}
+
+.so-result-view h1 {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+}
+
+.so-final-score {
+  font-size: clamp(4rem, 14vw, 7rem);
+  line-height: 0.9;
+  font-family: var(--font-mono);
+  font-weight: 950;
+  color: var(--accent-cyan);
+}
+
+.so-final-sub {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.so-correct-order-box {
+  width: 100%;
+  max-width: 760px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 1rem;
+  border-radius: var(--ui-radius);
+}
+
+.so-correct-order-box h3 {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+}
+
+.so-order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.so-order-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--ui-radius);
+  padding: 0.6rem 0.75rem;
+}
+
+.so-order-rank {
+  color: var(--primary-purple);
+  font-weight: 900;
+}
+
+.so-order-title {
+  text-align: left;
+  font-weight: 700;
+}
+
+.so-order-salary {
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
+  font-weight: 800;
+}
+
+@media (max-width: 980px) {
+  .so-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .so-grid .tile {
+    grid-column: span 12 !important;
+  }
+
+  .so-offer-row {
+    grid-template-columns: 44px 1fr 64px;
+    padding: 0.7rem;
+  }
+
+  .so-drag-handle small {
+    display: none;
+  }
+
+  .so-order-item {
+    grid-template-columns: 44px 1fr;
+  }
+
+  .so-order-salary {
+    grid-column: span 2;
+    text-align: left;
+    padding-left: 44px;
+  }
+}

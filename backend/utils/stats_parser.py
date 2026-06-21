@@ -14,6 +14,7 @@ def get_global_stats():
         "modes": {
             "classic": {"count": 0, "total_score": 0, "min_score": float('inf'), "max_score": 0},
             "highlow": {"count": 0, "total_score": 0, "min_score": float('inf'), "max_score": 0},
+            "ordering": {"count": 0, "total_score": 0, "min_score": float('inf'), "max_score": 0},
             "battle_royale": {"count": 0}
         },
         "games_per_day": {} # { "YYYY-MM-DD": count }
@@ -62,13 +63,21 @@ def get_global_stats():
                         elif "battle royale game started" in msg.lower():
                             stats["modes"]["battle_royale"]["count"] += 1
 
+                        elif "salary order game over" in msg.lower():
+                            m = stats["modes"]["ordering"]
+                            score = data.get("finalScore", 0)
+                            m["count"] += 1
+                            m["total_score"] += score
+                            m["min_score"] = min(m["min_score"], score)
+                            m["max_score"] = max(m["max_score"], score)
+
                     except (json.JSONDecodeError, KeyError):
                         continue
         except Exception:
             continue
 
     # Cleanup min_score if no games played
-    for mode in ["classic", "highlow"]:
+    for mode in ["classic", "highlow", "ordering"]:
         if stats["modes"][mode]["count"] == 0:
             stats["modes"][mode]["min_score"] = 0
         
@@ -88,6 +97,12 @@ def get_global_stats():
                 "avg_score": round(stats["modes"]["highlow"]["total_score"] / stats["modes"]["highlow"]["count"], 2) if stats["modes"]["highlow"]["count"] > 0 else 0,
                 "min_score": round(stats["modes"]["highlow"]["min_score"], 2) if stats["modes"]["highlow"]["min_score"] != float('inf') else 0,
                 "max_score": round(stats["modes"]["highlow"]["max_score"], 2)
+            },
+            "ordering": {
+                "games": stats["modes"]["ordering"]["count"],
+                "avg_score": round(stats["modes"]["ordering"]["total_score"] / stats["modes"]["ordering"]["count"], 2) if stats["modes"]["ordering"]["count"] > 0 else 0,
+                "min_score": round(stats["modes"]["ordering"]["min_score"], 2) if stats["modes"]["ordering"]["min_score"] != float('inf') else 0,
+                "max_score": round(stats["modes"]["ordering"]["max_score"], 2)
             },
             "battle_royale": {
                 "games": stats["modes"]["battle_royale"]["count"]

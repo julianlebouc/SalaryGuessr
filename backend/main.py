@@ -158,13 +158,73 @@ def session_start(request: Request, data: dict):
     included in subsequent /validate and /game_over calls.
 
     Body:
-        mode (str): "classic" | "highlow"
+        mode (str): "classic" | "highlow" | "ordering"
     """
     mode = data.get("mode", "classic")
-    if mode not in ("classic", "highlow"):
+    if mode not in ("classic", "highlow", "ordering"):
         raise HTTPException(status_code=400, detail="Invalid game mode")
     token = create_session(mode)
     return {"session_token": token}
+
+
+@app.post("/validate/ordering")
+@limiter.limit("120/minute")
+def validate_ordering(request: Request, data: dict):
+    """
+    Validate an ordered list of job ids from lowest salary to highest salary.
+    Enforces server-side progression for the Ordering mode.
+    """
+    ordered_job_ids = data.get("ordered_job_ids")
+    session_token = data.get("session_token")
+
+    if not session_token:
+        raise HTTPException(status_code=400, detail="Missing session_token")
+
+    if not isinstance(ordered_job_ids, list) or len(ordered_job_ids) < 2:
+        raise HTTPException(status_code=400, detail="ordered_job_ids must be a list with at least 2 ids")
+
+    if len(set(ordered_job_ids)) != len(ordered_job_ids):
+        raise HTTPException(status_code=400, detail="ordered_job_ids must not contain duplicates")
+
+    session = get_session(session_token)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found or expired")
+
+    if session.get("mode") != "ordering":
+        raise HTTPException(status_code=400, detail="Session mode mismatch")
+
+    if session.get("finalized"):
+        raise HTTPException(status_code=400, detail="Session already finalized")
+
+    expected_count = int(session.get("ordering_current_count", 3))
+    if len(ordered_job_ids) != expected_count:
+        raise HTTPException(status_code=400, detail=f"Expected {expected_count} job ids for this round")
+
+    ordered_salaries = []
+    for job_id in ordered_job_ids:
+        salary_data = get_job_salary_data(job_id)
+        if not salary_data or salary_data.get("value") is None:
+            raise HTTPException(status_code=404, detail=f"Salary not found for job_id={job_id}")
+        ordered_salaries.append(float(salary_data["value"]))
+
+    is_sorted = all(ordered_salaries[i] <= ordered_salaries[i + 1] for i in range(len(ordered_salaries) - 1))
+
+    sorted_with_salary = sorted(
+        [{"job_id": jid, "salary": sal} for jid, sal in zip(ordered_job_ids, ordered_salaries)],
+        key=lambda item: item["salary"],
+    )
+
+    if is_sorted:
+        session["ordering_best"] = max(int(session.get("ordering_best", 0)), expected_count)
+        session["ordering_current_count"] = expected_count + 1
+
+    return {
+        "correct": is_sorted,
+        "round_size": expected_count,
+        "next_round_size": int(session.get("ordering_current_count", expected_count)),
+        "best_score": int(session.get("ordering_best", 0)),
+        "sorted_jobs": sorted_with_salary,
+    }
 
 
 @app.post("/validate")
@@ -279,6 +339,8 @@ def game_over(request: Request, data: dict):
         frontend_logger.info("Classic game finished", extra={"extra_data": {"score": score, "rounds": result.get("rounds", 0)}})
     elif mode == "highlow":
         frontend_logger.info("High/Low game over", extra={"extra_data": {"finalScore": score}})
+    elif mode == "ordering":
+        frontend_logger.info("Salary order game over", extra={"extra_data": {"finalScore": score}})
 
     logger.info(f"[ANTI-CHEAT] Game over logged server-side: mode={mode}, score={score}, is_top_3={is_top_3}")
     return {"mode": mode, "score": score, "is_top_3": is_top_3}

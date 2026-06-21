@@ -9,7 +9,7 @@ import { useSound } from "../sound/SoundProvider";
 
 /**
  * ModeSelectPage component.
- * Allows the user to choose between different game modes: Classic, High/Low, or Battle Royale.
+ * Allows the user to choose between different game modes.
  * 
  * @component
  * @returns {JSX.Element} The rendered Mode selection page.
@@ -61,6 +61,14 @@ export default function ModeSelectPage() {
       features: ["Multijoueur en ligne", "Dernier survivant"],
       route: "/battleroyale",
     },
+    {
+      id: "salaryorder",
+      title: "SALARY ORDER",
+      icon: "",
+      description: "Range les offres de la moins payée à la mieux payée.",
+      features: ["Difficulté évolutive", "Score = max offres classées"],
+      route: "/salary-order",
+    },
   ];
 
   const handleModeSelect = (route) => {
@@ -80,7 +88,7 @@ export default function ModeSelectPage() {
         </div>
 
         {modes.map((mode, i) => (
-          <div key={mode.id} className="tile span-4 tile-grid-bg tile-animate" style={{ animationDelay: `${0.08 + (i * 0.04)}s` }}>
+          <div key={mode.id} className="tile mode-card-tile tile-grid-bg tile-animate" style={{ animationDelay: `${0.08 + (i * 0.04)}s` }}>
             {renderCorners()}
             <div
               className="tile-content mode-card-new"

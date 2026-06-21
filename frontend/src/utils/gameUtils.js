@@ -93,7 +93,7 @@ export async function fetchMultipleJobs(count) {
 
 /**
  * Start a new anti-cheat game session on the server.
- * @param {"classic"|"highlow"} mode
+ * @param {"classic"|"highlow"|"ordering"} mode
  * @returns {Promise<string>} The session_token to include in validate calls.
  */
 export async function startSession(mode) {
@@ -172,6 +172,22 @@ export async function validateComparison(jobIdToGuess, knownJobId, guess, sessio
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
+}
+
+/**
+ * Validate an ordered list of jobs from lowest salary to highest salary.
+ * @param {string[]} orderedJobIds
+ * @param {string} sessionToken
+ * @returns {Promise<object>}
+ */
+export async function validateOrdering(orderedJobIds, sessionToken) {
+  const res = await fetch(`${API_URL}/validate/ordering`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ordered_job_ids: orderedJobIds, session_token: sessionToken }),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return await res.json();

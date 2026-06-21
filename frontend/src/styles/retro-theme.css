@@ -261,4 +261,31 @@
   font-family: var(--font-mono) !important;
   color: var(--accent-cyan);
   text-shadow: 0 0 10px var(--accent-cyan);
-}
+}
+
+/* Salary Order mode */
+.theme-retro .so-offer-row {
+  border: 2px solid rgba(255, 0, 255, 0.35);
+  box-shadow: 4px 4px 0 rgba(0, 255, 255, 0.35);
+  background: rgba(255, 0, 255, 0.08);
+}
+
+.theme-retro .so-rank-chip {
+  text-shadow: 0 0 8px var(--accent-cyan);
+}
+
+.theme-retro .so-move-btn {
+  border: 2px solid var(--accent-cyan);
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.theme-retro .so-move-btn:hover:not(:disabled) {
+  color: #fff;
+  background: rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+}
+
+.theme-retro .so-correct-order-box {
+  border: 2px solid var(--primary-purple);
+  box-shadow: 5px 5px 0 var(--accent-cyan);
+}
