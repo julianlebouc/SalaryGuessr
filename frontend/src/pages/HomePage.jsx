@@ -114,7 +114,7 @@ export default function HomePage() {
         {/* STATS TILES */}
         {[
           { label: "Offres Réelles", value: "∞" },
-          { label: "Gratuit", value: "100%" },
+          { label: "Gratuit & OpenSource", value: "100%" },
           { label: "Modes de Jeu", value: "3" }
         ].map((stat, i) => (
           <div key={i} className="tile span-4 tile-animate" style={{ animationDelay: `${0.12 + i * 0.04}s` }}>
